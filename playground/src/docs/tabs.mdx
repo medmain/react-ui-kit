@@ -1,0 +1,47 @@
+---
+name: Tabs
+route: /tabs
+---
+
+import {Playground, PropsTable} from 'docz';
+import {useState} from 'react';
+import {Tabs, Tab} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+
+# Tabs component
+
+## Uncontrolled version (no state)
+
+<Playground>
+  <Root>
+    <Tabs initialActiveTab={'about'}>
+      <Tab title="Home">Home</Tab>
+      <Tab title="Profile">Profile's content</Tab>
+      <Tab title="About">About content</Tab>
+    </Tabs>
+  </Root>
+</Playground>
+
+## Controlled version (with state)
+
+<Playground>
+  {() => {
+    const [activeTab, setActiveTab] = useState('profile');
+    return (
+      <Root>
+        <Tabs activeTab={activeTab} onChange={setActiveTab}>
+          <Tab id="home" title="Home">
+            Home
+          </Tab>
+          <Tab id="profile" title="Profile">
+            Profile's content
+          </Tab>
+          <Tab id="about" title="About">
+            About content
+          </Tab>
+        </Tabs>
+      </Root>
+    );
+  }}
+</Playground>

@@ -1,0 +1,67 @@
+---
+name: List
+route: /lists
+---
+
+import {Playground, PropsTable} from 'docz';
+import {List} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+
+# List component
+
+<Playground>
+  {() => {
+    const columns = [
+      {
+        path: 'firstName',
+        headerCell: {
+          render: () => 'First Name'
+        },
+        bodyCell: {
+          render: item => item.firstName
+        }
+      },
+      {
+        path: 'lastName',
+        headerCell: {
+          render: () => 'Last Name'
+        },
+        bodyCell: {
+          render: item => item.lastName
+        }
+      },
+      {
+        path: 'team',
+        headerCell: {
+          render: () => 'Team'
+        },
+        bodyCell: {
+          render: item => item.team
+        }
+      }
+    ];
+    const items = [
+      {
+        lastName: 'Bird',
+        firstName: 'Larry',
+        team: 'Boston Celtics'
+      },
+      {
+        lastName: 'Jordan',
+        firstName: 'Michael',
+        team: 'Chicago Bulls'
+      },
+      {
+        lastName: 'Duncan',
+        firstName: 'Tim',
+        team: 'San Antonio Spurs'
+      }
+    ];
+    return (
+      <Root>
+        <List columns={columns} items={items} />
+      </Root>
+    );
+  }}
+</Playground>

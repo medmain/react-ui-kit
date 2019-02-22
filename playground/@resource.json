@@ -1,0 +1,56 @@
+{
+  "@import": "js/resource#^0.1.0",
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@medmain/base-frontend": "^0.1.66",
+    "@medmain/react-ui-kit": "0.0.0",
+    "docz": "^0.13.7",
+    "docz-theme-default": "^0.13.7",
+    "webpack": "4.28.4"
+  },
+  "customErrors": [
+    {
+      "errorCode": 404,
+      "responseCode": 200,
+      "responsePage": "index.html"
+    }
+  ],
+  "build": {
+    "@type": "method",
+    "@run": ["transpiler run", "bundler run", "copier run", "freezer run"],
+    "@listen": "@build"
+  },
+  "transpiler": {
+    "@import": "js/transpiler#^0.1.15",
+    "targets": {
+      "chrome": "41",
+      "safari": "10",
+      "firefox": "50",
+      "edge": "14"
+    },
+    "format": "esm",
+    "transformJSX": true
+  },
+  "bundler": {
+    "@import": "js/bundler#^0.1.0",
+    "entry": "./dist/esm/index.js",
+    "target": "browser",
+    "format": "iife",
+    "globals": {
+      "react": "React",
+      "react-dom": "ReactDOM"
+    }
+  },
+  "copier": {
+    "@import": "tool/file-copier#^0.1.0",
+    "sourceDirectory": "./"
+  },
+  "freezer": {
+    "@import": "website/freezer#^0.1.0"
+  },
+  "start": {
+    "@type": "method",
+    "@run": "(@import shell/bash) run \"./node_modules/.bin/docz dev\""
+  }
+}

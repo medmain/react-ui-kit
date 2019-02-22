@@ -1,0 +1,66 @@
+---
+name: Dropdown menu
+route: /dropdown-menu
+---
+
+import {Playground, PropsTable} from 'docz';
+import {DropdownMenu, DropdownItem, Col, Row} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+
+# Dropdown menu
+
+## Position `top`
+
+<Playground>
+  <Root>
+    <Row>
+      <Col />
+      <Col>
+        <DropdownMenu
+          label={'Actions'}
+          position="top"
+          alignment="right"
+          disabled={false}
+          style={{
+            minWidth: '144px'
+          }}
+        >
+          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
+          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
+        </DropdownMenu>
+      </Col>
+      <Col>
+        <DropdownMenu label={'Disabled menu'} position="top" alignment="right" disabled>
+          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
+          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
+        </DropdownMenu>
+      </Col>
+    </Row>
+  </Root>
+</Playground>
+
+## Position `bottom`
+
+<Playground>
+  <Root>
+    <Row>
+      <Col />
+      <Col>
+        <DropdownMenu
+          label={'Actions'}
+          position="bottom"
+          alignment="right"
+          disabled={false}
+          style={{
+            minWidth: '144px'
+          }}
+        >
+          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
+          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
+        </DropdownMenu>
+      </Col>
+      <Col />
+    </Row>
+  </Root>
+</Playground>

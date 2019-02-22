@@ -1,0 +1,48 @@
+---
+name: Modal
+route: /modal
+---
+
+import {Playground, PropsTable} from 'docz';
+import {Button, Modal} from '@medmain/react-ui-kit';
+
+import {ModalDemo} from '../components/modal-demo';
+
+# Modal
+
+## Example of code
+
+2 calls to `confirm` button are chained, used `await` to wait for user's confirmation before showing the second modal.
+
+```js
+const result = await modal.confirm(text, {
+  title: 'Warning!',
+  width: '700px',
+  okButton: {
+    onClick: async ({close}) => {
+      const okay = await modal.confirm('Are you sure?');
+      if (okay) {
+        close(true);
+      }
+    }
+  }
+});
+```
+
+## Modal default options
+
+<Playground>
+  {() => {
+    const modal = new Modal({});
+    return <ModalDemo modal={modal} />;
+  }}
+</Playground>
+
+## Custom constructor options
+
+<Playground>
+  {() => {
+    const modal = new Modal({okButtonTitle: 'Oui', cancelButtonTitle: 'Non'});
+    return <ModalDemo modal={modal} />;
+  }}
+</Playground>

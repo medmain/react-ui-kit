@@ -1,0 +1,50 @@
+---
+name: Button
+route: /buttons
+---
+
+import {Playground, PropsTable} from 'docz';
+import {
+  Button,
+  RoundButton,
+  RoundBackButton,
+  RoundCloseButton,
+  AddIcon,
+  RemoveIcon
+} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+
+# Button component
+
+## Basic buttons `<Button>`
+
+<Playground>
+  <Root>
+    <Button>Click me (default button)</Button> <Button disabled>Click me (disabled)</Button>
+    <br />
+    <br />
+    <Button rsPrimary>Click me (primary)</Button>
+    {'  '}
+    <Button rsPrimary disabled>
+      Disabled
+    </Button>{' '}
+  </Root>
+</Playground>
+
+## Rounded buttons
+
+<Playground>
+  <Root>
+    <RoundButton>A</RoundButton>
+    <RoundButton>
+      <AddIcon />
+    </RoundButton>
+    <RoundButton>
+      <RemoveIcon />
+    </RoundButton>
+    <RoundButton rsPrimary>B</RoundButton>
+    <RoundBackButton />
+    <RoundCloseButton />
+  </Root>
+</Playground>

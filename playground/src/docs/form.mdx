@@ -1,0 +1,106 @@
+---
+name: Form
+route: /forms
+---
+
+import {Playground, PropsTable} from 'docz';
+
+import {
+  Asterisk,
+  Button,
+  CheckboxInput,
+  DateInput,
+  FileChooser,
+  Form,
+  Input,
+  Label,
+  LabelHelp,
+  NumberInput,
+  Select,
+  TextArea,
+  TextInput
+} from '@medmain/react-ui-kit';
+
+import {FormContainer} from '../components/form-container';
+import Root from '../components/root';
+import {FileList} from '../components/file-list';
+
+# Form components
+
+## Basic Form
+
+<Playground>
+  <Root>
+    <FormContainer
+      initialValues={{
+        email: 'larry@celtics.com',
+        count: 100,
+        story: 'This is my story',
+        team: 'CHI',
+        position: '1',
+        hallOfFame: true,
+        mvp: true,
+        date: new Date(2018, 1, 11)
+      }}
+    >
+      {({values, onChange, files, addFile}) => {
+        const fileChooserRef = React.createRef()
+        return (
+          <Form onSubmit={console.log}>
+            <Label htmlFor="email">Email:</Label>
+            <TextInput id="email" name="email" value={values.email} onChange={onChange('email')} />
+            <hr />
+            <Label htmlFor="email">
+              Count
+              <LabelHelp>Enter a number</LabelHelp>
+            </Label>
+            <NumberInput id="count" value={values.count} onChange={onChange('count')} />
+            <hr />
+            <Label htmlFor="story">
+              Your story
+              <LabelHelp>Remaining characters: XX</LabelHelp>
+            </Label>
+            <TextArea id="story" rows={5} onChange={onChange('story')} value={values.story} />
+            <hr />
+            <Label>Team</Label>
+            <Select
+              id="team"
+              type="select"
+              value={values.team}
+              options={[
+                {value: 'CHI', label: 'Chicago Bulls'},
+                {value: 'LAL', label: 'Los Angeles Lakers'}
+              ]}
+              onChange={onChange('team')}
+            />
+            <hr />
+            <Label>Level</Label>
+            <Select
+              id="postion"
+              type="radio"
+              value={values.position}
+              options={[
+                {value: '1', label: 'Regular Player'},
+                {value: '2', label: 'All-Star Player'}
+              ]}
+              onChange={onChange('position')}
+            />
+            <hr />
+            <Label>Awards</Label>
+            <CheckboxInput label="Hall-of-famer" value={values.hallOfFame} onChange={onChange('hallOfFame')} />
+            <CheckboxInput label="MVP" value={values.mvp} onChange={onChange('mvp')} />
+            <hr />
+            <Label>Date</Label>
+            <DateInput id="date" value={values.date} onChange={onChange('date')} />
+            <hr />
+            <Label>Uploaded files</Label>
+            <FileList files={files} />
+            <FileChooser ref={fileChooserRef} onChoose={addFile} />
+            <Button onClick={() => fileChooserRef.current.open()}>Add a file</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+
+  </Root>
+</Playground>

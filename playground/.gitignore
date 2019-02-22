@@ -1,0 +1,9 @@
+.DS_STORE
+node_modules
+node_modules.*
+*.log
+/dist
+/builds
+*.private.*
+package.json
+.docz

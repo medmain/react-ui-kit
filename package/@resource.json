@@ -1,0 +1,24 @@
+{
+  "@import": "medmain/npm-package#^0.1.0",
+  "name": "@medmain/react-ui-kit",
+  "version": "0.0.1",
+  "description": "React shared components",
+  "contributors": [
+    "Michael Rambeau <michael@medmain.com>",
+    "Manuel Vila <hi@mvila.me>"
+  ],
+  "license": "MIT",
+  "repository": "https://github.com/medmain/react-ui-kit.git",
+  "dependencies": {
+    "radium-starter": "^0.11.9"
+  },
+  "cjsTranspiler": {
+    "transformJSX": true
+  },
+  "esmTranspiler": {
+    "transformJSX": true
+  },
+  "browserTranspiler": {
+    "transformJSX": true
+  }
+}

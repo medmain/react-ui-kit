@@ -1,0 +1,27 @@
+---
+name: PDF Viewer
+route: /pdf-viewer
+---
+
+import {Playground} from 'docz';
+import {PDFViewer} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+
+# PDF Viewer component
+
+### Default dimensions
+
+<Playground>
+  <Root>
+    <PDFViewer url="/public/mongodb-cheatsheet.pdf" />
+  </Root>
+</Playground>
+
+### Fixed width
+
+<Playground>
+  <Root>
+    <PDFViewer url="/public/mongodb-cheatsheet.pdf" width={'500px'} height={'375px'} />
+  </Root>
+</Playground>

@@ -1,0 +1,37 @@
+---
+name: Row and Col
+route: /rows
+---
+
+import {Playground, PropsTable} from 'docz';
+import {Row, Col} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+
+# Grid components
+
+`Row` and `Col` components are used to create grid layouts.
+
+## 3-column layout
+
+<Playground>
+  <Root>
+    <Row>
+      <Col>Column 1</Col>
+      <Col>Column 2</Col>
+      <Col style={{backgroundColor: '#eee'}}>Column 3</Col>
+    </Row>
+  </Root>
+</Playground>
+
+## Ajdusting flex styles
+
+<Playground>
+  <Root>
+    <Row>
+      <Col>Column 1</Col>
+      <Col>Column 2</Col>
+      <Col style={{backgroundColor: '#eee', flexGrow: 1}}>Column 3</Col>
+    </Row>
+  </Root>
+</Playground>
