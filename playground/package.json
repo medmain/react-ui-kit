@@ -1,0 +1,18 @@
+{
+  "name": "@medmain/react-components-playground",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "docz dev",
+    "build": "docz build",
+    "deploy": "cp .docz/dist/index.html .docz/dist/200.html && surge --project .docz/dist/ --domain medmain-playground.surge.sh"
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@medmain/base-frontend": "^0.1.66",
+    "docz": "^0.13.7",
+    "docz-theme-default": "^0.13.7",
+    "webpack": "4.28.4"
+  }
+}
