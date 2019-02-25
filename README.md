@@ -1,11 +1,11 @@
 # Medmain React UI Kit
 
-Medmain React components toolkit
+React shared components used by Medmain web applications.
 
-This repo is split into 2 parts:
+This repository is split into 2 parts:
 
-- `package`: `@medmain/react-ui-kit` package
-- `playground`: Documentation web application, made with [Docz](https://docz.site/).
+- [package](https://github.com/medmain/react-ui-kit/tree/master/package): the `@medmain/react-ui-kit` package, imported by Medmain applications
+- [playground](https://github.com/medmain/react-ui-kit/tree/master/playground): a standalone web application, made with [Docz](https://docz.site/), to see the components in action and provide documentation.
 
 ```
 ├── package
