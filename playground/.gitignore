@@ -5,5 +5,4 @@ node_modules.*
 /dist
 /builds
 *.private.*
-package.json
 .docz

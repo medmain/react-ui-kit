@@ -1,11 +1,11 @@
 {
   "@import": "medmain/npm-package#^0.1.0",
   "name": "@medmain/react-ui-kit",
-  "version": "0.0.1",
-  "description": "React shared components",
+  "version": "0.1.0",
+  "description": "React shared components used in Medmain web applications",
   "contributors": [
-    "Michael Rambeau <michael@medmain.com>",
-    "Manuel Vila <hi@mvila.me>"
+    "Manuel Vila <hi@mvila.me>",
+    "Michael Rambeau <michael@medmain.com>"
   ],
   "license": "MIT",
   "repository": "https://github.com/medmain/react-ui-kit.git",
