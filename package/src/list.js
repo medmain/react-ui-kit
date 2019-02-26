@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRadiumStarter} from 'radium-starter';
-import {ItemSelection} from '@medmain/core';
 
 import {CheckboxInput} from './form';
 import {withLocale} from './locale-context';
@@ -23,7 +22,7 @@ export class List extends React.Component {
     onItemClick: PropTypes.func,
     orderBy: PropTypes.string,
     orderDirection: PropTypes.string,
-    selection: PropTypes.instanceOf(ItemSelection),
+    selection: PropTypes.object,
     onSelect: PropTypes.func,
     locale: PropTypes.object.isRequired,
     style: PropTypes.object,

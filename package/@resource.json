@@ -1,7 +1,7 @@
 {
   "@import": "medmain/npm-package#^0.1.0",
   "name": "@medmain/react-ui-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React shared components used in Medmain web applications",
   "contributors": [
     "Manuel Vila <hi@mvila.me>",
@@ -10,7 +10,19 @@
   "license": "MIT",
   "repository": "https://github.com/medmain/react-ui-kit.git",
   "dependencies": {
-    "radium-starter": "^0.11.9"
+    "color": "^3.0.0",
+    "downshift": "^2.1.0",
+    "lodash": "^4.17.10",
+    "match-sorter": "^2.2.3",
+    "@ministate/base": "^0.1.4",
+    "@ministate/react": "^0.1.4",
+    "prop-types": "^15.6.0",
+    "radium": "^0.24.0",
+    "radium-starter": "^0.11.7",
+    "react-day-picker": "^7.2.4",
+    "react-md-spinner": "^0.3.0",
+    "react-modal": "^3.6.1",
+    "react-router-dom": "^4.2.2"
   },
   "cjsTranspiler": {
     "transformJSX": true
