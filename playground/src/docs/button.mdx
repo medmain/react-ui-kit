@@ -17,18 +17,30 @@ import Root from '../components/root';
 
 # Button component
 
-## Basic buttons `<Button>`
+## Basic buttons
 
 <Playground>
   <Root>
-    <Button>Click me (default button)</Button> <Button disabled>Click me (disabled)</Button>
-    <br />
-    <br />
+    <Button>Click me (default button)</Button> <Button disabled>Click me (disabled)</Button>{' '}
+    <Button rsLarge>Large</Button> <Button rsSmall>Small</Button>
+  </Root>
+</Playground>
+
+## Color variations
+
+<Playground>
+  <Root>
     <Button rsPrimary>Click me (primary)</Button>
     {'  '}
     <Button rsPrimary disabled>
       Disabled
-    </Button>{' '}
+    </Button>
+    <br />
+    <br />
+    <Button rsAccent>Accent</Button>
+    <br />
+    <br />
+    <Button rsInverse>Inverse</Button>
   </Root>
 </Playground>
 
