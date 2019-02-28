@@ -3,6 +3,3 @@ dist
 builds
 vendor
 @resource*.json
-_old
-_drafts
-_private

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+run . @install
+run . link
+run . @build

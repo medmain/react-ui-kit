@@ -1,0 +1,25 @@
+{
+  "@import": "medmain/js-repository#^0.1.0",
+  "install": {
+    "@type": "method",
+    "@run": [
+      "./package @install",
+      "(@import shell/bash) run \"npm install --prefix=./playground\""
+    ],
+    "@listen": "@install"
+  },
+  "link": {
+    "@type": "method",
+    "@run": [
+      "(@import shell/bash) run \"npm-link ./package\"",
+      "(@import shell/bash) run \"npm-link ./playground\""
+    ]
+  },
+  "build": {
+    "@type": "method",
+    "@run": [
+      "./package @build"
+    ],
+    "@listen": "@build"
+  }
+}
