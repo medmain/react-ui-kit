@@ -3,4 +3,3 @@ dist
 builds
 vendor
 @resource*.json
-_private

@@ -11,3 +11,27 @@ This repository is split into 2 parts:
 ├── package
 └── playground
 ```
+
+### Installing
+
+```bash
+run . @install
+```
+
+### Linking local packages
+
+```bash
+run . link
+```
+
+### Building
+
+```bash
+run . @build
+```
+
+### Linting
+
+```bash
+run . @lint
+```
