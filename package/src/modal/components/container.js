@@ -5,7 +5,7 @@ import ReactModal from 'react-modal';
 
 import {Style} from 'radium';
 
-export const Container = ({onClose, children, ...props}) => {
+export const Container = ({onClose, children, rootRef, ...props}) => {
   return (
     <RadiumStarter>
       {(t, s) => (
@@ -21,6 +21,7 @@ export const Container = ({onClose, children, ...props}) => {
               '.ReactModal__Content--before-close': {opacity: 0}
             }}
           />
+          {/* Mount React Modal inside a parent div, instead of `document.body`, using `parentSelector` option */}
           <ReactModal
             isOpen
             style={generateStyle(t, s, props)}
@@ -29,6 +30,7 @@ export const Container = ({onClose, children, ...props}) => {
               return onClose(false);
             }}
             ariaHideApp={false}
+            parentSelector={() => rootRef.current}
           >
             {children}
           </ReactModal>
@@ -39,7 +41,8 @@ export const Container = ({onClose, children, ...props}) => {
 };
 Container.propTypes = {
   onClose: PropTypes.func,
-  children: PropTypes.node
+  children: PropTypes.node,
+  rootRef: PropTypes.any.isRequired
 };
 
 /*

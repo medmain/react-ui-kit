@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Style} from 'radium';
 import RadiumStarter, {RadiumStarterRoot} from 'radium-starter';
 import subscribe from '@ministate/react';
+import Fullscreen from 'react-full-screen';
 
 import {LocaleProvider} from './locale-context';
 import {AppProvider} from './app-context';
@@ -37,15 +38,23 @@ const Wrapper = props => {
     <RadiumStarterRoot theme={theme} styles={styles}>
       <AppProvider app={app}>
         <LocaleProvider locale={app.getLocale()}>
-          <RadiumStarter>
-            {(t, s) => (
-              <React.Fragment>
-                <Style rules={globalStyles(t, s)} />
-                {children}
-              </React.Fragment>
-            )}
-          </RadiumStarter>
-          {app.getModal().createElement()}
+          <Fullscreen
+            enabled={app.state.isFullscreen}
+            onChange={value => {
+              app.setIsFullscreen(value);
+            }}
+          >
+            <RadiumStarter>
+              {(t, s) => (
+                <React.Fragment>
+                  <Style rules={globalStyles(t, s)} />
+                  {children}
+                </React.Fragment>
+              )}
+            </RadiumStarter>
+            {/* Modal element must be mounted inside <Fullscreen> */}
+            {app.getModal().createElement()}
+          </Fullscreen>
         </LocaleProvider>
       </AppProvider>
     </RadiumStarterRoot>
