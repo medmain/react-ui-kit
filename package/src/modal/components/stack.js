@@ -3,14 +3,23 @@ import React from 'react';
 import {Container} from './container';
 import {Dialog} from './dialog';
 
-export const Stack = ({modal}) => {
-  return modal.getStack().map(({options}, index) => {
-    const {render, ...otherOptions} = options;
-    const Content = render || Dialog;
+export class Stack extends React.Component {
+  root = React.createRef(); // used to mount ReactModal inside the <Fullscreen> container
+
+  render() {
+    const {modal} = this.props;
     return (
-      <Container key={index} onClose={modal.close} {...otherOptions}>
-        <Content {...otherOptions} close={modal.close} />
-      </Container>
+      <div ref={this.root}>
+        {modal.getStack().map(({options}, index) => {
+          const {render, ...otherOptions} = options;
+          const Content = render || Dialog;
+          return (
+            <Container key={index} onClose={modal.close} rootRef={this.root} {...otherOptions}>
+              <Content {...otherOptions} close={modal.close} />
+            </Container>
+          );
+        })}
+      </div>
     );
-  });
-};
+  }
+}
