@@ -166,9 +166,9 @@ export class List extends React.Component {
         {hasFooter && (
           <ListFooter>
             <ListRow>
-              {columns.map(({path, width, footerCell: {style, render}}) => {
+              {columns.map(({path, width, footerCell: {style, title, render}}) => {
                 return (
-                  <ListCell key={path} style={{width, ...style}}>
+                  <ListCell key={path} title={title && title()} style={{width, ...style}}>
                     {render()}
                   </ListCell>
                 );
