@@ -11,6 +11,7 @@
     "@babel/plugin-proposal-class-properties": "^7.3.3",
     "@babel/plugin-proposal-decorators": "^7.3.0",
     "@medmain/base-frontend": "^0.1.66",
+    "@medmain/core": "^0.2.0",
     "@medmain/react-ui-kit": "^0.1.0",
     "docz": "^0.13.7",
     "docz-theme-default": "^0.13.7",

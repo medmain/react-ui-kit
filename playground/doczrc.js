@@ -1,5 +1,5 @@
 export default {
-  title: 'Medmain Playground',
+  title: 'Medmain React UI Kit',
   description:
     'A playground to visualize and test Medmain React components shared in `@medmain/react-ui-kit` package',
   codeSandbox: false,
