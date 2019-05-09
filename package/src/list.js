@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRadiumStarter} from 'radium-starter';
+import get from 'lodash/get';
 
 import {CheckboxInput} from './form';
 import {withLocale} from './locale-context';
@@ -62,6 +63,16 @@ export class List extends React.Component {
     return {shrink, truncate};
   }
 
+  renderCellContent({render, item, path}) {
+    if (render !== undefined) {
+      return evaluate(render, item); // caution: `render` can be an empty string
+    }
+    if (item) {
+      return get(item, path); // get a property from a nested object using a "dot path"
+    }
+    return path;
+  }
+
   render() {
     const {
       columns,
@@ -119,7 +130,7 @@ export class List extends React.Component {
                   width = columnDefaults.width,
                   truncate = columnDefaults.truncate,
                   style: columnStyle = columnDefaults.style,
-                  headerCell: {title, style: cellStyle, render}
+                  headerCell: {title, style: cellStyle, render} = {}
                 }) => {
                   const isCurrentOrder = orderBy === path;
                   if (isCurrentOrder) {
@@ -143,7 +154,7 @@ export class List extends React.Component {
                         ...cellStyle
                       }}
                     >
-                      {evaluate(render)}
+                      {this.renderCellContent({render, path})}
                       {isCurrentOrder && <SortMarker direction={orderDirection} />}
                     </ListCell>
                   );
@@ -179,7 +190,7 @@ export class List extends React.Component {
                       width = columnDefaults.width,
                       truncate = columnDefaults.truncate,
                       style: columnStyle = columnDefaults.style,
-                      bodyCell: {title, style: cellStyle, render}
+                      bodyCell: {title, style: cellStyle, render} = {}
                     }) => {
                       return (
                         <ListCell
@@ -194,7 +205,7 @@ export class List extends React.Component {
                           truncate={truncate}
                           style={{width, ...columnStyle, ...evaluate(cellStyle, item, index)}}
                         >
-                          {evaluate(render, item)}
+                          {this.renderCellContent({render, item, path})}
                         </ListCell>
                       );
                     }
@@ -214,7 +225,7 @@ export class List extends React.Component {
                     width = columnDefaults.width,
                     truncate = columnDefaults.truncate,
                     style: columnStyle = columnDefaults.style,
-                    footerCell: {style: cellStyle, title, render}
+                    footerCell: {style: cellStyle, title, render} = {}
                   }) => {
                     return (
                       <ListCell
@@ -227,7 +238,7 @@ export class List extends React.Component {
                           ...cellStyle
                         }}
                       >
-                        {evaluate(render)}
+                        {this.renderCellContent({render, path})}
                       </ListCell>
                     );
                   }
