@@ -93,9 +93,9 @@ export class List extends React.Component {
     const hasFooter = columns.some(column => column.footerCell) && items.length > 0;
     const hasTruncatedColumn = columnDefaults.truncate || columns.some(column => column.truncate);
 
-    const getCellTitle = ({item, title, render, truncate}) => {
-      if (title) {
-        return evaluate(title, item);
+    const getCellTooltipLabel = ({item, tooltip, render, truncate}) => {
+      if (tooltip) {
+        return evaluate(tooltip, item);
       }
       if (truncate) {
         const renderedContent = evaluate(render, item);
@@ -130,7 +130,7 @@ export class List extends React.Component {
                   width = columnDefaults.width,
                   truncate = columnDefaults.truncate,
                   style: columnStyle = columnDefaults.style,
-                  headerCell: {title, style: cellStyle, render} = {}
+                  headerCell: {tooltip, style: cellStyle, render} = {}
                 }) => {
                   const isCurrentOrder = orderBy === path;
                   if (isCurrentOrder) {
@@ -146,7 +146,7 @@ export class List extends React.Component {
                           onHeaderClick(path);
                         })
                       }
-                      title={getCellTitle({title, render, truncate})}
+                      tooltip={getCellTooltipLabel({tooltip, render, truncate})}
                       truncate={truncate}
                       style={{
                         width,
@@ -190,7 +190,7 @@ export class List extends React.Component {
                       width = columnDefaults.width,
                       truncate = columnDefaults.truncate,
                       style: columnStyle = columnDefaults.style,
-                      bodyCell: {title, style: cellStyle, render} = {}
+                      bodyCell: {tooltip, style: cellStyle, render} = {}
                     }) => {
                       return (
                         <ListCell
@@ -201,7 +201,7 @@ export class List extends React.Component {
                               onItemClick(item, path);
                             })
                           }
-                          title={getCellTitle({item, title, render, truncate})}
+                          tooltip={getCellTooltipLabel({item, tooltip, render, truncate})}
                           truncate={truncate}
                           style={{width, ...columnStyle, ...evaluate(cellStyle, item, index)}}
                         >
@@ -225,12 +225,12 @@ export class List extends React.Component {
                     width = columnDefaults.width,
                     truncate = columnDefaults.truncate,
                     style: columnStyle = columnDefaults.style,
-                    footerCell: {style: cellStyle, title, render} = {}
+                    footerCell: {style: cellStyle, tooltip, render} = {}
                   }) => {
                     return (
                       <ListCell
                         key={path}
-                        title={getCellTitle({title, render, truncate})}
+                        tooltip={getCellTooltipLabel({tooltip, render, truncate})}
                         truncate={truncate}
                         style={{
                           width,
@@ -437,7 +437,7 @@ export class ListRow extends React.Component {
 export class ListCell extends React.Component {
   static propTypes = {
     onClick: PropTypes.func,
-    title: PropTypes.string,
+    tooltip: PropTypes.string,
     truncate: PropTypes.bool,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
@@ -446,7 +446,7 @@ export class ListCell extends React.Component {
   };
 
   render() {
-    let {onClick, title, truncate, style, children, styles: s, theme: t} = this.props;
+    let {onClick, tooltip, truncate, style, children, styles: s, theme: t} = this.props;
 
     if (onClick) {
       style = {cursor: 'pointer', ...style};
@@ -478,7 +478,7 @@ export class ListCell extends React.Component {
           return (
             <td
               onClick={onClick}
-              title={title}
+              title={tooltip}
               style={{
                 padding: '8px',
                 verticalAlign: 'middle',
