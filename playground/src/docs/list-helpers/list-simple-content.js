@@ -1,12 +1,6 @@
 export const columns = [
   {
     path: 'id',
-    headerCell: {
-      render: '#'
-    },
-    bodyCell: {
-      render: item => item.id
-    },
     footerCell: {
       render: ''
     }
@@ -14,12 +8,8 @@ export const columns = [
   {
     path: 'firstName',
     width: '200px',
-    // style: {maxWidth: 150},
     headerCell: {
       render: () => 'First Name'
-    },
-    bodyCell: {
-      render: item => item.firstName
     },
     footerCell: {
       render: () => 'Footer 1'
@@ -28,7 +18,6 @@ export const columns = [
   {
     path: 'lastName',
     width: '200px',
-    // style: {maxWidth: 150},
     headerCell: {
       render: () => 'Last Name'
     },
