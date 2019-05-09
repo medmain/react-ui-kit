@@ -33,11 +33,11 @@ export const columns = [
     path: 'team',
     headerCell: {
       render: () => 'Team',
-      title: `Player's most famous team`
+      tooltip: `Player's most famous team`
     },
     bodyCell: {
       render: item => item.team,
-      title: item => `${item.lastName} 's main team`,
+      tooltip: item => `${item.lastName} 's main team`,
       style: {backgroundColor: '#fef9eb'}
     },
     footerCell: {
@@ -81,7 +81,7 @@ export const items = [
     id: 6,
     lastName: 'Liliard',
     firstName: 'Damian',
-    team: 'Portand Trailblazers'
+    team: 'Portland Trailblazers'
   },
   {
     id: 7,
