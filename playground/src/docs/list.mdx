@@ -3,65 +3,224 @@ name: List
 route: /lists
 ---
 
+import {useState} from 'react';
 import {Playground, PropsTable} from 'docz';
-import {List} from '@medmain/react-ui-kit';
+import {
+  List,
+  ListRoot,
+  ListHeader,
+  ListBody,
+  ListRow,
+  ListCell,
+  Badge
+} from '@medmain/react-ui-kit';
+import {ItemSelection} from '@medmain/core';
 
 import Root from '../components/root';
+import {VerticalContainer} from '../components/vertical-container';
+import {columns, items} from './list-helpers/list-simple-content';
+import {columns as scanColumns, items as scanItems} from './list-helpers/list-long-content';
+import {generateRandomListContent} from './list-helpers/list-random-content';
+import {useSortOptions, sortItems} from './list-helpers/list-sort-options';
 
 # List component
 
+## Basic list
+
+A basic list to highlight:
+
+- Tooltips
+- Custom styles (the last column)
+- Sticky header and footer
+
+<Playground>
+  <Root>
+    <VerticalContainer height={200}>
+      <List columns={columns} items={items} onItemClick={console.log} />
+    </VerticalContainer>
+  </Root>
+</Playground>
+
+The same list wrapped in a taller container (no vertical scrolling)
+
+<Playground>
+  <Root>
+    <VerticalContainer height={400}>
+      <List columns={columns} items={items} onItemClick={console.log} />
+    </VerticalContainer>
+  </Root>
+</Playground>
+
+Empty list
+
+<Playground>
+  <Root>
+    <List columns={columns} items={[]} onItemClick={console.log} />
+  </Root>
+</Playground>
+
+Building the table with `ListRoot`, composing all `List*` components
+
+<Playground>
+  <Root>
+    <ListRoot onItemClick={console.log}>
+      <ListHeader>
+        <ListRow>
+          <ListCell>First Name</ListCell>
+          <ListCell>Last Name</ListCell>
+          <ListCell>Team</ListCell>
+        </ListRow>
+      </ListHeader>
+      <ListBody>
+        {items.map(item => (
+          <ListRow key={item.id}>
+            <ListCell>{item.firstName}</ListCell>
+            <ListCell>{item.lastName}</ListCell>
+            <ListCell>{item.team}</ListCell>
+          </ListRow>
+        ))}
+      </ListBody>
+    </ListRoot>
+  </Root>
+</Playground>
+
+### List with sort options
+
+Click on column headers to sort the rows.
+
 <Playground>
   {() => {
-    const columns = [
-      {
-        path: 'firstName',
-        headerCell: {
-          render: () => 'First Name'
-        },
-        bodyCell: {
-          render: item => item.firstName
-        }
-      },
-      {
-        path: 'lastName',
-        headerCell: {
-          render: () => 'Last Name'
-        },
-        bodyCell: {
-          render: item => item.lastName
-        }
-      },
-      {
-        path: 'team',
-        headerCell: {
-          render: () => 'Team'
-        },
-        bodyCell: {
-          render: item => item.team
-        }
-      }
-    ];
-    const items = [
-      {
-        lastName: 'Bird',
-        firstName: 'Larry',
-        team: 'Boston Celtics'
-      },
-      {
-        lastName: 'Jordan',
-        firstName: 'Michael',
-        team: 'Chicago Bulls'
-      },
-      {
-        lastName: 'Duncan',
-        firstName: 'Tim',
-        team: 'San Antonio Spurs'
-      }
-    ];
+    const {orderBy, orderDirection, toggle} = useSortOptions({orderBy: 'lastName'});
+    const sortedItems = sortItems(items, {orderBy, orderDirection});
     return (
       <Root>
-        <List columns={columns} items={items} />
+        <List
+          columns={columns}
+          items={sortedItems}
+          orderBy={orderBy}
+          orderDirection={orderDirection}
+          onHeaderClick={toggle}
+        />
       </Root>
     );
   }}
+</Playground>
+
+### List with selected items
+
+Check/uncheck boxes in the first column
+
+<Playground>
+  {() => {
+    const [selection, setSelection] = useState(new ItemSelection());
+    const {itemIds, mode} = selection
+    const selectionInfo = () => {
+      if (mode === 'all') return 'All items selected'
+      const count = itemIds && itemIds.size
+      if (count === 0) return 'No items selected'
+      return `${count} item(s) ${mode === 'pick' ? 'picked' : 'omitted'}`
+    }
+    return (
+      <Root>
+        <p>{selectionInfo()}</p>
+        <List columns={columns} items={items} selection={selection} onSelect={setSelection} onItemClick={console.log} />
+      </Root>
+    );
+
+}}
+
+</Playground>
+
+### More columns
+
+<Playground>
+  {() => {
+    const {orderBy, orderDirection, toggle} = useSortOptions({orderBy: 'addedOn'});
+    const sortedItems = sortItems(scanItems, {orderBy, orderDirection});
+    return (
+      <Root>
+        <List
+          columns={scanColumns}
+          items={sortedItems}
+          orderBy={orderBy}
+          orderDirection={orderDirection}
+          onHeaderClick={toggle}
+        />
+      </Root>
+    );
+  }}
+</Playground>
+
+Truncating the content of all cells
+
+<Playground>
+  <Root>
+    <List columns={scanColumns} items={scanItems} columnDefaults={{truncate: true}} />
+  </Root>
+</Playground>
+
+Truncating everything except the "Organ" column
+
+<Playground>
+  <Root>
+    <List
+      columns={scanColumns.map(col => (col.path === 'organ' ? {...col, truncate: false} : col))}
+      items={scanItems}
+      columnDefaults={{truncate: true}}
+    />
+  </Root>
+</Playground>
+
+Truncating only the content of the "Filename" column
+
+<Playground>
+  <Root>
+    <List
+      columns={scanColumns.map(col => (col.path === 'filename' ? {...col, truncate: true} : col))}
+      items={scanItems}
+      columnDefaults={{truncate: false}}
+    />
+  </Root>
+</Playground>
+
+## Scrollable list
+
+### Adding scrollbars
+
+Using `shrink: false` option, columns are not shrunk and the user can scroll to see the cells that don't fit the content.
+
+<Playground>
+  {() => {
+    const {items, columns} = generateRandomListContent({rowCount: 30, columnCount: 20, width: 120});
+
+    return (
+      <Root>
+        <VerticalContainer height={400}>
+          <List columns={columns} items={items} columnDefaults={{shrink: false}} />
+        </VerticalContainer>
+      </Root>
+    );
+
+}}
+
+</Playground>
+
+### Truncating cell content
+
+Using `truncate: true` option, the cell content is displayed on a single line, `...` is displayed if the content is truncated.
+
+<Playground>
+  {() => {
+    const {items, columns} = generateRandomListContent({rowCount: 30, columnCount: 20, width: 120});
+
+    return (
+      <Root>
+        <VerticalContainer height={400}>
+          <List columns={columns} items={items} columnDefaults={{shrink: false, truncate: true}} />
+        </VerticalContainer>
+      </Root>
+    );
+
+}}
+
 </Playground>

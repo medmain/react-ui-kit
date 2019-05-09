@@ -8,14 +8,12 @@ import {withLocale} from './locale-context';
 import {ChevronUpIcon} from './icons/chevron-up';
 import {ChevronDownIcon} from './icons/chevron-down';
 
-const SectionContext = React.createContext();
-const RowContext = React.createContext();
-
 @withLocale
 @withRadiumStarter
 export class List extends React.Component {
   static propTypes = {
     columns: PropTypes.array.isRequired,
+    columnDefaults: PropTypes.shape({shrink: PropTypes.bool, truncate: PropTypes.bool}),
     bodyRows: PropTypes.object,
     items: PropTypes.array.isRequired,
     onHeaderClick: PropTypes.func,
@@ -24,14 +22,15 @@ export class List extends React.Component {
     orderDirection: PropTypes.string,
     selection: PropTypes.object,
     onSelect: PropTypes.func,
-    locale: PropTypes.object.isRequired,
     style: PropTypes.object,
+    locale: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired
   };
 
   static defaultProps = {
     bodyRows: {},
+    columnDefaults: {},
     onSelect: () => {}
   };
 
@@ -56,6 +55,13 @@ export class List extends React.Component {
     onSelect(selection);
   };
 
+  getColumnDefaults() {
+    const {
+      columnDefaults: {shrink = true, truncate = false}
+    } = this.props;
+    return {shrink, truncate};
+  }
+
   render() {
     const {
       columns,
@@ -71,113 +77,167 @@ export class List extends React.Component {
       styles: s
     } = this.props;
 
-    const hasFooter = columns.some(column => column.footerCell);
+    const columnDefaults = this.getColumnDefaults();
+    const enableScrolling = columnDefaults.shrink === false; // no scrolling by default
+    const hasFooter = columns.some(column => column.footerCell) && items.length > 0;
+    const hasTruncatedColumn = columnDefaults.truncate || columns.some(column => column.truncate);
+
+    const getCellTitle = ({item, title, render, truncate}) => {
+      if (title) {
+        return evaluate(title, item);
+      }
+      if (truncate) {
+        const renderedContent = evaluate(render, item);
+        if (typeof renderedContent === 'string') {
+          return renderedContent;
+        }
+      }
+    };
 
     return (
-      <div
-        style={{
-          minHeight: 0, // https://stackoverflow.com/questions/28636832/firefox-overflow-y-not-working-with-nested-flexbox/28639686#28639686
-          display: 'flex',
-          flexDirection: 'column',
-          ...style
-        }}
-      >
-        <ListHeader>
-          <ListRow>
-            {selection && (
-              <td
-                style={{
-                  width: '28px',
-                  textAlign: 'center',
-                  verticalAlign: 'middle'
-                }}
-              >
-                <CheckboxInput value={selection.mode === 'all'} onChange={this.toggleAllItems} />
-              </td>
-            )}
-            {columns.map(({path, width, headerCell: {title, style, render}}) => {
-              const isCurrentOrder = orderBy === path;
-              if (isCurrentOrder) {
-                style = {...style, textDecoration: 'underline'};
-              }
-              return (
+      <>
+        <ListRoot
+          style={style}
+          tableStyle={{tableLayout: enableScrolling || hasTruncatedColumn ? 'fixed' : 'auto'}}
+        >
+          <ListHeader>
+            <ListRow>
+              {selection && (
                 <ListCell
-                  key={path}
-                  onClick={
-                    onHeaderClick &&
-                    (() => {
-                      onHeaderClick(path);
-                    })
-                  }
-                  title={title && title()}
-                  style={{width, ...style}}
+                  style={{
+                    width: '28px',
+                    textAlign: 'center',
+                    verticalAlign: 'middle'
+                  }}
                 >
-                  {render()}
-                  {isCurrentOrder && <SortMarker direction={orderDirection} />}
+                  <CheckboxInput value={selection.mode === 'all'} onChange={this.toggleAllItems} />
                 </ListCell>
-              );
-            })}
-          </ListRow>
-        </ListHeader>
+              )}
+              {columns.map(
+                ({
+                  path,
+                  width = columnDefaults.width,
+                  truncate = columnDefaults.truncate,
+                  style: columnStyle = columnDefaults.style,
+                  headerCell: {title, style: cellStyle, render}
+                }) => {
+                  const isCurrentOrder = orderBy === path;
+                  if (isCurrentOrder) {
+                    cellStyle = {...cellStyle, textDecoration: 'underline'};
+                  }
 
-        {items.length > 0 && (
-          <ListBody style={{flexGrow: 1, flexShrink: 1, overflowY: 'scroll'}}>
-            {items.map((item, index) => (
-              <ListRow key={index} style={normalizeStyle(bodyRows.style)(item, index)}>
-                {selection && (
-                  <td
-                    key={name}
-                    style={{
-                      width: '28px',
-                      textAlign: 'center',
-                      verticalAlign: 'middle'
-                    }}
-                  >
-                    <CheckboxInput
-                      value={selection.isItemSelected(item.id)}
-                      onChange={(checked, {nativeEvent: {shiftKey}}) => {
-                        this.toggleItem(item.id, checked, shiftKey);
-                      }}
-                    />
-                  </td>
-                )}
-                {columns.map(({path, width, bodyCell: {title, style, render}}) => {
                   return (
                     <ListCell
                       key={path}
                       onClick={
-                        onItemClick &&
+                        onHeaderClick &&
                         (() => {
-                          onItemClick(item, path);
+                          onHeaderClick(path);
                         })
                       }
-                      title={title && title(item)}
-                      style={{width, ...normalizeStyle(style)(item, index)}}
+                      title={getCellTitle({title, render, truncate})}
+                      truncate={truncate}
+                      style={{
+                        width,
+                        ...columnStyle,
+                        ...cellStyle
+                      }}
                     >
-                      {render(item)}
+                      {evaluate(render)}
+                      {isCurrentOrder && <SortMarker direction={orderDirection} />}
                     </ListCell>
                   );
-                })}
-              </ListRow>
-            ))}
-          </ListBody>
-        )}
-
-        {hasFooter && (
-          <ListFooter>
-            <ListRow>
-              {columns.map(({path, width, footerCell: {style, title, render}}) => {
-                return (
-                  <ListCell key={path} title={title && title()} style={{width, ...style}}>
-                    {render()}
-                  </ListCell>
-                );
-              })}
+                }
+              )}
             </ListRow>
-          </ListFooter>
-        )}
+          </ListHeader>
 
-        {items.length === 0 && (
+          {items.length > 0 && (
+            <ListBody>
+              {items.map((item, index) => (
+                <ListRow key={index} style={evaluate(bodyRows.style, item, index)}>
+                  {selection && (
+                    <td
+                      key={name}
+                      style={{
+                        width: '28px',
+                        textAlign: 'center',
+                        verticalAlign: 'middle'
+                      }}
+                    >
+                      <CheckboxInput
+                        value={selection.isItemSelected(item.id)}
+                        onChange={(checked, {nativeEvent: {shiftKey}}) => {
+                          this.toggleItem(item.id, checked, shiftKey);
+                        }}
+                      />
+                    </td>
+                  )}
+                  {columns.map(
+                    ({
+                      path,
+                      width = columnDefaults.width,
+                      truncate = columnDefaults.truncate,
+                      style: columnStyle = columnDefaults.style,
+                      bodyCell: {title, style: cellStyle, render}
+                    }) => {
+                      return (
+                        <ListCell
+                          key={path}
+                          onClick={
+                            onItemClick &&
+                            (() => {
+                              onItemClick(item, path);
+                            })
+                          }
+                          title={getCellTitle({item, title, render, truncate})}
+                          truncate={truncate}
+                          style={{width, ...columnStyle, ...evaluate(cellStyle, item, index)}}
+                        >
+                          {evaluate(render, item)}
+                        </ListCell>
+                      );
+                    }
+                  )}
+                </ListRow>
+              ))}
+            </ListBody>
+          )}
+
+          {hasFooter && (
+            <ListFooter>
+              <ListRow>
+                {selection && <ListCell>&nbsp;</ListCell>}
+                {columns.map(
+                  ({
+                    path,
+                    width = columnDefaults.width,
+                    truncate = columnDefaults.truncate,
+                    style: columnStyle = columnDefaults.style,
+                    footerCell: {style: cellStyle, title, render}
+                  }) => {
+                    return (
+                      <ListCell
+                        key={path}
+                        title={getCellTitle({title, render, truncate})}
+                        truncate={truncate}
+                        style={{
+                          width,
+                          ...columnStyle,
+                          ...cellStyle
+                        }}
+                      >
+                        {evaluate(render)}
+                      </ListCell>
+                    );
+                  }
+                )}
+              </ListRow>
+            </ListFooter>
+          )}
+        </ListRoot>
+
+        {!items.length && (
           <div
             style={{
               ...s.centeredContent,
@@ -189,28 +249,57 @@ export class List extends React.Component {
             {l.listNoItemsFound}
           </div>
         )}
-      </div>
+      </>
     );
   }
 }
 
-export default List;
-
-function normalizeStyle(style) {
-  return typeof style === 'function' ?
-    style :
-    function () {
-      return style;
-    };
+function evaluate(valueOrFunction, ...args) {
+  if (typeof valueOrFunction === 'function') {
+    return valueOrFunction(...args);
+  }
+  return valueOrFunction;
 }
 
-const tableStyle = {
-  tableLayout: 'fixed',
-  width: '100%',
-  maxWidth: '100%',
-  borderCollapse: 'collapse',
-  borderSpacing: 0
-};
+// === Low level components ===
+
+const SectionContext = React.createContext();
+const RowContext = React.createContext();
+
+@withRadiumStarter
+export class ListRoot extends React.Component {
+  static propTypes = {
+    style: PropTypes.object,
+    tableStyle: PropTypes.object,
+    children: PropTypes.node.isRequired,
+    theme: PropTypes.object.isRequired,
+    styles: PropTypes.object.isRequired
+  };
+
+  render() {
+    const {style, tableStyle, children} = this.props;
+
+    return (
+      <div
+        style={{
+          overflow: 'auto',
+          ...style
+        }}
+      >
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            borderSpacing: 0,
+            ...tableStyle
+          }}
+        >
+          {children}
+        </table>
+      </div>
+    );
+  }
+}
 
 export class ListHeader extends React.Component {
   static propTypes = {
@@ -219,18 +308,14 @@ export class ListHeader extends React.Component {
   };
 
   render() {
-    const {style, children} = this.props;
+    const {children} = this.props;
 
     return (
-      <div style={{...style}}>
-        <table style={{...tableStyle}}>
-          <thead>
-            <SectionContext.Provider value={{type: 'HEADER'}}>
-              <RowContext.Provider value={{position: ['WHATEVER']}}>{children}</RowContext.Provider>
-            </SectionContext.Provider>
-          </thead>
-        </table>
-      </div>
+      <thead>
+        <SectionContext.Provider value={{type: 'HEADER'}}>
+          <RowContext.Provider value={{position: ['WHATEVER']}}>{children}</RowContext.Provider>
+        </SectionContext.Provider>
+      </thead>
     );
   }
 }
@@ -245,36 +330,32 @@ export class ListBody extends React.Component {
   };
 
   render() {
-    const {style, children} = this.props;
+    const {children} = this.props;
 
     return (
-      <div style={{...style}}>
-        <table style={{...tableStyle}}>
-          <tbody>
-            <SectionContext.Provider value={{type: 'BODY'}}>
-              {children.map((child, index) => {
-                const position = [];
-                if (index === 0) {
-                  position.push('FIRST');
-                }
-                if (index === children.length - 1) {
-                  position.push('LAST');
-                }
-                if ((position + 1) % 2 === 0) {
-                  position.push('EVEN');
-                } else {
-                  position.push('ODD');
-                }
-                return (
-                  <RowContext.Provider key={index} value={{position}}>
-                    {child}
-                  </RowContext.Provider>
-                );
-              })}
-            </SectionContext.Provider>
-          </tbody>
-        </table>
-      </div>
+      <tbody>
+        <SectionContext.Provider value={{type: 'BODY'}}>
+          {children.map((child, index) => {
+            const position = [];
+            if (index === 0) {
+              position.push('FIRST');
+            }
+            if (index === children.length - 1) {
+              position.push('LAST');
+            }
+            if ((position + 1) % 2 === 0) {
+              position.push('EVEN');
+            } else {
+              position.push('ODD');
+            }
+            return (
+              <RowContext.Provider key={index} value={{position}}>
+                {child}
+              </RowContext.Provider>
+            );
+          })}
+        </SectionContext.Provider>
+      </tbody>
     );
   }
 }
@@ -286,18 +367,14 @@ export class ListFooter extends React.Component {
   };
 
   render() {
-    const {style, children} = this.props;
+    const {children} = this.props;
 
     return (
-      <div style={{...style}}>
-        <table style={{...tableStyle}}>
-          <tfoot>
-            <SectionContext.Provider value={{type: 'FOOTER'}}>
-              <RowContext.Provider value={{position: ['WHATEVER']}}>{children}</RowContext.Provider>
-            </SectionContext.Provider>
-          </tfoot>
-        </table>
-      </div>
+      <tfoot>
+        <SectionContext.Provider value={{type: 'FOOTER'}}>
+          <RowContext.Provider value={{position: ['WHATEVER']}}>{children}</RowContext.Provider>
+        </SectionContext.Provider>
+      </tfoot>
     );
   }
 }
@@ -321,27 +398,9 @@ export class ListRow extends React.Component {
             {({position}) => {
               let {onClick, style, children} = this.props;
 
-              if (type === 'HEADER') {
-                style = {
-                  ...s.bold,
-                  backgroundColor: t.altBackgroundColor,
-                  whiteSpace: 'nowrap',
-                  ...style
-                };
-              }
-
               if (type === 'BODY' && !position.includes('LAST')) {
                 style = {
                   ...s.bottomBorder,
-                  ...style
-                };
-              }
-
-              if (type === 'FOOTER') {
-                style = {
-                  ...s.bold,
-                  backgroundColor: t.altBackgroundColor,
-                  whiteSpace: 'nowrap',
                   ...style
                 };
               }
@@ -368,6 +427,7 @@ export class ListCell extends React.Component {
   static propTypes = {
     onClick: PropTypes.func,
     title: PropTypes.string,
+    truncate: PropTypes.bool,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired,
@@ -375,26 +435,55 @@ export class ListCell extends React.Component {
   };
 
   render() {
-    let {onClick, title, style, children} = this.props;
+    let {onClick, title, truncate, style, children, styles: s, theme: t} = this.props;
 
     if (onClick) {
       style = {cursor: 'pointer', ...style};
     }
 
     return (
-      <td
-        onClick={onClick}
-        title={title}
-        style={{
-          padding: '8px',
-          verticalAlign: 'baseline',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          ...style
+      <SectionContext.Consumer>
+        {({type}) => {
+          if (type === 'HEADER') {
+            style = {
+              position: 'sticky',
+              top: 0,
+              backgroundColor: t.altBackgroundColor,
+              ...s.bold,
+              ...style
+            };
+          }
+
+          if (type === 'FOOTER') {
+            style = {
+              position: 'sticky',
+              bottom: 0,
+              backgroundColor: t.altBackgroundColor,
+              ...s.bold,
+              ...style
+            };
+          }
+
+          return (
+            <td
+              onClick={onClick}
+              title={title}
+              style={{
+                padding: '8px',
+                verticalAlign: 'middle',
+                ...(truncate && {
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis'
+                }),
+                ...style
+              }}
+            >
+              {children}
+            </td>
+          );
         }}
-      >
-        {children}
-      </td>
+      </SectionContext.Consumer>
     );
   }
 }
