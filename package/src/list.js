@@ -262,7 +262,7 @@ function normalizeColumnDefinition({headerCell, bodyCell, footerCell, ...colDefi
     ...colDefinition,
     headerCell: normalizeCellDefinition(headerCell),
     bodyCell: normalizeCellDefinition(bodyCell),
-    footerCell: normalizeCellDefinition(footerCell)
+    ...(footerCell !== undefined && {footerCell: normalizeCellDefinition(footerCell)})
   };
 }
 

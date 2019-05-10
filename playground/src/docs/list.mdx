@@ -10,6 +10,7 @@ import {
   ListRoot,
   ListHeader,
   ListBody,
+  ListFooter,
   ListRow,
   ListCell,
   Badge
@@ -80,6 +81,13 @@ Building the table with `ListRoot`, composing all `List*` components
           </ListRow>
         ))}
       </ListBody>
+      <ListFooter>
+        <ListRow>
+          <ListCell>&nbsp;</ListCell>
+          <ListCell> </ListCell>
+          <ListCell> </ListCell>
+        </ListRow>
+      </ListFooter>
     </ListRoot>
   </Root>
 </Playground>
