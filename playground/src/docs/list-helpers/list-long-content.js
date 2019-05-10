@@ -7,50 +7,50 @@ export const columns = [
     path: 'reference',
     width: '50px',
     headerCell: {
-      render: () => 'Ref'
+      content: () => 'Ref'
     },
     bodyCell: {
-      render: item => item.reference
+      content: item => item.reference
     }
   },
   {
     path: 'patient',
     width: '100px',
     headerCell: {
-      render: () => `Patient's name`
+      content: () => `Patient's name`
     },
     bodyCell: {
-      render: item => item.patientName
+      content: item => item.patientName
     }
   },
   {
     path: 'organ',
     width: '100px',
     headerCell: {
-      render: () => `Organ`
+      content: () => `Organ`
     },
     bodyCell: {
-      render: item => item.organ
+      content: item => item.organ
     }
   },
   {
     path: 'disease',
     width: '100px',
     headerCell: {
-      render: () => `Disease`
+      content: () => `Disease`
     },
     bodyCell: {
-      render: item => item.disease
+      content: item => item.disease
     }
   },
   {
     path: 'tags',
     width: '100px',
     headerCell: {
-      render: () => `Tags`
+      content: () => `Tags`
     },
     bodyCell: {
-      render: item =>
+      content: item =>
         item.tags.map(tag => (
           <Badge style={{marginRight: '0.2rem', marginBottom: '0.2rem'}} key={tag}>
             {tag}
@@ -62,30 +62,30 @@ export const columns = [
     path: 'filename',
     width: '100px',
     headerCell: {
-      render: () => `Filename`
+      content: () => `Filename`
     },
     bodyCell: {
-      render: item => item.filename
+      content: item => item.filename
     }
   },
   {
     path: 'size',
     width: '50px',
     headerCell: {
-      render: () => `Size`
+      content: () => `Size`
     },
     bodyCell: {
-      render: item => item.size
+      content: item => item.size
     }
   },
   {
     path: 'addedOn',
     width: '150px',
     headerCell: {
-      render: () => `Added on`
+      content: () => `Added on`
     },
     bodyCell: {
-      render: item => item.addedOn
+      content: item => item.addedOn
     }
   }
 ];

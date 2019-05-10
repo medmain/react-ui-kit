@@ -1,47 +1,44 @@
 export const columns = [
+  // Using the `path` property to render the cell
   {
     path: 'id',
-    footerCell: {
-      render: ''
-    }
+    footerCell: ''
   },
+  // Example of column using the shorthand syntax for column content
   {
     path: 'firstName',
     width: '200px',
-    headerCell: {
-      render: () => 'First Name'
-    },
-    footerCell: {
-      render: () => 'Footer 1'
-    }
+    headerCell: 'First name',
+    bodyCell: item => item.firstName,
+    footerCell: 'Footer 1'
   },
   {
     path: 'lastName',
     width: '200px',
     headerCell: {
-      render: () => 'Last Name'
+      content: 'Last name'
     },
     bodyCell: {
-      render: item => item.lastName,
-      style: item => (item.lastName === 'Jordan' ? {fontWeight: 'bold'} : {})
+      content: item => item.lastName,
+      style: item => (item.lastName === 'Jordan' ? {fontWeight: 'bold'} : {}) // using a function
     },
     footerCell: {
-      render: () => 'Footer 2'
+      content: () => 'Footer 2'
     }
   },
   {
     path: 'team',
     headerCell: {
-      render: () => 'Team',
+      content: () => 'Team',
       tooltip: `Player's most famous team`
     },
     bodyCell: {
-      render: item => item.team,
+      content: item => item.team,
       tooltip: item => `${item.lastName} 's main team`,
-      style: {backgroundColor: '#fef9eb'}
+      style: {backgroundColor: '#fef9eb'} // using a style object instead of a function
     },
     footerCell: {
-      render: () => 'Footer 3'
+      content: () => 'Footer 3'
     }
   }
 ];

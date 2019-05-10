@@ -4,13 +4,13 @@ export function generateRandomListContent({rowCount, columnCount, width = 120}) 
   const columns = times(columnCount).map(i => ({
     path: `col${i}`,
     width,
-    headerCell: {render: () => `Column #${i + 1} ${generateRandomString()}`},
+    headerCell: {content: () => `Column #${i + 1} ${generateRandomString()}`},
     bodyCell: {
-      render: item => {
+      content: item => {
         return `Cell ${item + 1}, ${i + 1} ${generateRandomString()}`;
       }
     },
-    footerCell: {render: () => `Footer #${i + 1} ${generateRandomString()}`}
+    footerCell: {content: () => `Footer #${i + 1} ${generateRandomString()}`}
   }));
 
   return {items, columns};
