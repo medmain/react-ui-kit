@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withRadiumStarter} from 'radium-starter';
 import get from 'lodash/get';
+import isPlainObject from 'lodash/isPlainObject';
 
 import {CheckboxInput} from './form';
 import {withLocale} from './locale-context';
@@ -63,9 +64,9 @@ export class List extends React.Component {
     return {shrink, truncate};
   }
 
-  renderCellContent({render, item, path}) {
-    if (render !== undefined) {
-      return evaluate(render, item); // caution: `render` can be an empty string
+  renderCellContent({content, item, path}) {
+    if (content !== undefined) {
+      return evaluate(content, item); // caution: `render` can be an empty string
     }
     if (item) {
       return get(item, path); // get a property from a nested object using a "dot path"
@@ -75,7 +76,7 @@ export class List extends React.Component {
 
   render() {
     const {
-      columns,
+      columns: rawColumns,
       bodyRows,
       items,
       onHeaderClick,
@@ -88,22 +89,11 @@ export class List extends React.Component {
       styles: s
     } = this.props;
 
+    const columns = rawColumns.map(normalizeColumnDefinition);
     const columnDefaults = this.getColumnDefaults();
     const enableScrolling = columnDefaults.shrink === false; // no scrolling by default
     const hasFooter = columns.some(column => column.footerCell) && items.length > 0;
     const hasTruncatedColumn = columnDefaults.truncate || columns.some(column => column.truncate);
-
-    const getCellTooltipLabel = ({item, tooltip, render, truncate}) => {
-      if (tooltip) {
-        return evaluate(tooltip, item);
-      }
-      if (truncate) {
-        const renderedContent = evaluate(render, item);
-        if (typeof renderedContent === 'string') {
-          return renderedContent;
-        }
-      }
-    };
 
     return (
       <>
@@ -130,7 +120,7 @@ export class List extends React.Component {
                   width = columnDefaults.width,
                   truncate = columnDefaults.truncate,
                   style: columnStyle = columnDefaults.style,
-                  headerCell: {tooltip, style: cellStyle, render} = {}
+                  headerCell: {tooltip, style: cellStyle, content} = {}
                 }) => {
                   const isCurrentOrder = orderBy === path;
                   if (isCurrentOrder) {
@@ -146,7 +136,7 @@ export class List extends React.Component {
                           onHeaderClick(path);
                         })
                       }
-                      tooltip={getCellTooltipLabel({tooltip, render, truncate})}
+                      tooltip={getCellTooltipLabel({tooltip, content, truncate})}
                       truncate={truncate}
                       style={{
                         width,
@@ -154,7 +144,7 @@ export class List extends React.Component {
                         ...cellStyle
                       }}
                     >
-                      {this.renderCellContent({render, path})}
+                      {this.renderCellContent({content, path})}
                       {isCurrentOrder && <SortMarker direction={orderDirection} />}
                     </ListCell>
                   );
@@ -190,7 +180,7 @@ export class List extends React.Component {
                       width = columnDefaults.width,
                       truncate = columnDefaults.truncate,
                       style: columnStyle = columnDefaults.style,
-                      bodyCell: {tooltip, style: cellStyle, render} = {}
+                      bodyCell: {tooltip, style: cellStyle, content} = {}
                     }) => {
                       return (
                         <ListCell
@@ -201,11 +191,11 @@ export class List extends React.Component {
                               onItemClick(item, path);
                             })
                           }
-                          tooltip={getCellTooltipLabel({item, tooltip, render, truncate})}
+                          tooltip={getCellTooltipLabel({item, tooltip, content, truncate})}
                           truncate={truncate}
                           style={{width, ...columnStyle, ...evaluate(cellStyle, item, index)}}
                         >
-                          {this.renderCellContent({render, item, path})}
+                          {this.renderCellContent({content, item, path})}
                         </ListCell>
                       );
                     }
@@ -225,12 +215,12 @@ export class List extends React.Component {
                     width = columnDefaults.width,
                     truncate = columnDefaults.truncate,
                     style: columnStyle = columnDefaults.style,
-                    footerCell: {style: cellStyle, tooltip, render} = {}
+                    footerCell: {style: cellStyle, tooltip, content} = {}
                   }) => {
                     return (
                       <ListCell
                         key={path}
-                        tooltip={getCellTooltipLabel({tooltip, render, truncate})}
+                        tooltip={getCellTooltipLabel({tooltip, content, truncate})}
                         truncate={truncate}
                         style={{
                           width,
@@ -238,7 +228,7 @@ export class List extends React.Component {
                           ...cellStyle
                         }}
                       >
-                        {this.renderCellContent({render, path})}
+                        {this.renderCellContent({content, path})}
                       </ListCell>
                     );
                   }
@@ -265,11 +255,39 @@ export class List extends React.Component {
   }
 }
 
+// === Helper functions ===
+
+function normalizeColumnDefinition({headerCell, bodyCell, footerCell, ...colDefinition}) {
+  return {
+    ...colDefinition,
+    headerCell: normalizeCellDefinition(headerCell),
+    bodyCell: normalizeCellDefinition(bodyCell),
+    footerCell: normalizeCellDefinition(footerCell)
+  };
+}
+
+// `content` property is implicit in cell definitions
+function normalizeCellDefinition(cellDefinition) {
+  return isPlainObject(cellDefinition) ? cellDefinition : {content: cellDefinition};
+}
+
 function evaluate(valueOrFunction, ...args) {
   if (typeof valueOrFunction === 'function') {
     return valueOrFunction(...args);
   }
   return valueOrFunction;
+}
+
+function getCellTooltipLabel({item, tooltip, content, truncate}) {
+  if (tooltip) {
+    return evaluate(tooltip, item);
+  }
+  if (truncate) {
+    const renderedContent = evaluate(content, item);
+    if (typeof renderedContent === 'string') {
+      return renderedContent;
+    }
+  }
 }
 
 // === Low level components ===
