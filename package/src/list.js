@@ -32,7 +32,7 @@ export class List extends React.Component {
 
   static defaultProps = {
     bodyRows: {},
-    columnDefaults: {},
+    columnDefaults: {shrink: false, truncate: false},
     onSelect: () => {}
   };
 
@@ -56,13 +56,6 @@ export class List extends React.Component {
 
     onSelect(selection);
   };
-
-  getColumnDefaults() {
-    const {
-      columnDefaults: {shrink = true, truncate = false}
-    } = this.props;
-    return {shrink, truncate};
-  }
 
   renderCellContent({content, item, path}) {
     if (content !== undefined) {
@@ -90,7 +83,10 @@ export class List extends React.Component {
     } = this.props;
 
     const columns = rawColumns.map(normalizeColumnDefinition);
-    const columnDefaults = this.getColumnDefaults();
+    const columnDefaults = {
+      ...this.constructor.defaultProps.columnDefaults,
+      ...this.props.columnDefaults
+    };
     const enableScrolling = columnDefaults.shrink === false; // no scrolling by default
     const hasFooter = columns.some(column => column.footerCell) && items.length > 0;
     const hasTruncatedColumn = columnDefaults.truncate || columns.some(column => column.truncate);
