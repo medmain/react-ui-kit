@@ -352,56 +352,6 @@ class RadioSelect extends React.Component {
   }
 }
 
-export class CheckboxInput extends React.Component {
-  static propTypes = {
-    label: PropTypes.string,
-    value: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    required: PropTypes.bool,
-    style: PropTypes.object
-  };
-
-  id = String(Math.round(Math.random() * 1000000000));
-
-  shouldComponentUpdate(nextProps, _nextState) {
-    return (
-      nextProps.label !== this.props.label ||
-      nextProps.value !== this.props.value ||
-      nextProps.onChange !== this.props.onChange ||
-      nextProps.required !== this.props.required
-    );
-  }
-
-  handleChange = event => {
-    this.props.onChange(event.target.checked, event);
-  };
-
-  render() {
-    const {label, value, required, style} = this.props;
-
-    return (
-      <div style={{lineHeight: 1, ...style}}>
-        <RSInput
-          {...omit(this.props, ['value'])}
-          id={this.id}
-          type="checkbox"
-          checked={value || false}
-          onChange={this.handleChange}
-        />
-        {label && (
-          <>
-            &nbsp;
-            <label htmlFor={this.id} style={{verticalAlign: 'middle'}}>
-              {label}
-              {required && <Asterisk />}
-            </label>
-          </>
-        )}
-      </div>
-    );
-  }
-}
-
 @withRadiumStarter
 export class AutocompleteInput extends React.Component {
   static propTypes = {

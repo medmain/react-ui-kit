@@ -1,5 +1,6 @@
 export * from './app-context';
 export * from './button';
+export * from './checkbox-input';
 export * from './date-input';
 export * from './dropdown-menu';
 export * from './file-chooser';

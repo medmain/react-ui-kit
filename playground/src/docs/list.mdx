@@ -23,6 +23,7 @@ import {columns, items} from './list-helpers/list-simple-content';
 import {columns as scanColumns, items as scanItems} from './list-helpers/list-long-content';
 import {generateRandomListContent} from './list-helpers/list-random-content';
 import {useSortOptions, sortItems} from './list-helpers/list-sort-options';
+import {ListSelectionContainer, ListSelectionInfo} from './list-helpers/list-selection-container';
 
 # List component
 
@@ -119,24 +120,22 @@ Click on column headers to sort the rows.
 Check/uncheck boxes in the first column
 
 <Playground>
-  {() => {
-    const [selection, setSelection] = useState(new ItemSelection());
-    const {itemIds, mode} = selection
-    const selectionInfo = () => {
-      if (mode === 'all') return 'All items selected'
-      const count = itemIds && itemIds.size
-      if (count === 0) return 'No items selected'
-      return `${count} item(s) ${mode === 'pick' ? 'picked' : 'omitted'}`
-    }
-    return (
-      <Root>
-        <p>{selectionInfo()}</p>
-        <List columns={columns} items={items} selection={selection} onSelect={setSelection} onItemClick={console.log} />
-      </Root>
-    );
-
-}}
-
+  <Root>
+    <ListSelectionContainer>
+      {({selection, setSelection}) => (
+        <>
+          <ListSelectionInfo selection={selection} />
+          <List
+            columns={columns}
+            items={items}
+            selection={selection}
+            onSelect={setSelection}
+            onItemClick={console.log}
+          />
+        </>
+      )}
+    </ListSelectionContainer>
+  </Root>
 </Playground>
 
 ### More columns

@@ -39,14 +39,15 @@ import {FileList} from '../components/file-list';
         team: 'CHI',
         position: '1',
         hallOfFame: true,
-        mvp: true,
-        date: new Date(2018, 1, 11)
+        mvp: false,
+        date: new Date(2018, 1, 11),
+        accept: false
       }}
     >
-      {({values, onChange, files, addFile}) => {
+      {({values, onChange, files, addFile, onSubmit}) => {
         const fileChooserRef = React.createRef()
         return (
-          <Form onSubmit={console.log}>
+          <Form onSubmit={onSubmit}>
             <Label htmlFor="email">Email:</Label>
             <TextInput id="email" name="email" value={values.email} onChange={onChange('email')} />
             <hr />
@@ -86,9 +87,12 @@ import {FileList} from '../components/file-list';
               onChange={onChange('position')}
             />
             <hr />
-            <Label>Awards</Label>
+            <Label>Awards {values.mvp}</Label>
             <CheckboxInput label="Hall-of-famer" value={values.hallOfFame} onChange={onChange('hallOfFame')} />
             <CheckboxInput label="MVP" value={values.mvp} onChange={onChange('mvp')} />
+            <CheckboxInput label="Disabled option (checked)" disabled value={true} />
+            <CheckboxInput label="Disabled option (unchecked)" disabled value={false} />
+            <CheckboxInput name={'accept'} label="I accept the conditions" required value={values.accept} onChange={onChange('accept')}/>
             <hr />
             <Label>Date</Label>
             <DateInput id="date" value={values.date} onChange={onChange('date')} />
@@ -97,6 +101,8 @@ import {FileList} from '../components/file-list';
             <FileList files={files} />
             <FileChooser ref={fileChooserRef} onChoose={addFile} />
             <Button onClick={() => fileChooserRef.current.open()}>Add a file</Button>
+            <hr />
+            <Button rsPrimary type="submit">SAVE</Button>
           </Form>
         );
       }}

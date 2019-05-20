@@ -4,7 +4,7 @@ import {withRadiumStarter} from 'radium-starter';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 
-import {CheckboxInput} from './form';
+import {CheckboxInput} from './checkbox-input';
 import {withLocale} from './locale-context';
 
 import {ChevronUpIcon} from './icons/chevron-up';
@@ -154,21 +154,14 @@ export class List extends React.Component {
               {items.map((item, index) => (
                 <ListRow key={index} style={evaluate(bodyRows.style, item, index)}>
                   {selection && (
-                    <td
-                      key={name}
-                      style={{
-                        width: '28px',
-                        textAlign: 'center',
-                        verticalAlign: 'middle'
-                      }}
-                    >
+                    <ListCell key={name}>
                       <CheckboxInput
                         value={selection.isItemSelected(item.id)}
                         onChange={(checked, {nativeEvent: {shiftKey}}) => {
                           this.toggleItem(item.id, checked, shiftKey);
                         }}
                       />
-                    </td>
+                    </ListCell>
                   )}
                   {columns.map(
                     ({
