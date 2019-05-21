@@ -1,0 +1,130 @@
+---
+name: Input
+route: /inputs
+---
+
+import {Playground} from 'docz';
+
+import {RSInput, Label, Select} from '@medmain/react-ui-kit';
+
+import {FormContainer} from '../components/form-container';
+import Root from '../components/root';
+import {items} from './list-helpers/list-simple-content';
+
+# Inputs
+
+`RSInput` component is the low-level component used by `<Input>`, `<RadioSelect>`, `<CheckboxInput>` and `<Autocomplete>` components.
+
+Basically it's just an enhanced `<input>` component, its API is the same as `input`, only the appearance is different.
+
+Therefore `RSInput` is available with 3 available types: `"text"`, `"checkbox"` and `"radio"`.
+
+## Text fields
+
+`RSInput` behaves exactly like a basic `<input type="text">` form control, expecting `value` and `onChange` props.
+
+<Playground>
+  <Root>
+    <RSInput type="text" value="Some text" onChange={console.log} />
+    <span> </span>
+    <RSInput type="text" value="Disabled field" disabled onChange={console.log} />
+  </Root>
+</Playground>
+
+## Checkboxes
+
+Instead of a `value` prop, checkboxes expect a `checked` property (boolean).
+
+<Playground>
+  <Root>
+    <RSInput type="checkbox" onChange={console.log} />
+    <span> </span>
+    <RSInput type="checkbox" checked onChange={console.log} />
+    <span> </span>
+    <RSInput type="checkbox" disabled onChange={console.log} />
+    <span> </span>
+    <RSInput type="checkbox" disabled checked onChange={console.log} />
+  </Root>
+</Playground>
+
+## Radio buttons
+
+Radio buttons expect both a `value` and a `checked` props.
+
+<Playground>
+  <Root>
+    <div style={{display: 'flex', alignItems: 'center'}}>
+      <RSInput type="radio" value={'1'} onChange={console.log} />
+      <span> </span>
+      <RSInput type="radio" value={'1'} checked onChange={console.log} />
+      <span> </span>
+      <RSInput type="radio" value={'1'} disabled onChange={console.log} />
+      <span> </span>
+      <RSInput type="radio" value={'1'} disabled checked onChange={console.log} />
+    </div>
+  </Root>
+</Playground>
+
+## Adding labels and event handling
+
+<Playground>
+  <Root>
+    <FormContainer
+      initialValues={{
+        special: false,
+        available: true
+      }}
+    >
+      {({values, handleChangeEvent}) => (
+        <>
+          {values.special}
+          <label htmlFor="special">
+            <RSInput
+              type="checkbox"
+              id="special"
+              name="special"
+              checked={values.special}
+              onChange={handleChangeEvent}
+            />
+            Special
+          </label>
+          <span> </span>
+          <label htmlFor="available">
+            <RSInput
+              type="checkbox"
+              id="available"
+              name="available"
+              checked={values.available}
+              onChange={handleChangeEvent}
+            />
+            Available
+          </label>
+        </>
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{team: '2'}}>
+      {({values: {team}, handleChangeEvent}) => (
+        <div style={{display: 'flex', alignItems: 'center'}}>
+          {items.slice(0, 3).map(({id, team: text}) => (
+            <label key={id} htmlFor={id} style={{display: 'inline-flex', marginRight: '1rem'}}>
+              <RSInput
+                type="radio"
+                name="team"
+                value={id}
+                id={id}
+                checked={team === id}
+                onChange={handleChangeEvent}
+              />
+              <span>{text}</span>
+            </label>
+          ))}
+        </div>
+      )}
+    </FormContainer>
+  </Root>
+</Playground>

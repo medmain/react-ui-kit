@@ -6,6 +6,7 @@ export * from './file-chooser';
 export * from './form';
 export * from './full-height';
 export * from './icons';
+export * from './input';
 export * from './link';
 export * from './list';
 export * from './locale-context';

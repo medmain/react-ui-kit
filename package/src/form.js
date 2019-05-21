@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   withRadiumStarter,
   Form as RSForm,
-  Input as RSInput,
   Select as RSSelect,
   TextArea as RSTextArea
 } from 'radium-starter';
@@ -13,6 +12,7 @@ import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 
 import {withLocale} from './locale-context';
+import {RSInput} from './input';
 
 export class Form extends React.Component {
   static propTypes = {
@@ -245,15 +245,15 @@ export class Select extends React.Component {
     hasEmptyOption: false
   };
 
-  shouldComponentUpdate(nextProps, _nextState) {
-    return (
-      nextProps.value !== this.props.value ||
-      nextProps.onChange !== this.props.onChange ||
-      nextProps.required !== this.props.required ||
-      nextProps.disabled !== this.props.disabled ||
-      !isEqual(nextProps.options, this.props.options)
-    );
-  }
+  // shouldComponentUpdate(nextProps, _nextState) {
+  //   return (
+  //     nextProps.value !== this.props.value ||
+  //     nextProps.onChange !== this.props.onChange ||
+  //     nextProps.required !== this.props.required ||
+  //     nextProps.disabled !== this.props.disabled ||
+  //     !isEqual(nextProps.options, this.props.options)
+  //   );
+  // }
 
   handleChange = event => {
     this.props.onChange(event.target.value);
@@ -304,14 +304,14 @@ class RadioSelect extends React.Component {
 
   name = String(Math.round(Math.random() * 1000000000));
 
-  shouldComponentUpdate(nextProps, _nextState) {
-    return (
-      nextProps.value !== this.props.value ||
-      nextProps.onChange !== this.props.onChange ||
-      nextProps.required !== this.props.required ||
-      !isEqual(nextProps.options, this.props.options)
-    );
-  }
+  // shouldComponentUpdate(nextProps, _nextState) {
+  //   return (
+  //     nextProps.value !== this.props.value ||
+  //     nextProps.onChange !== this.props.onChange ||
+  //     nextProps.required !== this.props.required ||
+  //     !isEqual(nextProps.options, this.props.options)
+  //   );
+  // }
 
   handleChange = event => {
     this.props.onChange(event.target.value);
@@ -324,7 +324,15 @@ class RadioSelect extends React.Component {
       const id = this.name + '-' + option.value;
 
       return (
-        <div key={id} style={layout === 'horizontal' ? {marginLeft: '1rem'} : undefined}>
+        <label
+          htmlFor={id}
+          key={id}
+          style={{
+            display: layout === 'vertical' ? 'flex' : 'inline-flex',
+            verticalAlign: 'middle',
+            marginLeft: layout === 'horizontal' ? '1rem' : undefined
+          }}
+        >
           <RSInput
             type="radio"
             id={id}
@@ -334,11 +342,8 @@ class RadioSelect extends React.Component {
             onChange={this.handleChange}
             required={required}
           />
-          &nbsp;
-          <label htmlFor={id} style={{verticalAlign: 'middle'}}>
-            {option.label}
-          </label>
-        </div>
+          <span style={{marginLeft: '0.5rem'}}>{option.label}</span>
+        </label>
       );
     });
 
@@ -363,14 +368,14 @@ export class CheckboxInput extends React.Component {
 
   id = String(Math.round(Math.random() * 1000000000));
 
-  shouldComponentUpdate(nextProps, _nextState) {
-    return (
-      nextProps.label !== this.props.label ||
-      nextProps.value !== this.props.value ||
-      nextProps.onChange !== this.props.onChange ||
-      nextProps.required !== this.props.required
-    );
-  }
+  // shouldComponentUpdate(nextProps, _nextState) {
+  //   return (
+  //     nextProps.label !== this.props.label ||
+  //     nextProps.value !== this.props.value ||
+  //     nextProps.onChange !== this.props.onChange ||
+  //     nextProps.required !== this.props.required
+  //   );
+  // }
 
   handleChange = event => {
     this.props.onChange(event.target.checked, event);
@@ -380,7 +385,7 @@ export class CheckboxInput extends React.Component {
     const {label, value, required, style} = this.props;
 
     return (
-      <div style={{lineHeight: 1, ...style}}>
+      <label style={{display: 'flex', alignItems: 'center', ...style}} htmlFor={this.id}>
         <RSInput
           {...omit(this.props, ['value'])}
           id={this.id}
@@ -389,15 +394,12 @@ export class CheckboxInput extends React.Component {
           onChange={this.handleChange}
         />
         {label && (
-          <>
-            &nbsp;
-            <label htmlFor={this.id} style={{verticalAlign: 'middle'}}>
-              {label}
-              {required && <Asterisk />}
-            </label>
-          </>
+          <span style={{marginLeft: '0.5rem', verticalAlign: 'middle'}}>
+            {label}
+            {required && <Asterisk />}
+          </span>
         )}
-      </div>
+      </label>
     );
   }
 }
