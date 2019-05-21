@@ -1,0 +1,69 @@
+---
+name: Select
+route: /select
+---
+
+import {Playground} from 'docz';
+
+import {Select} from '@medmain/react-ui-kit';
+
+import {FormContainer} from '../components/form-container';
+import Root from '../components/root';
+import {items} from './list-helpers/list-simple-content';
+
+# Select
+
+`<Select>` component can render either a combobox menu (similar to the basic `<select>` HTML tag) or a group of radio buttons depending on the `"type"` props.
+
+## Default type
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{team: '2'}}>
+      {({values: {team}, onChange}) => (
+        <Select
+          value={team}
+          options={items.map(({id, team}) => ({value: id, label: team}))}
+          onChange={onChange('team')}
+        />
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+## Radio button group
+
+### Default layout (vertical)
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{team: '2'}}>
+      {({values: {team}, onChange}) => (
+        <Select
+          type="radio"
+          value={team}
+          options={items.map(({id, team}) => ({value: id, label: team}))}
+          onChange={onChange('team')}
+        />
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### Horizontal layout
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{team: '2'}}>
+      {({values: {team}, onChange}) => (
+        <Select
+          type="radio"
+          value={team}
+          options={items.slice(0, 3).map(({id, team}) => ({value: id, label: team}))}
+          onChange={onChange('team')}
+          layout="horizontal"
+        />
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
