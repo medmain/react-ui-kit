@@ -5,7 +5,7 @@ route: /inputs
 
 import {Playground} from 'docz';
 
-import {RSInput, Label, Select} from '@medmain/react-ui-kit';
+import {RSInput, CheckboxMark, RadioMark} from '@medmain/react-ui-kit';
 
 import {FormContainer} from '../components/form-container';
 import Root from '../components/root';
@@ -33,13 +33,32 @@ Therefore `RSInput` is available with 3 available types: `"text"`, `"checkbox"` 
 
 ## Checkboxes
 
+### Checkbox mark sub-component
+
+Normal VS Focused state
+
+<Playground>
+  <Root>
+    <CheckboxMark />
+    <span> </span>
+    <CheckboxMark checked />
+    <span> </span>
+    <CheckboxMark isFocused />
+    <span> </span>
+    <CheckboxMark isFocused checked />
+    <span> </span>
+  </Root>
+</Playground>
+
+### RSInput component
+
 Instead of a `value` prop, checkboxes expect a `checked` property (boolean).
 
 <Playground>
   <Root>
     <RSInput type="checkbox" onChange={console.log} />
     <span> </span>
-    <RSInput type="checkbox" checked onChange={console.log} />
+    <RSInput type="checkbox" checked onChange={console.log} isFocused />
     <span> </span>
     <RSInput type="checkbox" disabled onChange={console.log} />
     <span> </span>
@@ -48,6 +67,23 @@ Instead of a `value` prop, checkboxes expect a `checked` property (boolean).
 </Playground>
 
 ## Radio buttons
+
+### Radio mark component
+
+<Playground>
+  <Root>
+    <RadioMark />
+    <span> </span>
+    <RadioMark checked />
+    <span> </span>
+    <RadioMark isFocused />
+    <span> </span>
+    <RadioMark isFocused checked />
+    <span> </span>
+  </Root>
+</Playground>
+
+### RSInput component
 
 Radio buttons expect both a `value` and a `checked` props.
 

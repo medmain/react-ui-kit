@@ -9,53 +9,80 @@ export class RSInput extends React.Component {
     type: PropTypes.string
   };
 
-  render() {
+  getCustomContent() {
     const {type} = this.props;
 
     if (type === 'checkbox') {
-      return <RSInputTypeCheckbox {...this.props} />;
+      return CheckboxMark;
+    }
+    if (type === 'radio') {
+      return RadioMark;
     }
 
-    if (type === 'radio') {
-      return <RSInputTypeRadio {...this.props} />;
+    return undefined;
+  }
+
+  render() {
+    const CustomInputContent = this.getCustomContent();
+
+    if (CustomInputContent) {
+      return (
+        <CustomInputContainer {...this.props}>
+          {({isFocused}) => <CustomInputContent {...this.props} isFocused={isFocused} />}
+        </CustomInputContainer>
+      );
     }
 
     return <OriginalRSInput {...this.props} />;
   }
 }
 
-// Private sub-components (not exported)
+// Styles used to hide the underlying `<input>` tag.
+// Don't use `display: 'none'` to be able to focus the checkbox with the keyboard
+// Don't use `width: 0, height: 0`, otherwise HTML field validation messages don't show up
+const hiddenInputStyles = {
+  opacity: 0,
+  overflow: 'hidden',
+  margin: 0,
+  padding: 0,
+  position: 'absolute'
+};
+
+@withRadiumStarter // Radium decorator needed to handle `:focus`
+class CustomInputContainer extends React.Component {
+  render() {
+    const {disabled, children} = this.props;
+    const isFocused = Radium.getState(this.state, 'HIDDEN_INPUT', ':focus');
+
+    return (
+      <span
+        style={{
+          cursor: disabled ? 'not-allowed' : 'pointer'
+        }}
+      >
+        {children({isFocused})}
+        <input
+          {...omit(this.props, ['children', 'isFocused', 'theme', 'styles'])}
+          key={'HIDDEN_INPUT'}
+          style={{...hiddenInputStyles, ':focus': {}}}
+        />
+      </span>
+    );
+  }
+}
 
 @withRadiumStarter
-class RSInputTypeCheckbox extends React.Component {
+export class CheckboxMark extends React.Component {
   static propTypes = {
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
+    isFocused: PropTypes.bool,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired
   };
 
   render() {
-    const {disabled} = this.props;
-
-    return (
-      <span
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          cursor: disabled ? 'not-allowed' : 'pointer'
-        }}
-      >
-        {this.renderCheckboxMark()}
-        {this.renderHiddenInput()}
-      </span>
-    );
-  }
-
-  renderCheckboxMark = () => {
-    const {disabled, checked, theme: t, styles: s} = this.props;
-
-    const isHovered = Radium.getState(this.state, 'hiddenInput', ':focus');
+    const {disabled, checked, isFocused, theme: t, styles: s} = this.props;
 
     const getBackgroundColor = () => {
       if (disabled) {
@@ -63,10 +90,10 @@ class RSInputTypeCheckbox extends React.Component {
       }
 
       if (checked) {
-        return isHovered ? t.darkPrimaryColor : t.primaryColor;
+        return isFocused ? t.inverseAccentColor : t.primaryColor;
       }
 
-      return isHovered ? t.altBackgroundColor : 'white';
+      return isFocused ? t.altBackgroundColor : 'white';
     };
 
     const getTickColor = () => {
@@ -109,56 +136,27 @@ class RSInputTypeCheckbox extends React.Component {
         }}
       />
     );
-  };
-
-  renderHiddenInput = () => {
-    return (
-      <input
-        {...omit(this.props, ['theme', 'styles'])}
-        key={'hiddenInput'}
-        style={{...hiddenInputStyles, ':focus': {}}}
-      />
-    );
-  };
+  }
 }
 
 @withRadiumStarter
-class RSInputTypeRadio extends React.Component {
+export class RadioMark extends React.Component {
   static propTypes = {
-    value: PropTypes.string.isRequired,
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
+    isFocused: PropTypes.bool,
     theme: PropTypes.object.isRequired
   };
 
   render() {
-    const {disabled} = this.props;
-
-    return (
-      <span
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          cursor: disabled ? 'not-allowed' : 'pointer'
-        }}
-      >
-        {this.renderRadioMark()}
-        {this.renderHiddenInput()}
-      </span>
-    );
-  }
-
-  renderRadioMark = () => {
-    const {disabled, checked, theme: t} = this.props;
-
-    const isFocused = Radium.getState(this.state, 'hiddenInput', ':focus');
+    const {disabled, checked, isFocused, theme: t} = this.props;
 
     const getOuterColor = () => {
       if (disabled) {
         return t.altBackgroundColor;
       }
       if (checked) {
-        return isFocused ? t.darkPrimaryColor : t.primaryColor;
+        return isFocused ? t.inverseAccentColor : t.primaryColor;
       }
       return t.grayIconColor;
     };
@@ -196,26 +194,5 @@ class RSInputTypeRadio extends React.Component {
         />
       </div>
     );
-  };
-
-  renderHiddenInput = () => {
-    return (
-      <input
-        {...omit(this.props, ['theme', 'styles'])}
-        key={'hiddenInput'}
-        style={{...hiddenInputStyles, ':focus': {}}}
-      />
-    );
-  };
+  }
 }
-
-// Styles used to hide the underlying checkbox and radio buttons
-// don't use `display: 'none'` to be able to focus the checkbox with the keyboard
-// don't use `width: 0, height: 0`, otherwise HTML field validation messages don't show up
-const hiddenInputStyles = {
-  opacity: 0,
-  overflow: 'hidden',
-  margin: 0,
-  padding: 0,
-  position: 'absolute'
-};
