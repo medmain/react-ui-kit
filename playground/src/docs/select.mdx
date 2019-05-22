@@ -15,16 +15,34 @@ import {items} from './list-helpers/list-simple-content';
 
 `<Select>` component can render either a combobox menu (similar to the basic `<select>` HTML tag) or a group of radio buttons depending on the `"type"` props.
 
-## Default type
+## Select type
 
 <Playground>
   <Root>
     <FormContainer initialValues={{team: '2'}}>
       {({values: {team}, onChange}) => (
         <Select
+          type="select"
           value={team}
           options={items.map(({id, team}) => ({value: id, label: team}))}
           onChange={onChange('team')}
+        />
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+Adding an extra empty option
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{team: ''}}>
+      {({values: {team}, onChange}) => (
+        <Select
+          value={team}
+          options={items.map(({id, team}) => ({value: id, label: team}))}
+          onChange={onChange('team')}
+          hasEmptyOption
         />
       )}
     </FormContainer>

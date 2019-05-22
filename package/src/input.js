@@ -4,12 +4,13 @@ import Radium from 'radium';
 import {withRadiumStarter, Input as OriginalRSInput} from 'radium-starter';
 import omit from 'lodash/omit';
 
-export class RSInput extends React.Component {
+@withRadiumStarter // Radium decorator needed to handle `:focus`
+class WrappedRSInput extends React.Component {
   static propTypes = {
     type: PropTypes.string
   };
 
-  getCustomContent() {
+  getCustomComponent() {
     const {type} = this.props;
 
     if (type === 'checkbox') {
@@ -23,19 +24,36 @@ export class RSInput extends React.Component {
   }
 
   render() {
-    const CustomInputContent = this.getCustomContent();
+    const {forwardedRef, ...props} = this.props;
+    const CustomComponent = this.getCustomComponent();
 
-    if (CustomInputContent) {
-      return (
-        <CustomInputContainer {...this.props}>
-          {({isFocused}) => <CustomInputContent {...this.props} isFocused={isFocused} />}
-        </CustomInputContainer>
-      );
+    if (!CustomComponent) {
+      return <OriginalRSInput {...props} ref={forwardedRef} />;
     }
 
-    return <OriginalRSInput {...this.props} />;
+    const isFocused = Radium.getState(this.state, 'HIDDEN_INPUT', ':focus');
+
+    return (
+      <>
+        <CustomComponent
+          {...props}
+          isFocused={isFocused}
+          style={{cursor: props.disabled ? 'not-allowed' : 'pointer'}}
+        />
+        <input
+          {...omit(this.props, ['isFocused', 'forwardedRef', 'theme', 'styles'])}
+          key={'HIDDEN_INPUT'}
+          ref={forwardedRef}
+          style={{...hiddenInputStyles, ':focus': {}}}
+        />
+      </>
+    );
   }
 }
+
+export const RSInput = React.forwardRef((props, ref) => {
+  return <WrappedRSInput {...props} forwardedRef={ref} />;
+});
 
 // Styles used to hide the underlying `<input>` tag.
 // Don't use `display: 'none'` to be able to focus the checkbox with the keyboard
@@ -48,28 +66,7 @@ const hiddenInputStyles = {
   position: 'absolute'
 };
 
-@withRadiumStarter // Radium decorator needed to handle `:focus`
-class CustomInputContainer extends React.Component {
-  render() {
-    const {disabled, children} = this.props;
-    const isFocused = Radium.getState(this.state, 'HIDDEN_INPUT', ':focus');
-
-    return (
-      <span
-        style={{
-          cursor: disabled ? 'not-allowed' : 'pointer'
-        }}
-      >
-        {children({isFocused})}
-        <input
-          {...omit(this.props, ['children', 'isFocused', 'theme', 'styles'])}
-          key={'HIDDEN_INPUT'}
-          style={{...hiddenInputStyles, ':focus': {}}}
-        />
-      </span>
-    );
-  }
-}
+// sub-components
 
 @withRadiumStarter
 export class CheckboxMark extends React.Component {
@@ -77,12 +74,13 @@ export class CheckboxMark extends React.Component {
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
+    style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired
   };
 
   render() {
-    const {disabled, checked, isFocused, theme: t, styles: s} = this.props;
+    const {disabled, checked, isFocused, style, theme: t, styles: s} = this.props;
 
     const getBackgroundColor = () => {
       if (disabled) {
@@ -132,7 +130,8 @@ export class CheckboxMark extends React.Component {
           backgroundImage: checked ? `url('data:image/svg+xml,${inlineSVG}')` : null,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
-          transitionDuration: '0.3s'
+          transitionDuration: '0.3s',
+          ...style
         }}
       />
     );
@@ -145,11 +144,12 @@ export class RadioMark extends React.Component {
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
+    style: PropTypes.object,
     theme: PropTypes.object.isRequired
   };
 
   render() {
-    const {disabled, checked, isFocused, theme: t} = this.props;
+    const {disabled, checked, isFocused, style, theme: t} = this.props;
 
     const getOuterColor = () => {
       if (disabled) {
@@ -180,7 +180,8 @@ export class RadioMark extends React.Component {
           justifyContent: 'center',
           margin: '2px',
           verticalAlign: 'middle',
-          flexShrink: 0
+          flexShrink: 0,
+          ...style
         }}
       >
         <div
