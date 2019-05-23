@@ -217,9 +217,11 @@ export class TextArea extends React.Component {
   }
 }
 
+@withForwardedRef
 export class Select extends React.Component {
   static propTypes = {
     type: PropTypes.string, // 'auto' (default), 'select' or 'radio'
+    forwardedRef: PropTypes.object,
     options: PropTypes.array.isRequired,
     hasEmptyOption: PropTypes.bool,
     value: PropTypes.string,
@@ -249,7 +251,7 @@ export class Select extends React.Component {
   };
 
   render() {
-    let {type, options, hasEmptyOption, style} = this.props;
+    let {type, forwardedRef, options, hasEmptyOption, style} = this.props;
 
     if (type === 'auto') {
       type = options.length < 5 ? 'radio' : 'select';
@@ -261,7 +263,8 @@ export class Select extends React.Component {
 
     return (
       <RSSelect
-        {...omit(this.props, ['type', 'options', 'hasEmptyOption'])}
+        ref={forwardedRef}
+        {...omit(this.props, ['type', 'forwardedRef', 'options', 'hasEmptyOption'])}
         onChange={this.handleChange}
         style={{display: 'block', width: '100%', ...style}}
       >
@@ -282,6 +285,7 @@ class RadioSelect extends React.Component {
   static propTypes = {
     options: PropTypes.array.isRequired,
     value: PropTypes.string,
+    forwardedRef: PropTypes.object,
     onChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
     layout: PropTypes.string // 'vertical' (default) or 'horizontal'
@@ -307,15 +311,16 @@ class RadioSelect extends React.Component {
   };
 
   render() {
-    const {options, value, required, layout} = this.props;
+    const {options, value, forwardedRef, required, layout} = this.props;
 
-    let rendering = options.map(option => {
+    let rendering = options.map((option, index) => {
       const id = this.name + '-' + option.value;
 
       return (
         <label
           htmlFor={id}
           key={id}
+          ref={index === 0 ? forwardedRef : undefined} // to be able to set focus on the 1st radio button
           style={{
             display: layout === 'vertical' ? 'flex' : 'inline-flex',
             verticalAlign: 'middle',

@@ -5,7 +5,7 @@ route: /select
 
 import {Playground} from 'docz';
 
-import {Select} from '@medmain/react-ui-kit';
+import {Select, Form, Button, Input} from '@medmain/react-ui-kit';
 
 import {FormContainer} from '../components/form-container';
 import Root from '../components/root';
@@ -13,57 +13,108 @@ import {items} from './list-helpers/list-simple-content';
 
 # Select
 
-`<Select>` component can render either a combobox menu (similar to the basic `<select>` HTML tag) or a group of radio buttons depending on the `"type"` props.
+`<Select>` component can render either a combobox menu (similar to the basic `<select>` HTML tag)
+or a group of radio buttons depending on the `"type"` props.
 
-## Select type
+## Combobox
+
+Setting `type="select"` will render the usual combobox.
+
+### With an initial value
 
 <Playground>
   <Root>
     <FormContainer initialValues={{team: '2'}}>
-      {({values: {team}, onChange}) => (
-        <Select
-          type="select"
-          value={team}
-          options={items.map(({id, team}) => ({value: id, label: team}))}
-          onChange={onChange('team')}
-        />
-      )}
+      {({values: {team}, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <Select
+              type="select"
+              ref={ref}
+              value={team}
+              options={items.map(({id, team}) => ({value: id, label: team}))}
+              onChange={onChange('team')}
+            />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
     </FormContainer>
   </Root>
 </Playground>
 
-Adding an extra empty option
+### Extra empty option
+
+Adding an extra empty option and making the field required,
+check the validation message when submitting the form.
 
 <Playground>
   <Root>
     <FormContainer initialValues={{team: ''}}>
-      {({values: {team}, onChange}) => (
-        <Select
-          value={team}
-          options={items.map(({id, team}) => ({value: id, label: team}))}
-          onChange={onChange('team')}
-          hasEmptyOption
-        />
-      )}
+      {({values: {team}, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <Select
+              type="select"
+              ref={ref}
+              value={team}
+              options={items.map(({id, team}) => ({value: id, label: team}))}
+              onChange={onChange('team')}
+              required
+              hasEmptyOption
+            />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
     </FormContainer>
   </Root>
 </Playground>
 
 ## Radio button group
 
+Setting `type="radio"` will render a group of radio buttons.
+
 ### Default layout (vertical)
 
 <Playground>
   <Root>
-    <FormContainer initialValues={{team: '2'}}>
-      {({values: {team}, onChange}) => (
-        <Select
-          type="radio"
-          value={team}
-          options={items.map(({id, team}) => ({value: id, label: team}))}
-          onChange={onChange('team')}
-        />
-      )}
+    <FormContainer initialValues={{team: ''}}>
+      {({values: {team}, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <Input />
+            <br />
+            <Select
+              type="radio"
+              ref={ref}
+              value={team}
+              options={items.map(({id, team}) => ({value: id, label: team}))}
+              onChange={onChange('team')}
+              required
+            />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
     </FormContainer>
   </Root>
 </Playground>
@@ -73,15 +124,19 @@ Adding an extra empty option
 <Playground>
   <Root>
     <FormContainer initialValues={{team: '2'}}>
-      {({values: {team}, onChange}) => (
-        <Select
-          type="radio"
-          value={team}
-          options={items.slice(0, 3).map(({id, team}) => ({value: id, label: team}))}
-          onChange={onChange('team')}
-          layout="horizontal"
-        />
-      )}
+      {({values: {team}, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Select
+            type="radio"
+            ref={ref}
+            value={team}
+            options={items.slice(0, 3).map(({id, team}) => ({value: id, label: team}))}
+            onChange={onChange('team')}
+            layout="horizontal"
+          />
+        );
+      }}
     </FormContainer>
   </Root>
 </Playground>
