@@ -2,12 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Radium from 'radium';
 import {withRadiumStarter, Input as OriginalRSInput} from 'radium-starter';
-import omit from 'lodash/omit';
 
+export const withForwardedRef = Wrapped =>
+  React.forwardRef((props, ref) => {
+    return <Wrapped {...props} forwardedRef={ref} />;
+  });
+
+@withForwardedRef
 @withRadiumStarter // Radium decorator needed to handle `:focus`
-class WrappedRSInput extends React.Component {
+export class RSInput extends React.Component {
   static propTypes = {
-    type: PropTypes.string
+    type: PropTypes.string,
+    disabled: PropTypes.bool
   };
 
   getCustomComponent() {
@@ -31,7 +37,7 @@ class WrappedRSInput extends React.Component {
       return <OriginalRSInput {...props} ref={forwardedRef} />;
     }
 
-    const isFocused = Radium.getState(this.state, 'HIDDEN_INPUT', ':focus');
+    const isFocused = Radium.getState(this.state, undefined, ':focus');
 
     return (
       <>
@@ -40,20 +46,15 @@ class WrappedRSInput extends React.Component {
           isFocused={isFocused}
           style={{cursor: props.disabled ? 'not-allowed' : 'pointer'}}
         />
-        <input
-          {...omit(this.props, ['isFocused', 'forwardedRef', 'theme', 'styles'])}
-          key={'HIDDEN_INPUT'}
+        <OriginalRSInput
           ref={forwardedRef}
+          {...props}
           style={{...hiddenInputStyles, ':focus': {}}}
         />
       </>
     );
   }
 }
-
-export const RSInput = React.forwardRef((props, ref) => {
-  return <WrappedRSInput {...props} forwardedRef={ref} />;
-});
 
 // Styles used to hide the underlying `<input>` tag.
 // Don't use `display: 'none'` to be able to focus the checkbox with the keyboard

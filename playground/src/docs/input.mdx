@@ -5,7 +5,16 @@ route: /inputs
 
 import {Playground} from 'docz';
 
-import {RSInput, CheckboxMark, RadioMark} from '@medmain/react-ui-kit';
+import {
+  RSInput,
+  CheckboxMark,
+  RadioMark,
+  Input,
+  NumberInput,
+  Form,
+  Button,
+  TextArea
+} from '@medmain/react-ui-kit';
 
 import {FormContainer} from '../components/form-container';
 import Root from '../components/root';
@@ -14,13 +23,15 @@ import {CheckingRefs} from '../components/checking-refs';
 
 # Inputs
 
+## Low level components
+
 `RSInput` component is the low-level component used by `<Input>`, `<RadioSelect>`, `<CheckboxInput>` and `<Autocomplete>` components.
 
 Basically it's just an enhanced `<input>` component, its API is the same as `input`, only the appearance is different.
 
 Therefore `RSInput` is available with 3 available types: `"text"`, `"checkbox"` and `"radio"`.
 
-## Text fields
+### Text fields
 
 `RSInput` behaves exactly like a basic `<input type="text">` form control, expecting `value` and `onChange` props.
 
@@ -32,26 +43,11 @@ Therefore `RSInput` is available with 3 available types: `"text"`, `"checkbox"` 
   </Root>
 </Playground>
 
-## Checkboxes
+### Checkboxes
 
-### Checkbox mark sub-component
-
-Normal VS Focused state
-
-<Playground>
-  <Root>
-    <CheckboxMark />
-    <span> </span>
-    <CheckboxMark checked />
-    <span> </span>
-    <CheckboxMark isFocused />
-    <span> </span>
-    <CheckboxMark isFocused checked />
-    <span> </span>
-  </Root>
-</Playground>
-
-### RSInput component
+```jsx
+<RSInput type="checkbox" checked />
+```
 
 Instead of a `value` prop, checkboxes expect a `checked` property (boolean).
 
@@ -59,7 +55,7 @@ Instead of a `value` prop, checkboxes expect a `checked` property (boolean).
   <Root>
     <RSInput type="checkbox" onChange={console.log} />
     <span> </span>
-    <RSInput type="checkbox" checked onChange={console.log} isFocused />
+    <RSInput type="checkbox" checked onChange={console.log} />
     <span> </span>
     <RSInput type="checkbox" disabled onChange={console.log} />
     <span> </span>
@@ -67,24 +63,11 @@ Instead of a `value` prop, checkboxes expect a `checked` property (boolean).
   </Root>
 </Playground>
 
-## Radio buttons
+### Radio buttons
 
-### Radio mark component
-
-<Playground>
-  <Root>
-    <RadioMark />
-    <span> </span>
-    <RadioMark checked />
-    <span> </span>
-    <RadioMark isFocused />
-    <span> </span>
-    <RadioMark isFocused checked />
-    <span> </span>
-  </Root>
-</Playground>
-
-### RSInput component
+```jsx
+<RSInput type="radio" value="1" checked />
+```
 
 Radio buttons expect both a `value` and a `checked` props.
 
@@ -102,7 +85,7 @@ Radio buttons expect both a `value` and a `checked` props.
   </Root>
 </Playground>
 
-## Adding labels and event handling
+### Adding labels and event handling
 
 <Playground>
   <Root>
@@ -166,10 +149,90 @@ Radio buttons expect both a `value` and a `checked` props.
   </Root>
 </Playground>
 
-## Checking refs
+### Checking refs
+
+Click on the buttons and check that the focus is correctly set on the fields.
 
 <Playground>
   <Root>
     <CheckingRefs />
+  </Root>
+</Playground>
+
+## High-level components
+
+### Input
+
+<Playground>
+  <Root>
+    <FormContainer
+      initialValues={{
+        firstName: 'Larry',
+        lastName: 'Bird'
+      }}
+    >
+      {({values, onChange}) => {
+        const fileChooserRef = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <Input value={values.firstName} onChange={onChange('firstName')} />
+            <Input disabled />
+            <Input required value={values.lastName} onChange={onChange('lastName')} />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### NumberInput
+
+<Playground>
+  <Root>
+    <FormContainer
+      initialValues={{
+        number: 33
+      }}
+    >
+      {({values, onChange}) => {
+        return (
+          <Form onSubmit={console.log}>
+            <NumberInput value={values.number} onChange={onChange('number')} />
+            <NumberInput disabled />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### TextArea
+
+<Playground>
+  <Root>
+    <FormContainer
+      initialValues={{
+        text: 'Hello world'
+      }}
+    >
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <TextArea ref={ref} required value={values.text} onChange={onChange('text')} />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
   </Root>
 </Playground>
