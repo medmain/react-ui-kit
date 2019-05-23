@@ -8,9 +8,10 @@ import {Playground} from 'docz';
 import {
   RSInput,
   Input,
-  CheckboxInput,
-  NumberInput,
   TextInput,
+  NumberInput,
+  CheckboxInput,
+  AutocompleteInput,
   Form,
   Button,
   TextArea
@@ -161,7 +162,8 @@ Click on the buttons and check that the focus is correctly set on the fields.
 
 ## High-level components
 
-Higher level control components used in forms: `<TextInput>`, `<NumberInput>`, `<CheckboxInput>`...
+Higher level control components used in forms:
+`<TextInput>`, `<NumberInput>`, `<CheckboxInput>`, `<AutomcompleteInput>`
 
 The `onChange` event handler is normalized,
 the callback function is called passing the **value** of the field instead of an `event` object.
@@ -202,11 +204,7 @@ the callback function is called passing the **value** of the field instead of an
 
 <Playground>
   <Root>
-    <FormContainer
-      initialValues={{
-        number: 33
-      }}
-    >
+    <FormContainer initialValues={{number: 33}}>
       {({values, onChange}) => {
         const ref = React.createRef();
         return (
@@ -266,11 +264,7 @@ the callback function is called passing the **value** of the field instead of an
 
 <Playground>
   <Root>
-    <FormContainer
-      initialValues={{
-        text: 'Hello world'
-      }}
-    >
+    <FormContainer initialValues={{text: 'Hello world'}}>
       {({values, onChange}) => {
         const ref = React.createRef();
         return (
@@ -278,6 +272,43 @@ the callback function is called passing the **value** of the field instead of an
             <TextArea ref={ref} required value={values.text} onChange={onChange('text')} />
             <br />
             <TextArea disabled value={'Disabled!'} onChange={() => undefined} />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### AutocompleteInput
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{city: ''}}>
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        const cities = ['Boston', 'Chicago', 'New York', 'Los Angeles', 'San Antonio'];
+        return (
+          <Form onSubmit={console.log}>
+            <AutocompleteInput
+              ref={ref}
+              required
+              value={values.city}
+              onChange={onChange('city')}
+              items={cities}
+            />
+            <br />
+            <AutocompleteInput
+              disabled
+              value={'San Antonio'}
+              onChange={onChange('city')}
+              items={cities}
+            />
             <br />
             <Button rsPrimary type="submit">
               SAVE

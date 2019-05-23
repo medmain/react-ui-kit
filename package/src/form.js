@@ -395,16 +395,19 @@ export class CheckboxInput extends React.Component {
   }
 }
 
+@withForwardedRef
 @withRadiumStarter
 export class AutocompleteInput extends React.Component {
   static propTypes = {
     type: PropTypes.string,
+    forwardedRef: PropTypes.object,
     id: PropTypes.string,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     items: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    disabled: PropTypes.bool,
     required: PropTypes.bool,
     placeholder: PropTypes.string,
     maxLength: PropTypes.number,
@@ -427,6 +430,7 @@ export class AutocompleteInput extends React.Component {
       nextProps.onChange !== this.props.onChange ||
       nextProps.onFocus !== this.props.onFocus ||
       nextProps.onBlur !== this.props.onBlur ||
+      nextProps.disabled !== this.props.disabled ||
       nextProps.required !== this.props.required ||
       nextProps.items !== this.props.items ||
       !isEqual(nextState.items, this.state.items)
@@ -459,10 +463,12 @@ export class AutocompleteInput extends React.Component {
   render() {
     const {
       type,
+      forwardedRef,
       id,
       value,
       onFocus,
       onBlur,
+      disabled,
       required,
       placeholder,
       maxLength,
@@ -487,9 +493,11 @@ export class AutocompleteInput extends React.Component {
             <RSInput
               {...getInputProps({
                 type,
+                ref: forwardedRef,
                 id,
                 onFocus,
                 onBlur,
+                disabled,
                 required,
                 placeholder,
                 maxLength,
