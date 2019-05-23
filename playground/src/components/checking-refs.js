@@ -9,7 +9,7 @@ export class CheckingRefs extends React.Component {
       text1: 'First input',
       text2: 'Second input',
       accept: true,
-      team: 'Celtics'
+      choice: 'Celtics'
     }
   };
 
@@ -20,6 +20,7 @@ export class CheckingRefs extends React.Component {
       console.warn('No DOM node found with the ref!');
       return;
     }
+    console.log(node);
     node.focus();
   }
 
@@ -50,7 +51,7 @@ export class CheckingRefs extends React.Component {
           ref={this.inputRefs[1]}
           onChange={this.handleChange}
         />
-        <br />
+        <hr />
         <label style={{display: 'flex', alignItems: 'center'}}>
           <RSInput
             name="accept"
@@ -65,10 +66,10 @@ export class CheckingRefs extends React.Component {
         <div style={{display: 'flex', alignItems: 'center'}}>
           <label>
             <RSInput
-              name="team"
+              name="choice"
               type="radio"
               value="Celtics"
-              checked={values.team === 'Celtics'}
+              checked={values.choice === 'Celtics'}
               ref={this.inputRefs[3]}
               onChange={this.handleChange}
             />
@@ -76,10 +77,10 @@ export class CheckingRefs extends React.Component {
           </label>
           <label>
             <RSInput
-              name="team"
+              name="choice"
               type="radio"
               value="Lakers"
-              checked={values.team === 'Lakers'}
+              checked={values.choice === 'Lakers'}
               onChange={this.handleChange}
             />
             <span>Lakers</span>

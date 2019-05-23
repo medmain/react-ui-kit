@@ -12,7 +12,7 @@ import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 
 import {withLocale} from './locale-context';
-import {RSInput} from './input';
+import {RSInput, withForwardedRef} from './input';
 
 export class Form extends React.Component {
   static propTypes = {
@@ -65,6 +65,7 @@ export class LabelHelp extends React.Component {
   }
 }
 
+@withForwardedRef
 export class Input extends React.Component {
   static propTypes = {
     value: PropTypes.string,
@@ -75,8 +76,6 @@ export class Input extends React.Component {
     tabIndex: PropTypes.string,
     style: PropTypes.object
   };
-
-  rsInputRef = React.createRef();
 
   shouldComponentUpdate(nextProps, _nextState) {
     return (
@@ -93,23 +92,13 @@ export class Input extends React.Component {
     this.props.onChange(event.target.value);
   };
 
-  focus = () => {
-    this.rsInputRef.current.focus();
-  };
-
-  select = () => {
-    this.rsInputRef.current.select();
-  };
-
-  blur = () => {
-    this.rsInputRef.current.blur();
-  };
-
   render() {
+    const {forwardedRef, ...props} = this.props;
+
     return (
       <RSInput
-        {...this.props}
-        ref={this.rsInputRef}
+        ref={forwardedRef}
+        {...props}
         onChange={this.handleChange}
         style={{display: 'block', width: '100%', ...this.props.style}}
       />
@@ -162,6 +151,7 @@ export class NumberInput extends React.Component {
     this.setState({draftValue});
     if (onChange) {
       const value = locale.parseNumberInput(draftValue);
+      console.log(draftValue, '=>', value);
       onChange(value);
     }
   };
@@ -182,6 +172,7 @@ export class NumberInput extends React.Component {
   }
 }
 
+@withForwardedRef
 export class TextArea extends React.Component {
   static propTypes = {
     value: PropTypes.string,
@@ -189,8 +180,6 @@ export class TextArea extends React.Component {
     required: PropTypes.bool,
     style: PropTypes.object
   };
-
-  rsInputRef = React.createRef();
 
   shouldComponentUpdate(nextProps, _nextState) {
     return (
@@ -204,23 +193,13 @@ export class TextArea extends React.Component {
     this.props.onChange(event.target.value);
   };
 
-  focus = () => {
-    this.rsInputRef.current.focus();
-  };
-
-  select = () => {
-    this.rsInputRef.current.select();
-  };
-
-  blur = () => {
-    this.rsInputRef.current.blur();
-  };
-
   render() {
+    const {forwardedRef, ...props} = this.props;
+
     return (
       <RSTextArea
-        {...this.props}
-        ref={this.rsInputRef}
+        ref={forwardedRef}
+        {...props}
         onChange={this.handleChange}
         style={{display: 'block', width: '100%', ...this.props.style}}
       />
@@ -245,15 +224,15 @@ export class Select extends React.Component {
     hasEmptyOption: false
   };
 
-  // shouldComponentUpdate(nextProps, _nextState) {
-  //   return (
-  //     nextProps.value !== this.props.value ||
-  //     nextProps.onChange !== this.props.onChange ||
-  //     nextProps.required !== this.props.required ||
-  //     nextProps.disabled !== this.props.disabled ||
-  //     !isEqual(nextProps.options, this.props.options)
-  //   );
-  // }
+  shouldComponentUpdate(nextProps, _nextState) {
+    return (
+      nextProps.value !== this.props.value ||
+      nextProps.onChange !== this.props.onChange ||
+      nextProps.required !== this.props.required ||
+      nextProps.disabled !== this.props.disabled ||
+      !isEqual(nextProps.options, this.props.options)
+    );
+  }
 
   handleChange = event => {
     this.props.onChange(event.target.value);
