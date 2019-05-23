@@ -346,6 +346,7 @@ class RadioSelect extends React.Component {
   }
 }
 
+@withForwardedRef
 export class CheckboxInput extends React.Component {
   static propTypes = {
     label: PropTypes.string,
@@ -371,11 +372,12 @@ export class CheckboxInput extends React.Component {
   };
 
   render() {
-    const {label, value, required, style} = this.props;
+    const {label, value, forwardedRef, required, style} = this.props;
 
     return (
       <label style={{display: 'flex', alignItems: 'center', ...style}} htmlFor={this.id}>
         <RSInput
+          ref={forwardedRef}
           {...omit(this.props, ['value'])}
           id={this.id}
           type="checkbox"

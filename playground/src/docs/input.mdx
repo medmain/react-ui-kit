@@ -7,9 +7,8 @@ import {Playground} from 'docz';
 
 import {
   RSInput,
-  CheckboxMark,
-  RadioMark,
   Input,
+  CheckboxInput,
   NumberInput,
   TextInput,
   Form,
@@ -162,9 +161,10 @@ Click on the buttons and check that the focus is correctly set on the fields.
 
 ## High-level components
 
-Higher level control components used in forms: `<TextInput>`, `<NumberInput>`...
+Higher level control components used in forms: `<TextInput>`, `<NumberInput>`, `<CheckboxInput>`...
 
-The `onChange` event handler is normalized, the callback function is called passing the **value** of the field instead of an `event` object.
+The `onChange` event handler is normalized,
+the callback function is called passing the **value** of the field instead of an `event` object.
 
 ### TextInput
 
@@ -214,6 +214,41 @@ The `onChange` event handler is normalized, the callback function is called pass
             <NumberInput ref={ref} value={values.number} onChange={onChange('number')} />
             <br />
             <NumberInput disabled />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### CheckboxInput
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{accept: false}}>
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <CheckboxInput
+              ref={ref}
+              label={'I accept'}
+              value={values.accept}
+              onChange={onChange('accept')}
+            />
+            <br />
+            <CheckboxInput
+              disabled
+              label={'I have accepted'}
+              value={true}
+              onChange={() => undefined}
+            />
             <br />
             <Button rsPrimary type="submit">
               SAVE

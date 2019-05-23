@@ -154,7 +154,7 @@ export class List extends React.Component {
               {items.map((item, index) => (
                 <ListRow key={index} style={evaluate(bodyRows.style, item, index)}>
                   {selection && (
-                    <td
+                    <ListCell
                       key={name}
                       style={{
                         width: '28px',
@@ -168,7 +168,7 @@ export class List extends React.Component {
                           this.toggleItem(item.id, checked, shiftKey);
                         }}
                       />
-                    </td>
+                    </ListCell>
                   )}
                   {columns.map(
                     ({
