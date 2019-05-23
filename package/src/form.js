@@ -69,6 +69,7 @@ export class LabelHelp extends React.Component {
 export class Input extends React.Component {
   static propTypes = {
     value: PropTypes.string,
+    forwardedRef: PropTypes.object,
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
@@ -106,6 +107,7 @@ export class Input extends React.Component {
   }
 }
 
+@withForwardedRef
 @withLocale
 export class TextInput extends React.Component {
   static propTypes = {
@@ -121,11 +123,19 @@ export class TextInput extends React.Component {
   };
 
   render() {
-    const {value, onChange, locale, ...props} = this.props;
-    return <Input {...props} value={locale.formatTextInput(value)} onChange={this.handleChange} />;
+    const {value, forwardedRef, onChange, locale, ...props} = this.props;
+    return (
+      <Input
+        ref={forwardedRef}
+        {...props}
+        value={locale.formatTextInput(value)}
+        onChange={this.handleChange}
+      />
+    );
   }
 }
 
+@withForwardedRef
 @withLocale
 export class NumberInput extends React.Component {
   static propTypes = {
@@ -151,16 +161,16 @@ export class NumberInput extends React.Component {
     this.setState({draftValue});
     if (onChange) {
       const value = locale.parseNumberInput(draftValue);
-      console.log(draftValue, '=>', value);
       onChange(value);
     }
   };
 
   render() {
-    const {value, locale, ...props} = this.props;
+    const {value, forwardedRef, locale, ...props} = this.props;
     const {draftValue} = this.state;
     return (
       <Input
+        ref={forwardedRef}
         {...props}
         value={draftValue}
         onChange={this.handleChange}
@@ -283,14 +293,14 @@ class RadioSelect extends React.Component {
 
   name = String(Math.round(Math.random() * 1000000000));
 
-  // shouldComponentUpdate(nextProps, _nextState) {
-  //   return (
-  //     nextProps.value !== this.props.value ||
-  //     nextProps.onChange !== this.props.onChange ||
-  //     nextProps.required !== this.props.required ||
-  //     !isEqual(nextProps.options, this.props.options)
-  //   );
-  // }
+  shouldComponentUpdate(nextProps, _nextState) {
+    return (
+      nextProps.value !== this.props.value ||
+      nextProps.onChange !== this.props.onChange ||
+      nextProps.required !== this.props.required ||
+      !isEqual(nextProps.options, this.props.options)
+    );
+  }
 
   handleChange = event => {
     this.props.onChange(event.target.value);
@@ -347,14 +357,14 @@ export class CheckboxInput extends React.Component {
 
   id = String(Math.round(Math.random() * 1000000000));
 
-  // shouldComponentUpdate(nextProps, _nextState) {
-  //   return (
-  //     nextProps.label !== this.props.label ||
-  //     nextProps.value !== this.props.value ||
-  //     nextProps.onChange !== this.props.onChange ||
-  //     nextProps.required !== this.props.required
-  //   );
-  // }
+  shouldComponentUpdate(nextProps, _nextState) {
+    return (
+      nextProps.label !== this.props.label ||
+      nextProps.value !== this.props.value ||
+      nextProps.onChange !== this.props.onChange ||
+      nextProps.required !== this.props.required
+    );
+  }
 
   handleChange = event => {
     this.props.onChange(event.target.checked, event);

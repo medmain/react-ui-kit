@@ -11,6 +11,7 @@ import {
   RadioMark,
   Input,
   NumberInput,
+  TextInput,
   Form,
   Button,
   TextArea
@@ -161,7 +162,11 @@ Click on the buttons and check that the focus is correctly set on the fields.
 
 ## High-level components
 
-### Input
+Higher level control components used in forms: `<TextInput>`, `<NumberInput>`...
+
+The `onChange` event handler is normalized, the callback function is called passing the **value** of the field instead of an `event` object.
+
+### TextInput
 
 <Playground>
   <Root>
@@ -172,15 +177,20 @@ Click on the buttons and check that the focus is correctly set on the fields.
       }}
     >
       {({values, onChange}) => {
-        const fileChooserRef = React.createRef();
+        const ref = React.createRef();
         return (
           <Form onSubmit={console.log}>
-            <Input value={values.firstName} onChange={onChange('firstName')} />
-            <Input disabled />
-            <Input required value={values.lastName} onChange={onChange('lastName')} />
+            <TextInput value={values.firstName} onChange={onChange('firstName')} />
+            <br />
+            <TextInput disabled value="Disabled!" onChange={() => disabled} />
+            <br />
+            <TextInput ref={ref} required value={values.lastName} onChange={onChange('lastName')} />
+            <br />
             <Button rsPrimary type="submit">
               SAVE
             </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
           </Form>
         );
       }}
@@ -198,13 +208,18 @@ Click on the buttons and check that the focus is correctly set on the fields.
       }}
     >
       {({values, onChange}) => {
+        const ref = React.createRef();
         return (
           <Form onSubmit={console.log}>
-            <NumberInput value={values.number} onChange={onChange('number')} />
+            <NumberInput ref={ref} value={values.number} onChange={onChange('number')} />
+            <br />
             <NumberInput disabled />
+            <br />
             <Button rsPrimary type="submit">
               SAVE
             </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
           </Form>
         );
       }}
@@ -226,9 +241,13 @@ Click on the buttons and check that the focus is correctly set on the fields.
         return (
           <Form onSubmit={console.log}>
             <TextArea ref={ref} required value={values.text} onChange={onChange('text')} />
+            <br />
+            <TextArea disabled value={'Disabled!'} onChange={() => undefined} />
+            <br />
             <Button rsPrimary type="submit">
               SAVE
             </Button>
+            <span> </span>
             <Button onClick={() => ref.current.focus()}>Set focus</Button>
           </Form>
         );

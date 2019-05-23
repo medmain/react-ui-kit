@@ -1,6 +1,11 @@
 import React from 'react';
 import {RSInput, Button} from '@medmain/react-ui-kit';
 
+/*
+Stateful component to be included in the `Input` playground
+to check if component "refs" are forwarded correctly.
+*/
+
 export class CheckingRefs extends React.Component {
   inputRefs = [0, 1, 2, 3].map(() => React.createRef());
 
@@ -20,7 +25,6 @@ export class CheckingRefs extends React.Component {
       console.warn('No DOM node found with the ref!');
       return;
     }
-    console.log(node);
     node.focus();
   }
 
