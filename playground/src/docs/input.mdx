@@ -1,0 +1,323 @@
+---
+name: Input
+route: /inputs
+---
+
+import {Playground} from 'docz';
+
+import {
+  RSInput,
+  Input,
+  TextInput,
+  NumberInput,
+  CheckboxInput,
+  AutocompleteInput,
+  Form,
+  Button,
+  TextArea
+} from '@medmain/react-ui-kit';
+
+import {FormContainer} from '../components/form-container';
+import Root from '../components/root';
+import {items} from './list-helpers/list-simple-content';
+import {CheckingRefs} from '../components/checking-refs';
+
+# Inputs
+
+## Low level components
+
+`RSInput` component is the low-level component used by `<Input>`, `<RadioSelect>`, `<CheckboxInput>` and `<Autocomplete>` components.
+
+Basically it's just an enhanced `<input>` component, its API is the same as `input`, only the appearance is different.
+
+Therefore `RSInput` is available with 3 available types: `"text"`, `"checkbox"` and `"radio"`.
+
+### Text fields
+
+`RSInput` behaves exactly like a basic `<input type="text">` form control, expecting `value` and `onChange` props.
+
+<Playground>
+  <Root>
+    <RSInput type="text" value="Some text" onChange={console.log} />
+    <span> </span>
+    <RSInput type="text" value="Disabled field" disabled onChange={console.log} />
+  </Root>
+</Playground>
+
+### Checkboxes
+
+```jsx
+<RSInput type="checkbox" checked />
+```
+
+Instead of a `value` prop, checkboxes expect a `checked` property (boolean).
+
+<Playground>
+  <Root>
+    <RSInput type="checkbox" onChange={console.log} />
+    <span> </span>
+    <RSInput type="checkbox" checked onChange={console.log} />
+    <span> </span>
+    <RSInput type="checkbox" disabled onChange={console.log} />
+    <span> </span>
+    <RSInput type="checkbox" disabled checked onChange={console.log} />
+  </Root>
+</Playground>
+
+### Radio buttons
+
+```jsx
+<RSInput type="radio" value="1" checked />
+```
+
+Radio buttons expect both a `value` and a `checked` props.
+
+<Playground>
+  <Root>
+    <div style={{display: 'flex', alignItems: 'center'}}>
+      <RSInput type="radio" value={'1'} onChange={console.log} />
+      <span> </span>
+      <RSInput type="radio" value={'1'} checked onChange={console.log} />
+      <span> </span>
+      <RSInput type="radio" value={'1'} disabled onChange={console.log} />
+      <span> </span>
+      <RSInput type="radio" value={'1'} disabled checked onChange={console.log} />
+    </div>
+  </Root>
+</Playground>
+
+### Adding labels and event handling
+
+<Playground>
+  <Root>
+    <FormContainer
+      initialValues={{
+        special: false,
+        available: true
+      }}
+    >
+      {({values, handleChangeEvent}) => (
+        <>
+          {values.special}
+          <label htmlFor="special">
+            <RSInput
+              type="checkbox"
+              id="special"
+              name="special"
+              checked={values.special}
+              onChange={handleChangeEvent}
+            />
+            Special
+          </label>
+          <span> </span>
+          <label htmlFor="available">
+            <RSInput
+              type="checkbox"
+              id="available"
+              name="available"
+              checked={values.available}
+              onChange={handleChangeEvent}
+            />
+            Available
+          </label>
+        </>
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{team: '2'}}>
+      {({values: {team}, handleChangeEvent}) => (
+        <div style={{display: 'flex', alignItems: 'center'}}>
+          {items.slice(0, 3).map(({id, team: text}) => (
+            <label key={id} htmlFor={id} style={{display: 'inline-flex', marginRight: '1rem'}}>
+              <RSInput
+                type="radio"
+                name="team"
+                value={id}
+                id={id}
+                checked={team === id}
+                onChange={handleChangeEvent}
+              />
+              <span>{text}</span>
+            </label>
+          ))}
+        </div>
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### Checking refs
+
+Click on the buttons and check that the focus is correctly set on the fields.
+
+<Playground>
+  <Root>
+    <CheckingRefs />
+  </Root>
+</Playground>
+
+## High-level components
+
+Higher level control components used in forms:
+`<TextInput>`, `<NumberInput>`, `<CheckboxInput>`, `<AutomcompleteInput>`
+
+The `onChange` event handler is normalized,
+the callback function is called passing the **value** of the field instead of an `event` object.
+
+### TextInput
+
+<Playground>
+  <Root>
+    <FormContainer
+      initialValues={{
+        firstName: 'Larry',
+        lastName: 'Bird'
+      }}
+    >
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <TextInput value={values.firstName} onChange={onChange('firstName')} />
+            <br />
+            <TextInput disabled value="Disabled!" onChange={() => disabled} />
+            <br />
+            <TextInput ref={ref} required value={values.lastName} onChange={onChange('lastName')} />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### NumberInput
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{number: 33}}>
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <NumberInput ref={ref} value={values.number} onChange={onChange('number')} />
+            <br />
+            <NumberInput disabled />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### CheckboxInput
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{accept: false}}>
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <CheckboxInput
+              ref={ref}
+              label={'I accept'}
+              value={values.accept}
+              onChange={onChange('accept')}
+            />
+            <br />
+            <CheckboxInput
+              disabled
+              label={'I have accepted'}
+              value={true}
+              onChange={() => undefined}
+            />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### TextArea
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{text: 'Hello world'}}>
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={console.log}>
+            <TextArea ref={ref} required value={values.text} onChange={onChange('text')} />
+            <br />
+            <TextArea disabled value={'Disabled!'} onChange={() => undefined} />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+### AutocompleteInput
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{city: ''}}>
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        const cities = ['Boston', 'Chicago', 'New York', 'Los Angeles', 'San Antonio'];
+        return (
+          <Form onSubmit={console.log}>
+            <AutocompleteInput
+              ref={ref}
+              required
+              value={values.city}
+              onChange={onChange('city')}
+              items={cities}
+            />
+            <br />
+            <AutocompleteInput
+              disabled
+              value={'San Antonio'}
+              onChange={onChange('city')}
+              items={cities}
+            />
+            <br />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+            <span> </span>
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>

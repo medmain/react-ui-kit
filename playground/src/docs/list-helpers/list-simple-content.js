@@ -45,43 +45,43 @@ export const columns = [
 
 export const items = [
   {
-    id: 1,
+    id: '1',
     lastName: 'Bird',
     firstName: 'Larry',
     team: 'Boston Celtics'
   },
   {
-    id: 2,
+    id: '2',
     lastName: 'Jordan',
     firstName: 'Michael',
     team: 'Chicago Bulls'
   },
   {
-    id: 3,
+    id: '3',
     lastName: 'Duncan',
     firstName: 'Tim',
     team: 'San Antonio Spurs'
   },
   {
-    id: 4,
+    id: '4',
     lastName: 'Bryant',
     firstName: 'Kobe',
     team: 'LA Lakers'
   },
   {
-    id: 5,
+    id: '5',
     lastName: 'Harden',
     firstName: 'James',
     team: 'Houston Rockets'
   },
   {
-    id: 6,
+    id: '6',
     lastName: 'Liliard',
     firstName: 'Damian',
     team: 'Portland Trailblazers'
   },
   {
-    id: 7,
+    id: '7',
     lastName: 'Antetokounmpo',
     firstName: 'Giannis',
     team: 'Milwaukee Bucks'

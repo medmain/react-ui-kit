@@ -37,10 +37,11 @@ import {FileList} from '../components/file-list';
         count: 100,
         story: 'This is my story',
         team: 'CHI',
-        position: '1',
+        level: '1',
         hallOfFame: true,
         mvp: true,
-        date: new Date(2018, 1, 11)
+        date: new Date(2018, 1, 11),
+        accept: false
       }}
     >
       {({values, onChange, files, addFile}) => {
@@ -50,18 +51,21 @@ import {FileList} from '../components/file-list';
             <Label htmlFor="email">Email:</Label>
             <TextInput id="email" name="email" value={values.email} onChange={onChange('email')} />
             <hr />
+
             <Label htmlFor="email">
               Count
               <LabelHelp>Enter a number</LabelHelp>
             </Label>
             <NumberInput id="count" value={values.count} onChange={onChange('count')} />
             <hr />
+
             <Label htmlFor="story">
               Your story
               <LabelHelp>Remaining characters: XX</LabelHelp>
             </Label>
             <TextArea id="story" rows={5} onChange={onChange('story')} value={values.story} />
             <hr />
+
             <Label>Team</Label>
             <Select
               id="team"
@@ -74,29 +78,37 @@ import {FileList} from '../components/file-list';
               onChange={onChange('team')}
             />
             <hr />
-            <Label>Level</Label>
+
+            <Label>The following radio buttons and checkboxes should be aligned</Label>
             <Select
               id="postion"
               type="radio"
-              value={values.position}
+              value={values.level}
               options={[
-                {value: '1', label: 'Regular Player'},
-                {value: '2', label: 'All-Star Player'}
+                {value: '1', label: 'Level 1'},
+                {value: '2', label: 'Level 2'}
               ]}
-              onChange={onChange('position')}
+              onChange={onChange('level')}
             />
-            <hr />
-            <Label>Awards</Label>
+
             <CheckboxInput label="Hall-of-famer" value={values.hallOfFame} onChange={onChange('hallOfFame')} />
             <CheckboxInput label="MVP" value={values.mvp} onChange={onChange('mvp')} />
             <hr />
+
             <Label>Date</Label>
             <DateInput id="date" value={values.date} onChange={onChange('date')} />
             <hr />
+
             <Label>Uploaded files</Label>
             <FileList files={files} />
             <FileChooser ref={fileChooserRef} onChoose={addFile} />
             <Button onClick={() => fileChooserRef.current.open()}>Add a file</Button>
+            <hr />
+
+            <CheckboxInput required label="I accept the conditions" value={values.accept} onChange={onChange('accept')} />
+            <hr />
+
+            <Button rsPrimary type="submit">SAVE</Button>
           </Form>
         );
       }}
