@@ -4,7 +4,7 @@ import {withRadiumStarter} from 'radium-starter';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 
-import {CheckboxInput} from './form';
+import {CheckboxInput} from './input';
 import {withLocale} from './locale-context';
 
 import {ChevronUpIcon} from './icons/chevron-up';

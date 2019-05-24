@@ -14,6 +14,8 @@ export * from './modal';
 export * from './pdf-viewer';
 export * from './root';
 export * from './row';
+export * from './rs-input';
+export * from './select';
 export * from './spinner';
 export * from './tabs';
 export * from './typography';
