@@ -251,20 +251,20 @@ export class Select extends React.Component {
   };
 
   render() {
-    let {type, forwardedRef, options, hasEmptyOption, style} = this.props;
+    let {type, forwardedRef, options, hasEmptyOption, style, ...props} = this.props;
 
     if (type === 'auto') {
       type = options.length < 5 ? 'radio' : 'select';
     }
 
     if (type === 'radio') {
-      return <RadioSelect {...this.props} />;
+      return <RadioSelect ref={forwardedRef} {...this.props} />;
     }
 
     return (
       <RSSelect
         ref={forwardedRef}
-        {...omit(this.props, ['type', 'forwardedRef', 'options', 'hasEmptyOption'])}
+        {...props}
         onChange={this.handleChange}
         style={{display: 'block', width: '100%', ...style}}
       >
@@ -281,7 +281,8 @@ export class Select extends React.Component {
   }
 }
 
-class RadioSelect extends React.Component {
+@withForwardedRef
+export class RadioSelect extends React.Component {
   static propTypes = {
     options: PropTypes.array.isRequired,
     value: PropTypes.string,
@@ -323,7 +324,7 @@ class RadioSelect extends React.Component {
           ref={index === 0 ? forwardedRef : undefined} // to be able to set focus on the 1st radio button
           style={{
             display: layout === 'vertical' ? 'flex' : 'inline-flex',
-            verticalAlign: 'middle',
+            alignItems: 'center',
             marginLeft: layout === 'horizontal' ? '1rem' : undefined
           }}
         >
@@ -336,7 +337,7 @@ class RadioSelect extends React.Component {
             onChange={this.handleChange}
             required={required}
           />
-          <span style={{marginLeft: '0.5rem'}}>{option.label}</span>
+          <span style={{paddingLeft: '0.5rem'}}>{option.label}</span>
         </label>
       );
     });
@@ -390,7 +391,7 @@ export class CheckboxInput extends React.Component {
           onChange={this.handleChange}
         />
         {label && (
-          <span style={{marginLeft: '0.5rem', verticalAlign: 'middle'}}>
+          <span style={{paddingLeft: '0.5rem', verticalAlign: 'middle'}}>
             {label}
             {required && <Asterisk />}
           </span>

@@ -60,7 +60,7 @@ export class RSInput extends React.Component {
 // sub-components (not exported)
 
 @withRadiumStarter
-export class CheckboxMark extends React.Component {
+class CheckboxMark extends React.Component {
   static propTypes = {
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -114,6 +114,7 @@ export class CheckboxMark extends React.Component {
           display: 'inline-block',
           width: '20px',
           height: '20px',
+          margin: '2px',
           borderWidth: '2px',
           borderColor: !checked && !disabled ? t.grayIconColor : 'transparent',
           backgroundColor: getBackgroundColor(),
@@ -129,7 +130,7 @@ export class CheckboxMark extends React.Component {
 }
 
 @withRadiumStarter
-export class RadioMark extends React.Component {
+class RadioMark extends React.Component {
   static propTypes = {
     checked: PropTypes.bool,
     disabled: PropTypes.bool,

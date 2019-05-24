@@ -37,7 +37,7 @@ import {FileList} from '../components/file-list';
         count: 100,
         story: 'This is my story',
         team: 'CHI',
-        position: '1',
+        level: '1',
         hallOfFame: true,
         mvp: true,
         date: new Date(2018, 1, 11),
@@ -79,20 +79,18 @@ import {FileList} from '../components/file-list';
             />
             <hr />
 
-            <Label>Level</Label>
+            <Label>The following radio buttons and checkboxes should be aligned</Label>
             <Select
               id="postion"
               type="radio"
-              value={values.position}
+              value={values.level}
               options={[
-                {value: '1', label: 'Regular Player'},
-                {value: '2', label: 'All-Star Player'}
+                {value: '1', label: 'Level 1'},
+                {value: '2', label: 'Level 2'}
               ]}
-              onChange={onChange('position')}
+              onChange={onChange('level')}
             />
-            <hr />
 
-            <Label>Awards</Label>
             <CheckboxInput label="Hall-of-famer" value={values.hallOfFame} onChange={onChange('hallOfFame')} />
             <CheckboxInput label="MVP" value={values.mvp} onChange={onChange('mvp')} />
             <hr />
