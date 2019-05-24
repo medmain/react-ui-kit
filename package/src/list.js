@@ -104,7 +104,8 @@ export class List extends React.Component {
                   style={{
                     width: '28px',
                     textAlign: 'center',
-                    verticalAlign: 'middle'
+                    verticalAlign: 'middle',
+                    padding: 0
                   }}
                 >
                   <CheckboxInput value={selection.mode === 'all'} onChange={this.toggleAllItems} />
@@ -159,7 +160,8 @@ export class List extends React.Component {
                       style={{
                         width: '28px',
                         textAlign: 'center',
-                        verticalAlign: 'middle'
+                        verticalAlign: 'middle',
+                        padding: 0
                       }}
                     >
                       <CheckboxInput
