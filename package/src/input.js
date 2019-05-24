@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Radium from 'radium';
 import {withRadiumStarter, Input as OriginalRSInput} from 'radium-starter';
 
 export const withForwardedRef = Wrapped =>
@@ -9,7 +8,6 @@ export const withForwardedRef = Wrapped =>
   });
 
 @withForwardedRef
-@withRadiumStarter // Radium decorator needed to handle `:focus`
 export class RSInput extends React.Component {
   static propTypes = {
     type: PropTypes.string,
@@ -37,51 +35,42 @@ export class RSInput extends React.Component {
       return <OriginalRSInput {...props} ref={forwardedRef} />;
     }
 
-    const isFocused = Radium.getState(this.state, undefined, ':focus');
-
     return (
       <>
-        <CustomComponent
-          {...props}
-          isFocused={isFocused}
-          style={{cursor: props.disabled ? 'not-allowed' : 'pointer'}}
-        />
+        <CustomComponent {...props} style={{cursor: props.disabled ? 'not-allowed' : 'pointer'}} />
         <OriginalRSInput
           ref={forwardedRef}
           {...props}
-          style={{...hiddenInputStyles, ':focus': {}}}
+          style={{
+            // Styles used to hide the underlying `<input>` tag.
+            // Don't use `display: 'none'` to be able to focus the checkbox with the keyboard
+            // Don't use `width: 0, height: 0`, otherwise HTML field validation messages don't show up
+            opacity: 0,
+            overflow: 'hidden',
+            margin: 0,
+            padding: 0,
+            position: 'absolute'
+          }}
         />
       </>
     );
   }
 }
 
-// Styles used to hide the underlying `<input>` tag.
-// Don't use `display: 'none'` to be able to focus the checkbox with the keyboard
-// Don't use `width: 0, height: 0`, otherwise HTML field validation messages don't show up
-const hiddenInputStyles = {
-  opacity: 0,
-  overflow: 'hidden',
-  margin: 0,
-  padding: 0,
-  position: 'absolute'
-};
-
-// sub-components
+// sub-components (not exported)
 
 @withRadiumStarter
 export class CheckboxMark extends React.Component {
   static propTypes = {
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
-    isFocused: PropTypes.bool,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired
   };
 
   render() {
-    const {disabled, checked, isFocused, style, theme: t, styles: s} = this.props;
+    const {disabled, checked, style, theme: t, styles: s} = this.props;
 
     const getBackgroundColor = () => {
       if (disabled) {
@@ -89,10 +78,10 @@ export class CheckboxMark extends React.Component {
       }
 
       if (checked) {
-        return isFocused ? t.inverseAccentColor : t.primaryColor;
+        return t.primaryColor;
       }
 
-      return isFocused ? t.altBackgroundColor : 'white';
+      return 'white';
     };
 
     const getTickColor = () => {
@@ -144,20 +133,19 @@ export class RadioMark extends React.Component {
   static propTypes = {
     checked: PropTypes.bool,
     disabled: PropTypes.bool,
-    isFocused: PropTypes.bool,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired
   };
 
   render() {
-    const {disabled, checked, isFocused, style, theme: t} = this.props;
+    const {disabled, checked, style, theme: t} = this.props;
 
     const getOuterColor = () => {
       if (disabled) {
         return t.altBackgroundColor;
       }
       if (checked) {
-        return isFocused ? t.inverseAccentColor : t.primaryColor;
+        return t.primaryColor;
       }
       return t.grayIconColor;
     };
@@ -166,7 +154,7 @@ export class RadioMark extends React.Component {
       if (disabled) {
         return checked ? t.altTextColor : t.altBackgroundColor;
       }
-      return isFocused ? t.altBackgroundColor : 'white';
+      return 'white';
     };
 
     return (
