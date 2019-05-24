@@ -45,8 +45,7 @@ export class RSInput extends React.Component {
             opacity: 0,
             overflow: 'hidden',
             margin: 0,
-            padding: 0,
-            position: 'absolute'
+            padding: 0
           }}
         />
       </>

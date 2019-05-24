@@ -103,9 +103,8 @@ export class List extends React.Component {
                 <ListCell
                   style={{
                     width: '28px',
-                    textAlign: 'center',
                     verticalAlign: 'middle',
-                    padding: 0
+                    padding: '0 0 0 5px'
                   }}
                 >
                   <CheckboxInput value={selection.mode === 'all'} onChange={this.toggleAllItems} />
@@ -159,9 +158,8 @@ export class List extends React.Component {
                       key={name}
                       style={{
                         width: '28px',
-                        textAlign: 'center',
                         verticalAlign: 'middle',
-                        padding: 0
+                        padding: '0 0 0 5px'
                       }}
                     >
                       <CheckboxInput
