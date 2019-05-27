@@ -1,0 +1,184 @@
+---
+name: Multi Input
+route: /multi-inputs
+---
+
+import {Playground} from 'docz';
+import {
+  Input,
+  TextInput,
+  NumberInput,
+  AutocompleteInput,
+  Form,
+  Button,
+  Select,
+  TextArea,
+  MultiInput
+} from '@medmain/react-ui-kit';
+
+import {FormContainer} from '../components/form-container';
+import Root from '../components/root';
+import {items} from './list-helpers/list-simple-content';
+
+# MultiInput
+
+A flexible component to update any **array** of values.
+`<MultipleInput>` renders N occurrences of the same `<Input*>` component provided by the user, through a `render props` pattern.
+
+Editing the last input automatically add a new field. It's up to the user to remove empty values when the form is validated.
+
+## With multiple Input fields
+
+With a default value:
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{players: ['Larry', 'Michael', 'Clyde']}}>
+      {({values, onChange}) => (
+        <MultiInput values={values.players} onChange={onChange('players')}>
+          {({value, onChange, required}) => (
+            <Input value={value} onChange={onChange} style={{width: '120px', display: 'inline'}} />
+          )}
+        </MultiInput>
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+Passing an empty array as the default value:
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{players: []}}>
+      {({values, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Form onSubmit={() => console.log(values)}>
+            <MultiInput ref={ref} values={values.players} onChange={onChange('players')} required>
+              {({value, onChange, forwardedRef, required}) => (
+                <Input
+                  ref={forwardedRef}
+                  value={value}
+                  onChange={onChange}
+                  style={{width: '120px', display: 'inline'}}
+                  required={required}
+                />
+              )}
+            </MultiInput>
+            <hr />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>{' '}
+            <Button onClick={() => ref.current.focus()}>Set focus</Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+## With Select
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{teams: []}}>
+      {({values, onChange}) => (
+        <Form onSubmit={() => console.log(values)}>
+          <MultiInput values={values.teams} onChange={onChange('teams')} required>
+            {({value, onChange, required}) => (
+              <Select
+                type="select"
+                value={value}
+                options={items.map(({id, team}) => ({value: id, label: team}))}
+                onChange={onChange}
+                required={required}
+                hasEmptyOption
+                style={{width: '150px', display: 'inline'}}
+              />
+            )}
+          </MultiInput>
+          <hr />
+          <Button rsPrimary type="submit">
+            SAVE
+          </Button>
+        </Form>
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+## With AutocompleteInput
+
+Increasing the spacing between the inputs with `spacing="2rem"`
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{cities: []}}>
+      {({values, onChange}) => {
+        const cities = ['Boston', 'Chicago', 'New York', 'Los Angeles', 'San Antonio'];
+        return (
+          <Form onSubmit={() => console.log(values)}>
+            <MultiInput
+              values={values.cities}
+              onChange={onChange('cities')}
+              required
+              spacing="2rem"
+            >
+              {({value, onChange, required}) => (
+                <AutocompleteInput
+                  items={cities}
+                  value={value}
+                  onChange={onChange}
+                  required={required}
+                />
+              )}
+            </MultiInput>
+            <hr />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+## With TextArea
+
+Changing the default layout using `layout="vertical"` and adding a button to remove the item.
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{comments: []}}>
+      {({values, onChange}) => {
+        return (
+          <Form onSubmit={() => console.log(values)}>
+            <MultiInput
+              values={values.comments}
+              onChange={onChange('comments')}
+              required
+              layout={'vertical'}
+            >
+              {({value, index, onChange, onRemove, required}) => (
+                <div style={{marginBottom: '1rem'}}>
+                  <p>This is the comment number {index + 1}</p>
+                  <TextArea value={value} onChange={onChange} required={required} />
+                  {onRemove && (
+                    <Button rsSmall onClick={onRemove}>
+                      REMOVE
+                    </Button>
+                  )}
+                </div>
+              )}
+            </MultiInput>
+            <hr />
+            <Button rsPrimary type="submit">
+              SAVE
+            </Button>
+          </Form>
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>

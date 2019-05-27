@@ -376,3 +376,105 @@ export class Asterisk extends React.Component {
     return <span style={{color: t.errorColor}}>*</span>;
   }
 }
+
+@withForwardedRef
+export class MultiInput extends React.Component {
+  static propTypes = {
+    values: PropTypes.array.isRequired,
+    onChange: PropTypes.func.isRequired,
+    required: PropTypes.bool,
+    forwardedRef: PropTypes.object,
+    spacing: PropTypes.string,
+    layout: PropTypes.oneOf(['vertical', 'horizontal']),
+    style: PropTypes.object,
+    children: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    layout: 'horizontal',
+    spacing: '1rem'
+  };
+
+  onUpdate(value, index) {
+    const {onChange} = this.props;
+
+    const currentValues = this.getRenderedValues();
+    const updatedValues = currentValues.map((currentValue, i) => {
+      return index === i ? value : currentValue;
+    });
+
+    return onChange(updatedValues);
+  }
+
+  getRenderedValues = () => {
+    const {values} = this.props;
+
+    const hasExtraEmptyInput = values[values.length - 1] === '';
+
+    return hasExtraEmptyInput ? values : [...values, ''];
+  };
+
+  onRemove = index => {
+    const {values, onChange} = this.props;
+
+    const newValues = values.filter((_, i) => i !== index);
+
+    return onChange(newValues);
+  };
+
+  isEmpty = () => {
+    const {values} = this.props;
+
+    return values.length === 0 || values.every(value => value === '');
+  };
+
+  render() {
+    const {forwardedRef, required, layout, spacing, style, children} = this.props;
+
+    const isMultiInputEmpty = this.isEmpty();
+
+    const containerStyles = {
+      display: 'flex',
+      flexWrap: 'wrap',
+      marginTop: `-${spacing}`,
+      marginLeft: `-${spacing}`
+    };
+    const cellStyles = {paddingTop: spacing, paddingLeft: spacing};
+    const renderedValues = this.getRenderedValues();
+
+    return (
+      <div
+        style={{
+          ...(layout === 'horizontal' ? containerStyles : undefined),
+          ...style
+        }}
+      >
+        {renderedValues.map((value, index) => {
+          const isFirst = index === 0;
+          const isLast = index === renderedValues.length - 1;
+
+          return (
+            <div key={index} style={{...(layout === 'horizontal' ? cellStyles : undefined)}}>
+              {children({
+                forwardedRef: isFirst ? forwardedRef : undefined,
+                value,
+                onChange: value => this.onUpdate(value, index),
+                onRemove: isLast ? undefined : () => this.onRemove(index),
+                required: required && isMultiInputEmpty && isFirst,
+                index,
+                isFirst,
+                isLast
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+}
+
+// function updateArrayItemAtIndex(array, itemNewValue, itemIndex) {
+//   return array.map((currentValue, index) => {
+//     return index === itemIndex ? itemNewValue : currentValue;
+//   });
+// }
