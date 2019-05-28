@@ -10,6 +10,7 @@ import matchSorter from 'match-sorter';
 import {withLocale} from './locale-context';
 import {withForwardedRef} from './helpers';
 import {RSInput} from './rs-input';
+import {Asterisk} from './form';
 
 @withForwardedRef
 export class Input extends React.Component {
