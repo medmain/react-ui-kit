@@ -1,3 +1,5 @@
+import '@babel/polyfill'; // fix build error `regeneratorRuntime is not defined`
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import {createBaseApp} from '@medmain/base-frontend';

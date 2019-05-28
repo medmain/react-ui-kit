@@ -8,13 +8,14 @@
     "deploy": "cp .docz/dist/index.html .docz/dist/200.html && surge --project .docz/dist/ --domain medmain-playground.surge.sh"
   },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.3.3",
-    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/polyfill": "^7.4.4",
     "@medmain/base-frontend": "^0.1.66",
-    "@medmain/core": "^0.2.1",
+    "@medmain/core": "^0.2.0",
     "@medmain/react-ui-kit": "^0.2.0",
-    "docz": "^0.13.7",
-    "docz-theme-default": "^0.13.7",
-    "webpack": "4.28.4"
+    "docz": "^1.2.0",
+    "docz-theme-default": "1.2.0",
+    "react": "^16.8.6"
   }
 }
