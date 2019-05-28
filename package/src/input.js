@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {withRadiumStarter, TextArea as RSTextArea} from 'radium-starter';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
+import isNil from 'lodash/isNil';
 import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 
@@ -136,6 +137,10 @@ export class TextArea extends React.Component {
     style: PropTypes.object
   };
 
+  static defaultProps = {
+    value: ''
+  };
+
   shouldComponentUpdate(nextProps, _nextState) {
     return (
       nextProps.value !== this.props.value ||
@@ -218,7 +223,7 @@ export class AutocompleteInput extends React.Component {
     type: PropTypes.string,
     forwardedRef: PropTypes.object,
     id: PropTypes.string,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
@@ -233,6 +238,7 @@ export class AutocompleteInput extends React.Component {
   };
 
   static defaultProps = {
+    value: '',
     items: []
   };
 
@@ -359,62 +365,44 @@ export class AutocompleteInput extends React.Component {
   }
 }
 
-@withRadiumStarter
-export class Asterisk extends React.Component {
-  static propTypes = {
-    theme: PropTypes.object.isRequired,
-    styles: PropTypes.object.isRequired
-  };
-
-  shouldComponentUpdate(_nextProps, _nextState) {
-    return false;
-  }
-
-  render() {
-    const {theme: t} = this.props;
-
-    return <span style={{color: t.errorColor}}>*</span>;
-  }
-}
-
 @withForwardedRef
 export class MultiInput extends React.Component {
   static propTypes = {
     values: PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
-    forwardedRef: PropTypes.object,
     spacing: PropTypes.string,
-    layout: PropTypes.oneOf(['vertical', 'horizontal']),
+    layout: PropTypes.oneOf(['horizontal', 'vertical']),
     style: PropTypes.object,
-    children: PropTypes.func.isRequired
+    children: PropTypes.func.isRequired,
+    forwardedRef: PropTypes.object
   };
 
   static defaultProps = {
     layout: 'horizontal',
-    spacing: '1rem'
+    spacing: '0.75rem'
   };
 
-  onUpdate(value, index) {
+  handleChange = (index, newValue) => {
     const {onChange} = this.props;
 
-    const currentValues = this.getRenderedValues();
-    const updatedValues = currentValues.map((currentValue, i) => {
-      return index === i ? value : currentValue;
+    const updatedValues = this.getRenderedValues().map((currentValue, i) => {
+      return index === i ? newValue : currentValue;
     });
 
     return onChange(updatedValues);
-  }
+  };
 
   getRenderedValues = () => {
     const {values} = this.props;
 
-    const hasExtraEmptyInput = values[values.length - 1] === '';
+    const lastValue = values[values.length - 1];
+    const hasExtraEmptyInput = values.length && isNil(lastValue);
 
-    return hasExtraEmptyInput ? values : [...values, ''];
+    return hasExtraEmptyInput ? values : [...values, undefined];
   };
 
-  onRemove = index => {
+  handleClear = index => {
     const {values, onChange} = this.props;
 
     const newValues = values.filter((_, i) => i !== index);
@@ -425,27 +413,24 @@ export class MultiInput extends React.Component {
   isEmpty = () => {
     const {values} = this.props;
 
-    return values.length === 0 || values.every(value => value === '');
+    return values.every(value => isNil(value) || value === '');
   };
 
   render() {
-    const {forwardedRef, required, layout, spacing, style, children} = this.props;
+    const {required, layout, spacing, style, children, forwardedRef} = this.props;
 
     const isMultiInputEmpty = this.isEmpty();
 
-    const containerStyles = {
-      display: 'flex',
-      flexWrap: 'wrap',
-      marginTop: `-${spacing}`,
-      marginLeft: `-${spacing}`
-    };
-    const cellStyles = {paddingTop: spacing, paddingLeft: spacing};
     const renderedValues = this.getRenderedValues();
 
     return (
       <div
         style={{
-          ...(layout === 'horizontal' ? containerStyles : undefined),
+          display: 'flex',
+          flexWrap: layout === 'horizontal' ? 'wrap' : undefined,
+          marginTop: `-${spacing}`,
+          marginLeft: layout === 'horizontal' ? `-${spacing}` : undefined,
+          flexDirection: layout === 'horizontal' ? 'row' : 'column',
           ...style
         }}
       >
@@ -454,12 +439,18 @@ export class MultiInput extends React.Component {
           const isLast = index === renderedValues.length - 1;
 
           return (
-            <div key={index} style={{...(layout === 'horizontal' ? cellStyles : undefined)}}>
+            <div
+              key={index}
+              style={{
+                paddingTop: spacing,
+                paddingLeft: layout === 'horizontal' ? spacing : undefined
+              }}
+            >
               {children({
                 forwardedRef: isFirst ? forwardedRef : undefined,
                 value,
-                onChange: value => this.onUpdate(value, index),
-                onRemove: isLast ? undefined : () => this.onRemove(index),
+                onChange: value => this.handleChange(index, value),
+                onClear: isLast ? undefined : () => this.handleClear(index),
                 required: required && isMultiInputEmpty && isFirst,
                 index,
                 isFirst,
@@ -472,9 +463,3 @@ export class MultiInput extends React.Component {
     );
   }
 }
-
-// function updateArrayItemAtIndex(array, itemNewValue, itemIndex) {
-//   return array.map((currentValue, index) => {
-//     return index === itemIndex ? itemNewValue : currentValue;
-//   });
-// }

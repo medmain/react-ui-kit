@@ -5,7 +5,6 @@ route: /multi-inputs
 
 import {Playground} from 'docz';
 import {
-  Input,
   TextInput,
   NumberInput,
   AutocompleteInput,
@@ -13,6 +12,7 @@ import {
   Button,
   Select,
   TextArea,
+  DateInput,
   MultiInput
 } from '@medmain/react-ui-kit';
 
@@ -27,7 +27,7 @@ A flexible component to update any **array** of values.
 
 Editing the last input automatically add a new field. It's up to the user to remove empty values when the form is validated.
 
-## With multiple Input fields
+## With TextInput
 
 With a default value:
 
@@ -37,7 +37,11 @@ With a default value:
       {({values, onChange}) => (
         <MultiInput values={values.players} onChange={onChange('players')}>
           {({value, onChange, required}) => (
-            <Input value={value} onChange={onChange} style={{width: '120px', display: 'inline'}} />
+            <TextInput
+              value={value}
+              onChange={onChange}
+              style={{width: '120px', display: 'inline'}}
+            />
           )}
         </MultiInput>
       )}
@@ -51,19 +55,21 @@ Passing an empty array as the default value:
   <Root>
     <FormContainer initialValues={{players: []}}>
       {({values, onChange}) => {
-        const ref = React.createRef();
+        const ref = React.useRef(null);
         return (
           <Form onSubmit={() => console.log(values)}>
             <MultiInput ref={ref} values={values.players} onChange={onChange('players')} required>
-              {({value, onChange, forwardedRef, required}) => (
-                <Input
-                  ref={forwardedRef}
-                  value={value}
-                  onChange={onChange}
-                  style={{width: '120px', display: 'inline'}}
-                  required={required}
-                />
-              )}
+              {({value, onChange, forwardedRef, required}) => {
+                return (
+                  <TextInput
+                    ref={forwardedRef}
+                    value={value}
+                    onChange={onChange}
+                    style={{width: '120px', display: 'inline'}}
+                    required={required}
+                  />
+                );
+              }}
             </MultiInput>
             <hr />
             <Button rsPrimary type="submit">
@@ -73,6 +79,60 @@ Passing an empty array as the default value:
           </Form>
         );
       }}
+    </FormContainer>
+  </Root>
+</Playground>
+
+## With NumberInput
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{numbers: [33, 23]}}>
+      {({values, onChange}) => (
+        <Form onSubmit={() => console.log(values)}>
+          <MultiInput values={values.numbers} onChange={onChange('numbers')} required>
+            {({value, onChange, required}) => (
+              <NumberInput
+                value={value}
+                onChange={onChange}
+                style={{width: '120px', display: 'inline'}}
+                required={required}
+              />
+            )}
+          </MultiInput>
+          <hr />
+          <Button rsPrimary type="submit">
+            SAVE
+          </Button>
+        </Form>
+      )}
+    </FormContainer>
+  </Root>
+</Playground>
+
+## With DateInput
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{dates: [new Date('2019-05-28T07:44:56.873Z')]}}>
+      {({values, onChange}) => (
+        <Form onSubmit={() => console.log(values)}>
+          <MultiInput values={values.dates} onChange={onChange('dates')} required>
+            {({value, onChange, required}) => (
+              <DateInput value={value} onChange={onChange} required={required} />
+            )}
+          </MultiInput>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <hr />
+          <Button rsPrimary type="submit">
+            SAVE
+          </Button>{' '}
+        </Form>
+      )}
     </FormContainer>
   </Root>
 </Playground>
@@ -160,16 +220,16 @@ Changing the default layout using `layout="vertical"` and adding a button to rem
               required
               layout={'vertical'}
             >
-              {({value, index, onChange, onRemove, required}) => (
-                <div style={{marginBottom: '1rem'}}>
+              {({value, index, onChange, onClear, required}) => (
+                <>
                   <p>This is the comment number {index + 1}</p>
                   <TextArea value={value} onChange={onChange} required={required} />
-                  {onRemove && (
-                    <Button rsSmall onClick={onRemove}>
+                  {onClear && (
+                    <Button rsSmall onClick={onClear}>
                       REMOVE
                     </Button>
                   )}
-                </div>
+                </>
               )}
             </MultiInput>
             <hr />

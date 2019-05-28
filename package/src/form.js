@@ -52,3 +52,21 @@ export class LabelHelp extends React.Component {
     return <small {...this.props} style={{marginLeft: '.6rem', color: t.labelColor}} />;
   }
 }
+
+@withRadiumStarter
+export class Asterisk extends React.Component {
+  static propTypes = {
+    theme: PropTypes.object.isRequired,
+    styles: PropTypes.object.isRequired
+  };
+
+  shouldComponentUpdate(_nextProps, _nextState) {
+    return false;
+  }
+
+  render() {
+    const {theme: t} = this.props;
+
+    return <span style={{color: t.errorColor}}>*</span>;
+  }
+}
