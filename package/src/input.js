@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withRadiumStarter, TextArea as RSTextArea} from 'radium-starter';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
-import isNil from 'lodash/isNil';
+import isEmpty from 'lodash/isEmpty';
 import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 
@@ -398,7 +398,7 @@ export class MultiInput extends React.Component {
     const {values} = this.props;
 
     const lastValue = values[values.length - 1];
-    const hasExtraEmptyInput = values.length && isNil(lastValue);
+    const hasExtraEmptyInput = values.length && isEmpty(lastValue);
 
     return hasExtraEmptyInput ? values : [...values, undefined];
   };
@@ -414,7 +414,7 @@ export class MultiInput extends React.Component {
   isEmpty = () => {
     const {values} = this.props;
 
-    return values.every(value => isNil(value) || value === '');
+    return values.every(value => isEmpty(value));
   };
 
   render() {
@@ -429,9 +429,9 @@ export class MultiInput extends React.Component {
         style={{
           display: 'flex',
           flexWrap: layout === 'horizontal' ? 'wrap' : undefined,
+          flexDirection: layout === 'horizontal' ? 'row' : 'column',
           marginTop: `-${spacing}`,
           marginLeft: layout === 'horizontal' ? `-${spacing}` : undefined,
-          flexDirection: layout === 'horizontal' ? 'row' : 'column',
           ...style
         }}
       >

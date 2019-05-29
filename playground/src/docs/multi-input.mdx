@@ -36,13 +36,7 @@ With a default value:
     <FormContainer initialValues={{players: ['Larry', 'Michael', 'Clyde']}}>
       {({values, onChange}) => (
         <MultiInput values={values.players} onChange={onChange('players')}>
-          {({value, onChange, required}) => (
-            <TextInput
-              value={value}
-              onChange={onChange}
-              style={{width: '120px', display: 'inline'}}
-            />
-          )}
+          {({value, onChange, required}) => <TextInput value={value} onChange={onChange} />}
         </MultiInput>
       )}
     </FormContainer>
@@ -65,7 +59,6 @@ Passing an empty array as the default value:
                     ref={forwardedRef}
                     value={value}
                     onChange={onChange}
-                    style={{width: '120px', display: 'inline'}}
                     required={required}
                   />
                 );
@@ -92,12 +85,7 @@ Passing an empty array as the default value:
         <Form onSubmit={() => console.log(values)}>
           <MultiInput values={values.numbers} onChange={onChange('numbers')} required>
             {({value, onChange, required}) => (
-              <NumberInput
-                value={value}
-                onChange={onChange}
-                style={{width: '120px', display: 'inline'}}
-                required={required}
-              />
+              <NumberInput value={value} onChange={onChange} required={required} />
             )}
           </MultiInput>
           <hr />
@@ -153,7 +141,6 @@ Passing an empty array as the default value:
                 onChange={onChange}
                 required={required}
                 hasEmptyOption
-                style={{width: '150px', display: 'inline'}}
               />
             )}
           </MultiInput>
