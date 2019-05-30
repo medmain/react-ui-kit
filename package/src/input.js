@@ -130,16 +130,14 @@ export class NumberInput extends React.Component {
 }
 
 @withForwardedRef
+@withLocale
 export class TextArea extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
-    style: PropTypes.object
-  };
-
-  static defaultProps = {
-    value: ''
+    style: PropTypes.object,
+    locale: PropTypes.object.isRequired
   };
 
   shouldComponentUpdate(nextProps, _nextState) {
@@ -151,16 +149,22 @@ export class TextArea extends React.Component {
   }
 
   handleChange = event => {
-    this.props.onChange(event.target.value);
+    const {onChange, locale} = this.props;
+
+    const value = locale.parseTextInput(event.target.value);
+    onChange(value);
   };
 
   render() {
-    const {forwardedRef, ...props} = this.props;
+    const {forwardedRef, value, locale, ...props} = this.props;
+
+    const formattedValue = locale.formatTextInput(value);
 
     return (
       <RSTextArea
         ref={forwardedRef}
         {...props}
+        value={formattedValue}
         onChange={this.handleChange}
         style={{display: 'block', width: '100%', ...this.props.style}}
       />
@@ -226,10 +230,10 @@ export class CheckboxInput extends React.Component {
 
 @withForwardedRef
 @withRadiumStarter
+@withLocale
 export class AutocompleteInput extends React.Component {
   static propTypes = {
     type: PropTypes.string,
-    forwardedRef: PropTypes.object,
     id: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func.isRequired,
@@ -241,12 +245,13 @@ export class AutocompleteInput extends React.Component {
     placeholder: PropTypes.string,
     maxLength: PropTypes.number,
     style: PropTypes.object,
+    forwardedRef: PropTypes.object,
+    locale: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired
   };
 
   static defaultProps = {
-    value: '',
     items: []
   };
 
@@ -285,8 +290,11 @@ export class AutocompleteInput extends React.Component {
   }
 
   handleChange = value => {
-    if (value !== this.props.value) {
-      this.props.onChange(value);
+    const {value: previousValue, locale} = this.props;
+
+    const nextValue = locale.parseTextInput(value);
+    if (nextValue !== previousValue) {
+      this.props.onChange(nextValue);
     }
   };
 
@@ -303,6 +311,7 @@ export class AutocompleteInput extends React.Component {
       placeholder,
       maxLength,
       style,
+      locale,
       theme: t,
       styles: s
     } = this.props;
@@ -311,12 +320,14 @@ export class AutocompleteInput extends React.Component {
     let filteredItems = items.filter(item => item !== value);
     filteredItems = matchSorter(filteredItems, value);
 
+    const formattedValue = locale.formatTextInput(value);
+
     return (
       <Downshift
         onChange={this.handleChange}
-        inputValue={value}
+        inputValue={formattedValue}
         onInputValueChange={this.handleChange}
-        selectedItem={value}
+        selectedItem={formattedValue}
       >
         {({getInputProps, getItemProps, isOpen, highlightedIndex}) => (
           <div style={{position: 'relative'}}>
