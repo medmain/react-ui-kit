@@ -107,10 +107,8 @@ export class RadioSelect extends React.Component {
       const id = this.name + '-' + option.value;
 
       return (
-        <label
-          htmlFor={id}
+        <div
           key={id}
-          ref={index === 0 ? forwardedRef : undefined} // to be able to set focus on the 1st radio button
           style={{
             display: layout === 'vertical' ? 'flex' : 'inline-flex',
             alignItems: 'center',
@@ -118,6 +116,7 @@ export class RadioSelect extends React.Component {
           }}
         >
           <RSInput
+            ref={index === 0 ? forwardedRef : undefined} // to be able to set focus on the 1st radio button
             type="radio"
             id={id}
             name={this.name}
@@ -126,8 +125,10 @@ export class RadioSelect extends React.Component {
             onChange={this.handleChange}
             required={required}
           />
-          <span style={{paddingLeft: '0.5rem'}}>{option.label}</span>
-        </label>
+          <label htmlFor={id} style={{paddingLeft: '0'}}>
+            {option.label}
+          </label>
+        </div>
       );
     });
 

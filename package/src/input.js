@@ -197,7 +197,14 @@ export class CheckboxInput extends React.Component {
     const {label, value, forwardedRef, required, style} = this.props;
 
     return (
-      <label style={{display: 'flex', alignItems: 'center', ...style}} htmlFor={this.id}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          ...style
+        }}
+        htmlFor={this.id}
+      >
         <RSInput
           ref={forwardedRef}
           {...omit(this.props, ['value'])}
@@ -207,12 +214,12 @@ export class CheckboxInput extends React.Component {
           onChange={this.handleChange}
         />
         {label && (
-          <span style={{paddingLeft: '0.5rem', verticalAlign: 'middle'}}>
+          <label style={{paddingLeft: '0', verticalAlign: 'middle'}} htmlFor={this.id}>
             {label}
             {required && <Asterisk />}
-          </span>
+          </label>
         )}
-      </label>
+      </div>
     );
   }
 }

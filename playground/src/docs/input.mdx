@@ -53,13 +53,20 @@ Instead of a `value` prop, checkboxes expect a `checked` property (boolean).
 
 <Playground>
   <Root>
-    <RSInput type="checkbox" onChange={console.log} />
-    <span> </span>
-    <RSInput type="checkbox" checked onChange={console.log} />
-    <span> </span>
-    <RSInput type="checkbox" disabled onChange={console.log} />
-    <span> </span>
-    <RSInput type="checkbox" disabled checked onChange={console.log} />
+    <FormContainer initialValues={{first: false, second: true}}>
+      {({values, handleChangeEvent}) =>
+      <>
+        <RSInput type="checkbox" checked={values.first} name="first" onChange={handleChangeEvent} />
+        <span> </span>
+        <RSInput type="checkbox" checked={values.second} name="second" onChange={handleChangeEvent} />
+        <span> </span>
+        <RSInput type="checkbox" disabled onChange={console.log} />
+        <span> </span>
+        <RSInput type="checkbox" disabled checked onChange={console.log} />
+      </>
+      }
+    </FormContainer>
+
   </Root>
 </Playground>
 
@@ -73,77 +80,29 @@ Radio buttons expect both a `value` and a `checked` props.
 
 <Playground>
   <Root>
-    <div style={{display: 'flex', alignItems: 'center'}}>
-      <RSInput type="radio" value={'1'} onChange={console.log} />
-      <span> </span>
-      <RSInput type="radio" value={'1'} checked onChange={console.log} />
-      <span> </span>
-      <RSInput type="radio" value={'1'} disabled onChange={console.log} />
-      <span> </span>
-      <RSInput type="radio" value={'1'} disabled checked onChange={console.log} />
-    </div>
-  </Root>
-</Playground>
-
-### Adding labels and event handling
-
-<Playground>
-  <Root>
-    <FormContainer
-      initialValues={{
-        special: false,
-        available: true
-      }}
-    >
+    <FormContainer initialValues={{level: '1'}}>
       {({values, handleChangeEvent}) => (
         <>
-          {values.special}
-          <label htmlFor="special">
-            <RSInput
-              type="checkbox"
-              id="special"
-              name="special"
-              checked={values.special}
-              onChange={handleChangeEvent}
-            />
-            Special
-          </label>
+          <RSInput
+            type="radio"
+            value="1"
+            checked={values.level === '1'}
+            name="level"
+            onChange={handleChangeEvent}
+          />
           <span> </span>
-          <label htmlFor="available">
-            <RSInput
-              type="checkbox"
-              id="available"
-              name="available"
-              checked={values.available}
-              onChange={handleChangeEvent}
-            />
-            Available
-          </label>
+          <RSInput
+            type="radio"
+            value="2"
+            checked={values.level === '2'}
+            name="level"
+            onChange={handleChangeEvent}
+          />
+          <span> </span>
+          <RSInput type="radio" name="choice2" disabled onChange={console.log} />
+          <span> </span>
+          <RSInput type="radio" name="choice2" disabled checked onChange={console.log} />
         </>
-      )}
-    </FormContainer>
-  </Root>
-</Playground>
-
-<Playground>
-  <Root>
-    <FormContainer initialValues={{team: '2'}}>
-      {({values: {team}, handleChangeEvent}) => (
-        <div style={{display: 'flex', alignItems: 'center'}}>
-          {items.slice(0, 3).map(({id, team: text}) => (
-            <label key={id} htmlFor={id} style={{display: 'inline-flex', marginRight: '1rem'}}>
-              <RSInput
-                type="radio"
-                name="team"
-                value={id}
-                id={id}
-                checked={team === id}
-                onChange={handleChangeEvent}
-              />
-              <span>{text}</span>
-            </label>
-          ))}
-        </div>
       )}
     </FormContainer>
   </Root>
@@ -230,7 +189,7 @@ the callback function is called passing the **value** of the field instead of an
   <Root>
     <FormContainer initialValues={{accept: false}}>
       {({values, onChange}) => {
-        const ref = React.createRef();
+        const ref = React.useRef(null);
         return (
           <Form onSubmit={console.log}>
             <CheckboxInput
@@ -238,6 +197,7 @@ the callback function is called passing the **value** of the field instead of an
               label={'I accept'}
               value={values.accept}
               onChange={onChange('accept')}
+              required
             />
             <br />
             <CheckboxInput
