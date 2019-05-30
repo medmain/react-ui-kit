@@ -56,19 +56,20 @@ export class CheckingRefs extends React.Component {
           onChange={this.handleChange}
         />
         <hr />
-        <label style={{display: 'flex', alignItems: 'center'}}>
+        <div style={{display: 'flex', alignItems: 'center'}}>
           <RSInput
+            id="accept"
             name="accept"
             type="checkbox"
             checked={values.accept === true}
             ref={this.inputRefs[2]}
             onChange={this.handleChange}
           />
-          <div style={{marginLeft: '0.5rem'}}>I accept</div>
-        </label>
+          <label htmlFor="accept">I accept</label>
+        </div>
         <hr />
-        <div style={{display: 'flex', alignItems: 'center'}}>
-          <label>
+        <div style={{}}>
+          <div style={{display: 'flex', alignItems: 'center'}}>
             <RSInput
               name="choice"
               type="radio"
@@ -77,9 +78,9 @@ export class CheckingRefs extends React.Component {
               ref={this.inputRefs[3]}
               onChange={this.handleChange}
             />
-            <span>Celtics</span>
-          </label>
-          <label>
+            <label>Celtics</label>
+          </div>
+          <div style={{display: 'flex', alignItems: 'center'}}>
             <RSInput
               name="choice"
               type="radio"
@@ -87,8 +88,8 @@ export class CheckingRefs extends React.Component {
               checked={values.choice === 'Lakers'}
               onChange={this.handleChange}
             />
-            <span>Lakers</span>
-          </label>
+            <label>Lakers</label>
+          </div>
         </div>
         <hr />
         <p>Push the buttons to set the focus on...</p>

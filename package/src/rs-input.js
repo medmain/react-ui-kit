@@ -11,41 +11,53 @@ export class RSInput extends React.Component {
     disabled: PropTypes.bool
   };
 
-  getCustomComponent() {
-    const {type} = this.props;
+  render() {
+    const {forwardedRef, type, ...props} = this.props;
 
-    if (type === 'checkbox') {
-      return CheckboxMark;
+    switch (type) {
+      case 'checkbox':
+      case 'radio':
+        return <ToggleInput {...this.props} />;
+      default:
+        return <OriginalRSInput {...props} ref={forwardedRef} />;
     }
-    if (type === 'radio') {
-      return RadioMark;
-    }
-
-    return undefined;
   }
+}
+
+class ToggleInput extends React.Component {
+  inputRef = this.props.forwardedRef || React.createRef();
+
+  handleClick = ({nativeEvent: {shiftKey}}) => {
+    const element = this.inputRef.current.domElement;
+    const event = new MouseEvent('click', {
+      bubbles: true,
+      shiftKey
+    });
+    element.dispatchEvent(event);
+  };
 
   render() {
-    const {forwardedRef, ...props} = this.props;
-    const CustomComponent = this.getCustomComponent();
+    const {type, checked, forwardedRef, ...props} = this.props;
 
-    if (!CustomComponent) {
-      return <OriginalRSInput {...props} ref={forwardedRef} />;
-    }
+    const CustomComponent = type === 'checkbox' ? CheckboxMark : RadioMark;
 
     return (
       <>
-        <CustomComponent {...props} style={{cursor: props.disabled ? 'not-allowed' : 'pointer'}} />
+        <CustomComponent {...this.props} onClick={this.handleClick} />
         <OriginalRSInput
-          ref={forwardedRef}
+          ref={this.inputRef}
           {...props}
+          checked={checked}
+          type={type}
           style={{
             // Styles used to hide the underlying `<input>` tag.
             // Don't use `display: 'none'` to be able to focus the checkbox with the keyboard
-            // Don't use `width: 0, height: 0`, otherwise HTML field validation messages don't show up
             opacity: 0,
             overflow: 'hidden',
             margin: 0,
-            padding: 0
+            padding: 0,
+            width: '0.5rem', // don't set to 0: HTML field validation messages don't show up in Chrome
+            height: '0.5rem'
           }}
         />
       </>
@@ -59,6 +71,7 @@ export class RSInput extends React.Component {
 class CheckboxMark extends React.Component {
   static propTypes = {
     checked: PropTypes.bool,
+    onClick: PropTypes.func,
     disabled: PropTypes.bool,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
@@ -66,7 +79,7 @@ class CheckboxMark extends React.Component {
   };
 
   render() {
-    const {disabled, checked, style, theme: t, styles: s} = this.props;
+    const {checked, onClick, disabled, style, theme: t, styles: s} = this.props;
 
     const getBackgroundColor = () => {
       if (disabled) {
@@ -103,6 +116,7 @@ class CheckboxMark extends React.Component {
 
     return (
       <span
+        onClick={onClick}
         style={{
           ...s.border,
           ...s.rounded,
@@ -110,13 +124,16 @@ class CheckboxMark extends React.Component {
           display: 'inline-block',
           width: '20px',
           height: '20px',
-          margin: '2px',
           borderWidth: '2px',
           borderColor: !checked && !disabled ? t.grayIconColor : 'transparent',
           backgroundColor: getBackgroundColor(),
           backgroundImage: checked ? `url('data:image/svg+xml,${inlineSVG}')` : null,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          MozUserSelect: 'none',
+          WebkitUserSelect: 'none',
+          userSelect: 'none',
           transitionDuration: '0.3s',
           ...style
         }}
@@ -129,13 +146,14 @@ class CheckboxMark extends React.Component {
 class RadioMark extends React.Component {
   static propTypes = {
     checked: PropTypes.bool,
+    onClick: PropTypes.func,
     disabled: PropTypes.bool,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired
   };
 
   render() {
-    const {disabled, checked, style, theme: t} = this.props;
+    const {checked, onClick, disabled, style, theme: t} = this.props;
 
     const getOuterColor = () => {
       if (disabled) {
@@ -156,17 +174,18 @@ class RadioMark extends React.Component {
 
     return (
       <div
+        onClick={onClick}
         style={{
           display: 'flex',
+          flexShrink: 0,
           alignItems: 'center',
           backgroundColor: getOuterColor(),
           borderRadius: '50%',
           width: '20px',
           height: '20px',
           justifyContent: 'center',
-          margin: '2px',
           verticalAlign: 'middle',
-          flexShrink: 0,
+          cursor: disabled ? 'not-allowed' : 'pointer',
           ...style
         }}
       >

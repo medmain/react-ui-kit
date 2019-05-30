@@ -130,8 +130,10 @@ Check/uncheck boxes in the first column
     }
     return (
       <Root>
-        <p>{selectionInfo()}</p>
-        <List columns={columns} items={items} selection={selection} onSelect={setSelection} onItemClick={console.log} />
+        <VerticalContainer height={300}>
+          <p>{selectionInfo()}</p>
+          <List columns={columns} items={items} selection={selection} onSelect={setSelection} onItemClick={console.log} />
+        </VerticalContainer>
       </Root>
     );
 
