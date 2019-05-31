@@ -12,6 +12,7 @@ export * from './chevron-right';
 export * from './chevron-up';
 export * from './close';
 export * from './download';
+export * from './file';
 export * from './fullscreen-enter';
 export * from './fullscreen-exit';
 export * from './remove';
