@@ -9,8 +9,9 @@ export class DropdownMenu extends React.Component {
   static propTypes = {
     alignment: PropTypes.oneOf(['left', 'right']),
     disabled: PropTypes.bool,
-    label: PropTypes.string,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     position: PropTypes.oneOf(['bottom', 'top']),
+    showChevronIcon: PropTypes.func,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired,
@@ -21,6 +22,7 @@ export class DropdownMenu extends React.Component {
     alignment: 'left',
     position: 'bottom',
     disabled: false,
+    showChevronIcon: true,
     style: {}
   };
 
@@ -51,7 +53,17 @@ export class DropdownMenu extends React.Component {
   };
 
   render() {
-    const {alignment, label, position, disabled, style, theme: t, styles: s, children} = this.props;
+    const {
+      alignment,
+      disabled,
+      position,
+      label,
+      showChevronIcon,
+      style,
+      theme: t,
+      styles: s,
+      children
+    } = this.props;
     const {isOpen} = this.state;
 
     const Icon = position === 'top' ? ChevronUpIcon : ChevronDownIcon;
@@ -104,16 +116,18 @@ export class DropdownMenu extends React.Component {
         }}
       >
         <Button onClick={this.open} disabled={disabled}>
-          {label}
-          <Icon
-            size={20}
-            style={{
-              display: 'inline-block',
-              verticalAlign: 'top',
-              marginRight: '-0.25rem',
-              marginLeft: '0.25rem'
-            }}
-          />
+          {typeof label === 'function' ? label() : label}
+          {showChevronIcon && (
+            <Icon
+              size={20}
+              style={{
+                display: 'inline-block',
+                verticalAlign: 'top',
+                marginRight: '-0.25rem',
+                marginLeft: '0.25rem'
+              }}
+            />
+          )}
         </Button>
         {isOpen && (
           <div style={dropdownStyle}>
