@@ -11,7 +11,7 @@ export class DropdownMenu extends React.Component {
     disabled: PropTypes.bool,
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     position: PropTypes.oneOf(['bottom', 'top']),
-    showChevronIcon: PropTypes.func,
+    showChevronIcon: PropTypes.bool,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired,
