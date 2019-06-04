@@ -4,7 +4,7 @@ route: /dropdown-menu
 ---
 
 import {Playground} from 'docz';
-import {DropdownMenu, DropdownItem, Col, Row, AccountIcon} from '@medmain/react-ui-kit';
+import {DropdownMenu, MenuItem, Col, Row, AccountIcon} from '@medmain/react-ui-kit';
 
 import Root from '../components/root';
 
@@ -22,14 +22,14 @@ Using the default options: `position="top"` and `alignment="left"`
       </Col>
       <Col>
         <DropdownMenu label={'Actions'} position="top">
-          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
-          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
+          <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
+          <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
         </DropdownMenu>
       </Col>
       <Col>
         <DropdownMenu label={'Disabled menu'} position="top" alignment="right" disabled>
-          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
-          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
+          <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
+          <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
         </DropdownMenu>
       </Col>
     </Row>
@@ -46,42 +46,8 @@ Updating the options: `position="bottom"` and `alignment="right"`
       </Col>
       <Col>
         <DropdownMenu label={'Actions'} position="bottom" alignment="right">
-          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
-          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
-        </DropdownMenu>
-      </Col>
-      <Col>
-        <span />
-      </Col>
-    </Row>
-  </Root>
-</Playground>
-
-## Custom label
-
-Using JSX code for the `label` and hiding the default chevron icons
-
-<Playground>
-  <Root>
-    <Row>
-      <Col>
-        <span />
-      </Col>
-      <Col>
-        <DropdownMenu
-          label={() => (
-            <div style={{display: 'inline-flex', alignItems: 'center'}}>
-              <AccountIcon size={24} color={'#888'} />
-              <span style={{marginLeft: '.5rem'}}>Kawhi Leonard</span>
-            </div>
-          )}
-          showChevronIcon={false}
-          position="bottom"
-          alignment="right"
-        >
-          <DropdownItem onClick={console.log}>My account</DropdownItem>
-          <DropdownItem onClick={console.log}>Admin</DropdownItem>
-          <DropdownItem onClick={console.log}>Sign out</DropdownItem>
+          <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
+          <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
         </DropdownMenu>
       </Col>
       <Col>
