@@ -1,0 +1,45 @@
+---
+name: Menu
+route: /menu
+---
+
+import {Playground} from 'docz';
+import {Menu, MenuItem, MenuDivider, Popover, Button} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+
+# Menu
+
+Raw menu
+
+<Playground>
+  <Root>
+    <Menu>
+      <MenuItem onClick={console.log}>Edit</MenuItem>
+      <MenuItem onClick={console.log}>Clone</MenuItem>
+      <MenuItem disabled>A disabled feature</MenuItem>
+      <MenuDivider />
+      <MenuItem onClick={console.log}>Delete</MenuItem>
+    </Menu>
+  </Root>
+</Playground>
+
+Included in a Popover
+
+<Playground>
+  <Root>
+    <Popover
+      content={
+        <Menu>
+          <MenuItem onClick={console.log}>Edit</MenuItem>
+          <MenuItem onClick={console.log}>Clone</MenuItem>
+          <MenuItem disabled>Disabled feature</MenuItem>
+          <MenuDivider />
+          <MenuItem onClick={console.log}>Delete</MenuItem>
+        </Menu>
+      }
+    >
+      <Button>Show menu</Button>
+    </Popover>
+  </Root>
+</Playground>

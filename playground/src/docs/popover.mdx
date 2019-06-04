@@ -1,0 +1,89 @@
+---
+name: Popover
+route: /popover
+---
+
+import {Playground} from 'docz';
+import {Popover, Button} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+import {VerticalContainer} from '../components/vertical-container';
+
+# Dropdown menu
+
+## Basic
+
+Using the default options: `position="top"` and `alignment="left"`
+
+<Playground>
+  <Root>
+    <div style={{height: 300}}>
+      <Popover
+        content={
+          <div
+            style={{
+              width: 240,
+              height: 240,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            <div>Popover Content</div>
+          </div>
+        }
+      >
+        <Button>Trigger Popover at the bottom</Button>
+      </Popover>{' '}
+      <Popover
+        position={'top'}
+        content={
+          <div
+            style={{
+              width: 240,
+              height: 240,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            <div>Popover Content</div>
+          </div>
+        }
+      >
+        <Button>Trigger Popover at the top</Button>
+      </Popover>
+    </div>
+  </Root>
+</Playground>
+
+Using a render function to access `isOPen` state from the toggle button
+
+<Playground>
+  <Root>
+    <div style={{height: 300}}>
+      <Popover
+        content={({close}) => (
+          <div
+            style={{
+              width: 240,
+              height: 240,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            <div>Popover Content</div>
+          </div>
+        )}
+      >
+        {({isOpen, open}) => (
+          <Button onClick={open}>Trigger Popover {isOpen ? '(open)' : '(close)'}</Button>
+        )}
+      </Popover>
+    </div>
+  </Root>
+</Playground>
