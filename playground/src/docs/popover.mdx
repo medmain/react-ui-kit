@@ -9,11 +9,17 @@ import {Popover, Button} from '@medmain/react-ui-kit';
 import Root from '../components/root';
 import {VerticalContainer} from '../components/vertical-container';
 
-# Dropdown menu
+# Popover
+
+The Popover component displays floating content in relation to a target.
 
 ## Basic
 
-Using the default options: `position="top"` and `alignment="left"`
+Checking the 3 positions:
+
+- `"bottom"` (default)
+- `"top"`
+- `"cursor"`
 
 <Playground>
   <Root>
@@ -34,7 +40,7 @@ Using the default options: `position="top"` and `alignment="left"`
           </div>
         }
       >
-        <Button>Trigger Popover at the bottom</Button>
+        {({open}) => <Button onClick={open}>Trigger Popover at the bottom</Button>}
       </Popover>{' '}
       <Popover
         position={'top'}
@@ -53,13 +59,66 @@ Using the default options: `position="top"` and `alignment="left"`
           </div>
         }
       >
-        <Button>Trigger Popover at the top</Button>
+        {({open}) => <Button onClick={open}>Trigger Popover at the top</Button>}
+      </Popover>
+      <br />
+      <br />
+      <Popover
+        position={'cursor'}
+        content={
+          <div
+            style={{
+              width: 240,
+              height: 240,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            <div>Popover Content</div>
+          </div>
+        }
+      >
+        {({open}) => <Button onClick={open}>Trigger Popover at the cursor position</Button>}
       </Popover>
     </div>
   </Root>
 </Playground>
 
-Using a render function to access `isOPen` state from the toggle button
+## Alignment
+
+<Playground>
+  <Root>
+    <div style={{height: 300}}>
+      <Popover
+        alignment="right"
+        content={
+          <div
+            style={{
+              width: 240,
+              height: 240,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            <div>Popover Content</div>
+          </div>
+        }
+      >
+        {({open}) => <Button onClick={open}>Content align at the right</Button>}
+      </Popover>
+    </div>
+  </Root>
+</Playground>
+
+## State
+
+Accessing the `isOpen` state from the toggle button.
+
+The content of the toggle button will change, depending on the state.
 
 <Playground>
   <Root>
@@ -81,7 +140,7 @@ Using a render function to access `isOPen` state from the toggle button
         )}
       >
         {({isOpen, open}) => (
-          <Button onClick={open}>Trigger Popover {isOpen ? '(open)' : '(close)'}</Button>
+          <Button onClick={open}>Trigger Popover (state: {isOpen ? 'open' : 'close'})</Button>
         )}
       </Popover>
     </div>

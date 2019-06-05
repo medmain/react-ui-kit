@@ -34,18 +34,20 @@ export class DropdownMenu extends React.Component {
 
     return (
       <Popover {...this.props} content={() => <Menu>{children}</Menu>}>
-        <Button disabled={disabled}>
-          {label}
-          <Icon
-            size={20}
-            style={{
-              display: 'inline-block',
-              verticalAlign: 'top',
-              marginRight: '-0.25rem',
-              marginLeft: '0.25rem'
-            }}
-          />
-        </Button>
+        {({open}) => (
+          <Button onClick={open} disabled={disabled}>
+            {label}
+            <Icon
+              size={20}
+              style={{
+                display: 'inline-block',
+                verticalAlign: 'top',
+                marginRight: '-0.25rem',
+                marginLeft: '0.25rem'
+              }}
+            />
+          </Button>
+        )}
       </Popover>
     );
   }

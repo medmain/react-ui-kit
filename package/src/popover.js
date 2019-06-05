@@ -9,24 +9,23 @@ export class Popover extends React.Component {
     alignment: PropTypes.oneOf(['left', 'right']),
     disabled: PropTypes.bool,
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-    position: PropTypes.oneOf(['bottom', 'top']),
-    showChevronIcon: PropTypes.bool,
+    position: PropTypes.oneOf(['bottom', 'top', 'cursor']),
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired,
-    children: PropTypes.oneOfType([PropTypes.func, PropTypes.node])
+    children: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     alignment: 'left',
     position: 'bottom',
     disabled: false,
-    showChevronIcon: true,
     style: {}
   };
 
   state = {
-    isOpen: false
+    isOpen: false,
+    overlayPosition: {} // where to position the overlay when the Popover position is "cursor"
   };
 
   componentDidMount() {
@@ -37,10 +36,17 @@ export class Popover extends React.Component {
     document.removeEventListener('click', this.close);
   }
 
-  open = () => {
+  open = (event, context) => {
+    const {offsetX, offsetY} = event.nativeEvent;
+
+    const overlayPosition = {
+      x: event.target.offsetLeft + offsetX,
+      y: event.target.offsetTop + offsetY
+    };
+
     if (!this.state.isOpen) {
       setTimeout(() => {
-        this.setState({isOpen: true});
+        this.setState({isOpen: true, overlayPosition, context});
       }, 30);
     }
   };
@@ -53,7 +59,7 @@ export class Popover extends React.Component {
 
   render() {
     const {content, alignment, position, style, theme: t, styles: s, children} = this.props;
-    const {isOpen} = this.state;
+    const {isOpen, overlayPosition, context} = this.state;
 
     const dropdownContentOffset = '4px';
 
@@ -72,6 +78,15 @@ export class Popover extends React.Component {
         bottom: '100%',
         paddingBottom: dropdownContentOffset,
         top: 'auto'
+      };
+    }
+
+    if (position === 'cursor') {
+      alignmentStyle = {
+        ...alignmentStyle,
+        bottom: 'auto',
+        left: overlayPosition.x,
+        top: overlayPosition.y
       };
     }
 
@@ -103,13 +118,11 @@ export class Popover extends React.Component {
           display: 'inline-block'
         }}
       >
-        {typeof children === 'function' ?
-          children({isOpen, open: this.open}) :
-          React.cloneElement(children, {onClick: this.open})}
+        {children({isOpen, open: this.open})}
         {isOpen && (
           <div style={containerStyle}>
             <div style={contentStyle}>
-              {typeof content === 'function' ? content({close: this.close}) : content}
+              {typeof content === 'function' ? content({close: this.close, ...context}) : content}
             </div>
           </div>
         )}
