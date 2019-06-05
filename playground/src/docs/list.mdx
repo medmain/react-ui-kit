@@ -13,7 +13,9 @@ import {
   ListFooter,
   ListRow,
   ListCell,
-  Badge
+  Badge,
+  Menu,
+  MenuItem
 } from '@medmain/react-ui-kit';
 import {ItemSelection} from '@medmain/core';
 
@@ -23,6 +25,7 @@ import {columns, items} from './list-helpers/list-simple-content';
 import {columns as scanColumns, items as scanItems} from './list-helpers/list-long-content';
 import {generateRandomListContent} from './list-helpers/list-random-content';
 import {useSortOptions, sortItems} from './list-helpers/list-sort-options';
+import {ListWithMenu} from './list-helpers/list-with-menu';
 
 # List component
 
@@ -128,17 +131,34 @@ Check/uncheck boxes in the first column
       if (count === 0) return 'No items selected'
       return `${count} item(s) ${mode === 'pick' ? 'picked' : 'omitted'}`
     }
+
     return (
       <Root>
         <VerticalContainer height={300}>
           <p>{selectionInfo()}</p>
-          <List columns={columns} items={items} selection={selection} onSelect={setSelection} onItemClick={console.log} />
+          <List
+            columns={columns}
+            items={items}
+            selection={selection}
+            onSelect={setSelection}
+            onItemClick={console.log}
+          />
         </VerticalContainer>
       </Root>
     );
 
 }}
 
+</Playground>
+
+### With a context menu
+
+<Playground>
+  <Root>
+    <VerticalContainer height={300}>
+      <ListWithMenu />
+    </VerticalContainer>
+  </Root>
 </Playground>
 
 ### More columns

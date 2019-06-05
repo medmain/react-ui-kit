@@ -9,10 +9,61 @@ import {withLocale} from './locale-context';
 
 import {ChevronUpIcon} from './icons/chevron-up';
 import {ChevronDownIcon} from './icons/chevron-down';
+import {Popover} from './popover';
+export class List extends React.Component {
+  render() {
+    const {renderContextMenu, style} = this.props;
+
+    return (
+      <div style={{overflow: 'auto', ...style}}>
+        {renderContextMenu ? <ListWithMenu {...this.props} /> : <BaseList {...this.props} />}
+      </div>
+    );
+  }
+}
+
+class ListWithMenu extends React.Component {
+  // We do like GMail after a right click on a row:
+  // Do nothing if the row item was already selected, otherwise select ONLY the row item.
+  selectContextMenuItem(itemId) {
+    let {onSelect, selection} = this.props;
+
+    if (!selection.isItemSelected(itemId)) {
+      selection = selection.toggleAllItems(false);
+      selection = selection.toggleItem(itemId, true);
+      onSelect(selection);
+    }
+  }
+
+  render() {
+    const {renderContextMenu} = this.props;
+    return (
+      <Popover content={renderContextMenu} position={'cursor'}>
+        {({open}) => {
+          const openContextMenu = async (event, {item, index}) => {
+            await open(event, {item, index});
+            this.selectContextMenuItem(item.id);
+          };
+          return (
+            <BaseList
+              {...this.props}
+              openContextMenu={openContextMenu}
+              style={{
+                MozUserSelect: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none'
+              }}
+            />
+          );
+        }}
+      </Popover>
+    );
+  }
+}
 
 @withLocale
 @withRadiumStarter
-export class List extends React.Component {
+export class BaseList extends React.Component {
   static propTypes = {
     columns: PropTypes.array.isRequired,
     columnDefaults: PropTypes.shape({shrink: PropTypes.bool, truncate: PropTypes.bool}),
@@ -24,6 +75,7 @@ export class List extends React.Component {
     orderDirection: PropTypes.string,
     selection: PropTypes.object,
     onSelect: PropTypes.func,
+    openContextMenu: PropTypes.func,
     style: PropTypes.object,
     locale: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
@@ -67,6 +119,15 @@ export class List extends React.Component {
     return path;
   }
 
+  handleContextMenu = (event, {item, index}) => {
+    const {openContextMenu} = this.props;
+
+    if (openContextMenu) {
+      event.preventDefault();
+      openContextMenu(event, {item, index});
+    }
+  };
+
   render() {
     const {
       columns: rawColumns,
@@ -94,8 +155,7 @@ export class List extends React.Component {
     return (
       <>
         <ListRoot
-          style={style}
-          tableStyle={{tableLayout: enableScrolling || hasTruncatedColumn ? 'fixed' : 'auto'}}
+          style={{...style, tableLayout: enableScrolling || hasTruncatedColumn ? 'fixed' : 'auto'}}
         >
           <ListHeader>
             <ListRow>
@@ -156,6 +216,8 @@ export class List extends React.Component {
                   {selection && (
                     <ListCell
                       key={name}
+                      isItemSelected={selection?.isItemSelected(item.id)}
+                      onContextMenu={event => this.handleContextMenu(event, {item, index})}
                       style={{
                         width: '28px',
                         verticalAlign: 'middle',
@@ -187,8 +249,10 @@ export class List extends React.Component {
                               onItemClick(item, path);
                             })
                           }
+                          onContextMenu={event => this.handleContextMenu(event, {item, index})}
                           tooltip={getCellTooltipLabel({item, tooltip, content, truncate})}
                           truncate={truncate}
+                          isItemSelected={selection?.isItemSelected(item.id)}
                           style={{width, ...columnStyle, ...evaluate(cellStyle, item, index)}}
                         >
                           {this.renderCellContent({content, item, path})}
@@ -295,33 +359,25 @@ const RowContext = React.createContext();
 export class ListRoot extends React.Component {
   static propTypes = {
     style: PropTypes.object,
-    tableStyle: PropTypes.object,
     children: PropTypes.node.isRequired,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired
   };
 
   render() {
-    const {style, tableStyle, children} = this.props;
+    const {style, children} = this.props;
 
     return (
-      <div
+      <table
         style={{
-          overflow: 'auto',
+          width: '100%',
+          borderCollapse: 'collapse',
+          borderSpacing: 0,
           ...style
         }}
       >
-        <table
-          style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            borderSpacing: 0,
-            ...tableStyle
-          }}
-        >
-          {children}
-        </table>
-      </div>
+        {children}
+      </table>
     );
   }
 }
@@ -453,6 +509,7 @@ export class ListCell extends React.Component {
     onClick: PropTypes.func,
     tooltip: PropTypes.string,
     truncate: PropTypes.bool,
+    isItemSelected: PropTypes.bool,
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired,
@@ -460,7 +517,17 @@ export class ListCell extends React.Component {
   };
 
   render() {
-    let {onClick, tooltip, truncate, style, children, styles: s, theme: t} = this.props;
+    let {
+      onClick,
+      onContextMenu,
+      tooltip,
+      isItemSelected,
+      truncate,
+      style,
+      children,
+      styles: s,
+      theme: t
+    } = this.props;
 
     if (onClick) {
       style = {cursor: 'pointer', ...style};
@@ -489,9 +556,14 @@ export class ListCell extends React.Component {
             };
           }
 
+          if (type === 'BODY' && isItemSelected) {
+            style.backgroundColor = '#c2dbff';
+          }
+
           return (
             <td
               onClick={onClick}
+              onContextMenu={onContextMenu}
               title={tooltip}
               style={{
                 padding: '8px',
