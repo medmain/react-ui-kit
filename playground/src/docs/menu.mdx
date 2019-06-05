@@ -39,7 +39,7 @@ Included in a Popover
         </Menu>
       }
     >
-      <Button>Show menu</Button>
+      {({open}) => <Button onClick={open}>Show menu</Button>}
     </Popover>
   </Root>
 </Playground>
