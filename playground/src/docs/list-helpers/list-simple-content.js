@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const columns = [
   // Using the `path` property to render the cell
   {
@@ -9,7 +11,7 @@ export const columns = [
     path: 'firstName',
     width: '200px',
     headerCell: 'First name',
-    bodyCell: item => item.firstName,
+    bodyCell: item => <span>{item.firstName}</span>, // extra <span> tag useful to check pointer position detection, see context menu example
     footerCell: 'Footer 1'
   },
   {

@@ -25,7 +25,9 @@ export class Popover extends React.Component {
 
   state = {
     isOpen: false,
-    overlayPosition: {} // where to position the overlay when the Popover position is "cursor"
+    overlayPosition: {}, // where to position the overlay when the Popover position is "cursor"
+    moved: false, // track if the overlay has just been moved (useful to "move" a context menu already displayed)
+    context: undefined // data from the customer, to be passed to the context menu
   };
 
   componentDidMount() {
@@ -36,24 +38,40 @@ export class Popover extends React.Component {
     document.removeEventListener('click', this.close);
   }
 
-  open = (event, context) => {
+  open = async (event, context) => {
+    const {position} = this.props;
+
     const {offsetX, offsetY} = event.nativeEvent;
+    const {offsetLeft, offsetTop} = event.currentTarget;
 
     const overlayPosition = {
-      x: event.target.offsetLeft + offsetX,
-      y: event.target.offsetTop + offsetY
+      x: offsetLeft + offsetX,
+      y: offsetTop + offsetY
     };
 
-    if (!this.state.isOpen) {
-      setTimeout(() => {
-        this.setState({isOpen: true, overlayPosition, context});
-      }, 30);
+    console.log(offsetY, offsetTop, overlayPosition.y);
+    console.log(event.currentTarget);
+
+    if (this.state.isOpen) {
+      if (position === 'cursor') {
+        this.setState({overlayPosition, moved: true, context});
+      }
+    } else {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          this.setState({isOpen: true, overlayPosition, context}, resolve);
+        }, 30);
+      });
     }
   };
 
   close = () => {
     if (this.state.isOpen) {
-      this.setState({isOpen: false});
+      if (!this.state.moved) {
+        this.setState({isOpen: false});
+      } else {
+        this.setState({moved: false});
+      }
     }
   };
 
