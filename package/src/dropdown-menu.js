@@ -61,7 +61,7 @@ export class DropdownMenu extends React.Component {
   }
 }
 
-export class DropdownMenuItem extends React.Component {
+export class DropdownItem extends React.Component {
   static propTypes = {
     close: PropTypes.func,
     children: PropTypes.node.isRequired
