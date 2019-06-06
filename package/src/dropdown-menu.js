@@ -1,10 +1,11 @@
 import React from 'react';
-import {withRadiumStarter} from 'radium-starter';
 import PropTypes from 'prop-types';
+import {withRadiumStarter} from 'radium-starter';
+
 import {Button} from './button';
 import {ChevronDownIcon, ChevronUpIcon} from './icons';
 import {Popover} from './popover';
-import {Menu} from './menu';
+import {Menu, MenuItem} from './menu';
 
 @withRadiumStarter
 export class DropdownMenu extends React.Component {
@@ -16,7 +17,7 @@ export class DropdownMenu extends React.Component {
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired,
-    children: PropTypes.node
+    children: PropTypes.node.isRequired
   };
 
   static defaultProps = {
@@ -33,9 +34,16 @@ export class DropdownMenu extends React.Component {
     const Icon = position === 'top' ? ChevronUpIcon : ChevronDownIcon;
 
     return (
-      <Popover {...this.props} content={() => <Menu>{children}</Menu>}>
-        {({open}) => (
-          <Button onClick={open} disabled={disabled}>
+      <Popover
+        {...this.props}
+        content={({close}) => {
+          return (
+            <Menu>{React.Children.map(children, child => React.cloneElement(child, {close}))}</Menu>
+          );
+        }}
+      >
+        {({toggle}) => (
+          <Button onClick={toggle} disabled={disabled}>
             {label}
             <Icon
               size={20}
@@ -49,6 +57,32 @@ export class DropdownMenu extends React.Component {
           </Button>
         )}
       </Popover>
+    );
+  }
+}
+
+export class DropdownMenuItem extends React.Component {
+  static propTypes = {
+    close: PropTypes.func,
+    children: PropTypes.node.isRequired
+  };
+
+  render() {
+    const {children, ...props} = this.props;
+
+    const handleClick = (...params) => {
+      const {onClick, close} = this.props;
+
+      if (close) {
+        close();
+      }
+      onClick(...params);
+    };
+
+    return (
+      <MenuItem {...props} onClick={handleClick}>
+        {children}
+      </MenuItem>
     );
   }
 }
