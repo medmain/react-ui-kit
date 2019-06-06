@@ -16,7 +16,7 @@ export class List extends React.Component {
 
     return (
       <div style={{overflow: 'auto', ...style}}>
-        {renderContextMenu ? <ListWithMenu {...this.props} /> : <BaseList {...this.props} />}
+        {renderContextMenu ? <ListWithMenu {...this.props} /> : <BasicList {...this.props} />}
       </div>
     );
   }
@@ -40,12 +40,12 @@ class ListWithMenu extends React.Component {
     return (
       <Popover content={renderContextMenu} position={'cursor'}>
         {({open}) => {
-          const openContextMenu = async (event, {item, index}) => {
-            await open(event, {item, index});
+          const openContextMenu = (event, {item, index}) => {
+            open(event, {item, index});
             this.selectContextMenuItem(item.id);
           };
           return (
-            <BaseList
+            <BasicList
               {...this.props}
               openContextMenu={openContextMenu}
               style={{
@@ -63,7 +63,7 @@ class ListWithMenu extends React.Component {
 
 @withLocale
 @withRadiumStarter
-export class BaseList extends React.Component {
+export class BasicList extends React.Component {
   static propTypes = {
     columns: PropTypes.array.isRequired,
     columnDefaults: PropTypes.shape({shrink: PropTypes.bool, truncate: PropTypes.bool}),

@@ -10,7 +10,9 @@ import Root from '../components/root';
 
 # Menu
 
-Raw menu
+## Raw menu
+
+Including a disabled item and a separator `<MenuDivider>`.
 
 <Playground>
   <Root>
@@ -24,20 +26,43 @@ Raw menu
   </Root>
 </Playground>
 
-Included in a Popover
+## Inside a `<Popover>` component.
+
+You have to call `close()` from onClick event handler by yourself, if you want to close the menu item when the user clicks on it.
 
 <Playground>
   <Root>
     <Popover
-      content={
+      content={({close}) => (
         <Menu>
-          <MenuItem onClick={console.log}>Edit</MenuItem>
-          <MenuItem onClick={console.log}>Clone</MenuItem>
+          <MenuItem
+            onClick={() => {
+              console.log('Edit me');
+              close();
+            }}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              console.log('Clone me');
+              close();
+            }}
+          >
+            Clone
+          </MenuItem>
           <MenuItem disabled>Disabled feature</MenuItem>
           <MenuDivider />
-          <MenuItem onClick={console.log}>Delete</MenuItem>
+          <MenuItem
+            onClick={() => {
+              console.log('Edit me');
+              close();
+            }}
+          >
+            Delete
+          </MenuItem>
         </Menu>
-      }
+      )}
     >
       {({open}) => <Button onClick={open}>Show menu</Button>}
     </Popover>
