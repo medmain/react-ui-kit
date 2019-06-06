@@ -26,61 +26,86 @@ export class Popover extends React.Component {
   state = {
     isOpen: false,
     overlayPosition: {}, // where to position the overlay when the Popover position is "cursor"
-    moved: false, // track if the overlay has just been moved (useful to "move" a context menu already displayed)
     context: undefined // data from the customer, to be passed to the context menu
   };
 
-  componentDidMount() {
-    document.addEventListener('click', this.close);
-  }
+  targetRef = React.createRef(); // to access the element that triggers the popover (a button for example)
+
+  popoverRef = React.createRef();
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.close);
+    this.cleanup();
   }
 
-  open = async (event, context) => {
-    const {position} = this.props;
+  cleanup = () => {
+    document.body.removeEventListener('click', this.handleBodyClick);
+    document.body.removeEventListener('keydown', this.handleBodyKeyDown);
+  };
 
-    const {offsetX, offsetY} = event.nativeEvent;
-    const {offsetLeft, offsetTop} = event.currentTarget;
-
-    const overlayPosition = {
-      x: offsetLeft + offsetX,
-      y: offsetTop + offsetY
-    };
-
-    console.log(offsetY, offsetTop, overlayPosition.y);
-    console.log(event.currentTarget);
-
-    if (this.state.isOpen) {
-      if (position === 'cursor') {
-        this.setState({overlayPosition, moved: true, context});
-      }
-    } else {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          this.setState({isOpen: true, overlayPosition, context}, resolve);
-        }, 30);
-      });
+  handleBodyClick = event => {
+    if (this.isOutsideClick(event)) {
+      this.close(); // close if the user has clicked outside the popover
     }
   };
 
-  close = () => {
-    if (this.state.isOpen) {
-      if (!this.state.moved) {
-        this.setState({isOpen: false});
-      } else {
-        this.setState({moved: false});
-      }
+  isOutsideClick = event => {
+    const targetNode = this.targetRef.current;
+    const popoverNode = this.popoverRef.current;
+
+    if (targetNode.contains(event.target)) {
+      return false;
     }
+
+    if (popoverNode.contains(event.target)) {
+      return false;
+    }
+
+    return true;
+  };
+
+  handleBodyKeyDown = e => {
+    if (e.keyCode === 27) {
+      this.close(); // Escape key
+    }
+  };
+
+  open = (event, context) => {
+    const overlayPosition = this.getOverlayPosition(event);
+
+    this.setState({isOpen: true, overlayPosition, context});
+
+    document.body.addEventListener('click', this.handleBodyClick);
+    document.body.addEventListener('keydown', this.handleBodyKeyDown);
+  };
+
+  close = () => {
+    this.setState({isOpen: false});
+    this.cleanup();
+  };
+
+  toggle = (...params) => {
+    if (this.state.isOpen) {
+      this.close(...params);
+    } else {
+      this.open(...params);
+    }
+  };
+
+  getOverlayPosition = event => {
+    const {offsetX, offsetY} = event.nativeEvent;
+    const {offsetLeft, offsetTop} = event.currentTarget;
+
+    return {
+      x: offsetLeft + offsetX,
+      y: offsetTop + offsetY
+    };
   };
 
   render() {
     const {content, alignment, position, style, theme: t, styles: s, children} = this.props;
     const {isOpen, overlayPosition, context} = this.state;
 
-    const dropdownContentOffset = '4px';
-
+    const overlayOffset = '4px';
     let alignmentStyle = {};
 
     if (alignment === 'right') {
@@ -94,7 +119,7 @@ export class Popover extends React.Component {
       alignmentStyle = {
         ...alignmentStyle,
         bottom: '100%',
-        paddingBottom: dropdownContentOffset,
+        paddingBottom: overlayOffset,
         top: 'auto'
       };
     }
@@ -108,27 +133,6 @@ export class Popover extends React.Component {
       };
     }
 
-    const containerStyle = {
-      position: 'absolute',
-      display: 'block',
-      left: 0,
-      minWidth: '10rem',
-      paddingTop: dropdownContentOffset,
-      top: '100%',
-      zIndex: 4000,
-      ...alignmentStyle,
-      ...style
-    };
-
-    const contentStyle = {
-      ...s.border,
-      ...s.rounded,
-      borderColor: t.buttonBorderColor,
-      backgroundColor: t.buttonBackgroundColor,
-      paddingBottom: '0.5rem',
-      paddingTop: '0.5rem'
-    };
-
     return (
       <div
         style={{
@@ -136,10 +140,34 @@ export class Popover extends React.Component {
           display: 'inline-block'
         }}
       >
-        {children({isOpen, open: this.open})}
+        <div ref={this.popoverRef}>
+          {children({isOpen, open: this.open, toggle: this.toggle, close: this.close})}
+        </div>
         {isOpen && (
-          <div style={containerStyle}>
-            <div style={contentStyle}>
+          <div
+            style={{
+              position: 'absolute',
+              display: 'block',
+              left: 0,
+              minWidth: '10rem',
+              paddingTop: overlayOffset,
+              top: '100%',
+              zIndex: 4000,
+              ...alignmentStyle,
+              ...style
+            }}
+          >
+            <div
+              ref={this.targetRef}
+              style={{
+                ...s.border,
+                ...s.rounded,
+                borderColor: t.buttonBorderColor,
+                backgroundColor: t.buttonBackgroundColor,
+                paddingBottom: '0.5rem',
+                paddingTop: '0.5rem'
+              }}
+            >
               {typeof content === 'function' ? content({close: this.close, ...context}) : content}
             </div>
           </div>

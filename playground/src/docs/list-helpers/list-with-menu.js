@@ -5,18 +5,40 @@ import {ItemSelection} from '@medmain/core';
 
 import {columns, items} from './list-simple-content';
 
-const ContextMenu = ({item}) => {
+const ContextMenu = ({close, item}) => {
   return (
     <Menu>
-      <MenuItem onClick={() => console.log('Edit', item)}>Edit</MenuItem>
-      <MenuItem onClick={() => console.log('Clone', item)}>Clone</MenuItem>
+      <MenuItem
+        onClick={() => {
+          console.log('Edit', item);
+          close();
+        }}
+      >
+        Edit
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          console.log('Clone', item);
+          close();
+        }}
+      >
+        Clone
+      </MenuItem>
       <MenuDivider />
-      <MenuItem onClick={() => console.log('Delete', item)}>Delete</MenuItem>
+      <MenuItem
+        onClick={() => {
+          console.log('Delete', item);
+          close();
+        }}
+      >
+        Delete
+      </MenuItem>
     </Menu>
   );
 };
 ContextMenu.propTypes = {
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  close: PropTypes.func.isRequired
 };
 
 export const ListWithMenu = () => {

@@ -13,6 +13,8 @@ import {VerticalContainer} from '../components/vertical-container';
 
 The Popover component displays floating content in relation to a target.
 
+The floating content can be closes by clicking outside or pushing the Escape key.
+
 ## Basic
 
 Checking the 3 positions:
@@ -40,7 +42,7 @@ Checking the 3 positions:
           </div>
         }
       >
-        {({open}) => <Button onClick={open}>Trigger Popover at the bottom</Button>}
+        {({toggle}) => <Button onClick={toggle}>Trigger Popover at the bottom</Button>}
       </Popover>{' '}
       <Popover
         position={'top'}
@@ -80,7 +82,7 @@ Checking the 3 positions:
           </div>
         }
       >
-        {({open}) => <Button onClick={open}>Trigger Popover at the cursor position</Button>}
+        {({toggle}) => <Button onClick={toggle}>Trigger Popover at the cursor position</Button>}
       </Popover>
     </div>
   </Root>
@@ -108,7 +110,7 @@ Checking the 3 positions:
           </div>
         }
       >
-        {({open}) => <Button onClick={open}>Content align at the right</Button>}
+        {({toggle}) => <Button onClick={toggle}>Content align at the right</Button>}
       </Popover>
     </div>
   </Root>
@@ -135,12 +137,14 @@ The content of the toggle button will change, depending on the state.
               flexDirection: 'column'
             }}
           >
-            <div>Popover Content</div>
+            <div>
+              Popover Content <Button onClick={close}>Close</Button>
+            </div>
           </div>
         )}
       >
-        {({isOpen, open}) => (
-          <Button onClick={open}>Trigger Popover (state: {isOpen ? 'open' : 'close'})</Button>
+        {({isOpen, toggle}) => (
+          <Button onClick={toggle}>Trigger Popover (state: {isOpen ? 'open' : 'close'})</Button>
         )}
       </Popover>
     </div>
