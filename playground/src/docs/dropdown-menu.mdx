@@ -4,17 +4,22 @@ route: /dropdown-menu
 ---
 
 import {Playground} from 'docz';
-import {DropdownMenu, DropdownMenuItem, Col, Row, AccountIcon} from '@medmain/react-ui-kit';
+import {DropdownMenu, DropdownItem, Col, Row, AccountIcon} from '@medmain/react-ui-kit';
 
 import Root from '../components/root';
 
 # Dropdown menu
 
-The `<Dropdown>` component puts together `<Popover>` and `<Menu>` to provide a convenient way to create menus displayed when the user pushes a button.
+The `<Dropdown>` component puts together `<Popover>` and `<Menu>` to provide a convenient way to create floating menus displayed when the user pushes a button.
+
+How to close the menu:
+
+- Click again on the button
+- Click outside the menu
+- Click on a menu item
+- Push the Escape key
 
 The icon dislayed inside the button depends on the position props.
-
-Clicking outside the menu, on the button itself, on a menu item or pushing the Escape key close the menu.
 
 If you need more flexibility (to control when the menu is closed for example), use `<Popover>` and `<Menu>` buttons directly.
 
@@ -30,14 +35,14 @@ Using the default options: `position="top"` and `alignment="left"`
       </Col>
       <Col>
         <DropdownMenu label={'Actions'} position="top">
-          <DropdownMenuItem onClick={() => console.log('Replace')}>Replace</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => console.log('Delete')}>Delete</DropdownMenuItem>
+          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
+          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
         </DropdownMenu>
       </Col>
       <Col>
         <DropdownMenu label={'Disabled menu'} position="top" alignment="right" disabled>
-          <DropdownMenuItem onClick={() => console.log('Replace')}>Replace</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => console.log('Delete')}>Delete</DropdownMenuItem>
+          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
+          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
         </DropdownMenu>
       </Col>
     </Row>
@@ -56,8 +61,8 @@ Updating the options: `position="bottom"` and `alignment="right"`
       </Col>
       <Col>
         <DropdownMenu label={'Actions'} position="bottom" alignment="right">
-          <DropdownMenuItem onClick={() => console.log('Replace')}>Replace</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => console.log('Delete')}>Delete</DropdownMenuItem>
+          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
+          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
         </DropdownMenu>
       </Col>
       <Col>
