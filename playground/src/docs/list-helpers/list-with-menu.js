@@ -5,12 +5,12 @@ import {ItemSelection} from '@medmain/core';
 
 import {columns, items} from './list-simple-content';
 
-const ContextMenu = ({close, item}) => {
+const ContextMenu = ({close, selection}) => {
   return (
     <Menu>
       <MenuItem
         onClick={() => {
-          console.log('Edit', item);
+          console.log('Edit', selection.toJSON());
           close();
         }}
       >
@@ -18,7 +18,7 @@ const ContextMenu = ({close, item}) => {
       </MenuItem>
       <MenuItem
         onClick={() => {
-          console.log('Clone', item);
+          console.log('Clone', selection.toJSON());
           close();
         }}
       >
@@ -26,8 +26,9 @@ const ContextMenu = ({close, item}) => {
       </MenuItem>
       <MenuDivider />
       <MenuItem
+        disabled={!selection.itemIds || selection.itemIds.size > 1}
         onClick={() => {
-          console.log('Delete', item);
+          console.log('Delete', selection.toJSON());
           close();
         }}
       >
@@ -37,7 +38,7 @@ const ContextMenu = ({close, item}) => {
   );
 };
 ContextMenu.propTypes = {
-  item: PropTypes.object.isRequired,
+  selection: PropTypes.object.isRequired,
   close: PropTypes.func.isRequired
 };
 
@@ -54,6 +55,8 @@ export const ListWithMenu = () => {
     }
     return `${count} item(s) ${mode === 'pick' ? 'picked' : 'omitted'}`;
   };
+  // eslint-disable-next-line react/display-name
+  const withSelection = Component => props => <Component {...props} selection={selection} />;
 
   return (
     <>
@@ -64,7 +67,7 @@ export const ListWithMenu = () => {
         selection={selection}
         onSelect={setSelection}
         onItemClick={console.log}
-        renderContextMenu={ContextMenu}
+        contextMenu={withSelection(ContextMenu)}
       />
     </>
   );
