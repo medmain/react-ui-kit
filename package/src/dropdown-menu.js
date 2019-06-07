@@ -5,11 +5,11 @@ import {withRadiumStarter} from 'radium-starter';
 import {Button} from './button';
 import {ChevronDownIcon, ChevronUpIcon} from './icons';
 import {Popover} from './popover';
-import {Menu, MenuItem} from './menu';
 
 @withRadiumStarter
 export class DropdownMenu extends React.Component {
   static propTypes = {
+    content: PropTypes.func.isRequired,
     alignment: PropTypes.oneOf(['left', 'right']),
     disabled: PropTypes.bool,
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
@@ -29,22 +29,19 @@ export class DropdownMenu extends React.Component {
   };
 
   render() {
-    const {disabled, label, children} = this.props;
+    const {content, position, disabled, children} = this.props;
 
     return (
-      <Popover
-        {...this.props}
-        content={({close}) => {
-          return (
-            <Menu>{React.Children.map(children, child => React.cloneElement(child, {close}))}</Menu>
-          );
-        }}
-      >
-        {({open}) => (
-          <DropdownToggleButton onClick={open} disabled={disabled}>
-            {label}
-          </DropdownToggleButton>
-        )}
+      <Popover {...this.props} content={content}>
+        {({open}) =>
+          typeof children === 'function' ? (
+            children({open})
+          ) : (
+            <DropdownToggleButton onClick={open} position={position} disabled={disabled}>
+              {children}
+            </DropdownToggleButton>
+          )
+        }
       </Popover>
     );
   }
@@ -74,32 +71,6 @@ export class DropdownToggleButton extends React.Component {
           }}
         />
       </Button>
-    );
-  }
-}
-
-export class DropdownItem extends React.Component {
-  static propTypes = {
-    close: PropTypes.func,
-    children: PropTypes.node.isRequired
-  };
-
-  render() {
-    const {children, ...props} = this.props;
-
-    const handleClick = (...params) => {
-      const {onClick, close} = this.props;
-
-      if (close) {
-        close();
-      }
-      onClick(...params);
-    };
-
-    return (
-      <MenuItem {...props} onClick={handleClick}>
-        {children}
-      </MenuItem>
     );
   }
 }

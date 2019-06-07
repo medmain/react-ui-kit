@@ -4,7 +4,7 @@ route: /dropdown-menu
 ---
 
 import {Playground} from 'docz';
-import {DropdownMenu, DropdownItem, Col, Row, AccountIcon} from '@medmain/react-ui-kit';
+import {DropdownMenu, Menu, MenuItem, Col, Row, AccountIcon, Button} from '@medmain/react-ui-kit';
 
 import Root from '../components/root';
 
@@ -12,20 +12,30 @@ import Root from '../components/root';
 
 The `<Dropdown>` component puts together `<Popover>` and `<Menu>` to provide a convenient way to create floating menus displayed when the user pushes a button.
 
+## Basic
+
+Using a String as the `children` will automatically render a button that contains an arrow icon.
+
+```jsx
+<DropdownMenu
+  content={({close}) => (
+    <Menu>
+      <MenuItem onClick={() => close()}>Edit</MenuItem>
+    </Menu>
+  )}
+>
+  Actions
+</DropdownMenu>
+```
+
 How to close the menu:
 
 - Click again on the button
 - Click outside the menu
-- Click on a menu item
 - Push the Escape key
+- Manually call `close()` from the menu item `onClick` handler
 
-The icon dislayed inside the button depends on the position props.
-
-If you need more flexibility (to control when the menu is closed for example), use `<Popover>` and `<Menu>` buttons directly.
-
-## Basic
-
-Using the default options: `position="top"` and `alignment="left"`
+Using the default options: `position="bottom"` and `alignment="left"`
 
 <Playground>
   <Root>
@@ -34,24 +44,35 @@ Using the default options: `position="top"` and `alignment="left"`
         <span />
       </Col>
       <Col>
-        <DropdownMenu label={'Actions'} position="top">
-          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
-          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
+        <DropdownMenu
+          content={({close}) => (
+            <Menu>
+              <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
+              <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
+            </Menu>
+          )}
+        >
+          Actions
         </DropdownMenu>
       </Col>
       <Col>
-        <DropdownMenu label={'Disabled menu'} position="top" alignment="right" disabled>
-          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
-          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
+        <DropdownMenu
+          disabled
+          content={({close}) => (
+            <Menu>
+              <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
+              <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
+            </Menu>
+          )}
+        >
+          Actions
         </DropdownMenu>
       </Col>
     </Row>
   </Root>
 </Playground>
 
-## Customized
-
-Updating the options: `position="bottom"` and `alignment="right"`
+Updating the options: `position="top"` and `alignment="right"`
 
 <Playground>
   <Root>
@@ -60,14 +81,65 @@ Updating the options: `position="bottom"` and `alignment="right"`
         <span />
       </Col>
       <Col>
-        <DropdownMenu label={'Actions'} position="bottom" alignment="right">
-          <DropdownItem onClick={() => console.log('Replace')}>Replace</DropdownItem>
-          <DropdownItem onClick={() => console.log('Delete')}>Delete</DropdownItem>
+        <DropdownMenu
+          position="top"
+          alignment="right"
+          content={({close}) => (
+            <Menu>
+              <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
+              <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
+            </Menu>
+          )}
+        >
+          Actions
         </DropdownMenu>
       </Col>
       <Col>
         <span />
       </Col>
     </Row>
+  </Root>
+</Playground>
+
+## Customize the button
+
+To customize the button used to trigger the menu, use a function instead of a String as the `children` of `DropdownMenu`.
+
+```jsx
+<DropdownMenu
+  content={({close}) => (
+    <Menu>
+      <MenuItem>Edit</MenuItem>
+    </Menu>
+  )}
+>
+  {({open}) => (
+    <Button onClick={open}>
+      Special actions
+      <SpecialIcon />
+    </Button>
+  )}
+</DropdownMenu>
+```
+
+<Playground>
+  <Root>
+    <div>
+      <DropdownMenu
+        content={({close}) => (
+          <Menu>
+            <MenuItem onClick={() => console.log('Settings')}>Settings</MenuItem>
+            <MenuItem onClick={() => console.log('Billing')}>Billing</MenuItem>
+          </Menu>
+        )}
+      >
+        {({open}) => (
+          <Button onClick={open} style={{display: 'inline-flex', alignItems: 'center'}}>
+            <AccountIcon />
+            <span style={{marginLeft: '.5rem'}}>My account</span>
+          </Button>
+        )}
+      </DropdownMenu>
+    </div>
   </Root>
 </Playground>
