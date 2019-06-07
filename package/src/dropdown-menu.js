@@ -50,16 +50,17 @@ export class DropdownMenu extends React.Component {
 export class DropdownToggleButton extends React.Component {
   static propTypes = {
     position: PropTypes.oneOf(['bottom', 'top']),
+    style: PropTypes.object,
     children: PropTypes.node.isRequired
   };
 
   render() {
-    const {position, children, ...props} = this.props;
+    const {position, children, style, ...props} = this.props;
 
     const Icon = position === 'top' ? ChevronUpIcon : ChevronDownIcon;
 
     return (
-      <Button {...props}>
+      <Button {...props} style={{width: '100%', ...style}}>
         {children}
         <Icon
           size={20}
