@@ -11,6 +11,7 @@ export const columns = [
     path: 'firstName',
     width: '200px',
     headerCell: 'First name',
+    // eslint-disable-next-line
     bodyCell: item => <span>{item.firstName}</span>, // extra <span> tag useful to check pointer position detection, see context menu example
     footerCell: 'Footer 1'
   },

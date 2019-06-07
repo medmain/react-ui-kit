@@ -17,7 +17,6 @@ export class Menu extends React.Component {
 @withRadiumStarter
 export class MenuItem extends React.Component {
   static propTypes = {
-    key: PropTypes.string,
     disabled: PropTypes.bool,
     onClick: PropTypes.func, // not required for `disabled` items
     theme: PropTypes.object.isRequired,
@@ -26,10 +25,9 @@ export class MenuItem extends React.Component {
   };
 
   render() {
-    const {key, disabled, onClick, theme: t, children} = this.props;
+    const {disabled, onClick, theme: t, children} = this.props;
 
     const props = {
-      key,
       style: {
         padding: '.15rem .75rem'
       }

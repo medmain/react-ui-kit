@@ -6,64 +6,25 @@ import isPlainObject from 'lodash/isPlainObject';
 
 import {CheckboxInput} from './input';
 import {withLocale} from './locale-context';
-
 import {ChevronUpIcon} from './icons/chevron-up';
 import {ChevronDownIcon} from './icons/chevron-down';
 import {Popover} from './popover';
+
 export class List extends React.Component {
   render() {
-    const {renderContextMenu, style} = this.props;
+    const {contextMenu, style} = this.props;
 
     return (
       <div style={{overflow: 'auto', ...style}}>
-        {renderContextMenu ? <ListWithMenu {...this.props} /> : <BasicList {...this.props} />}
+        {contextMenu ? <ListWithMenu {...this.props} /> : <BasicList {...this.props} />}
       </div>
-    );
-  }
-}
-
-class ListWithMenu extends React.Component {
-  // We do like GMail after a right click on a row:
-  // Do nothing if the row item was already selected, otherwise select ONLY the row item.
-  selectContextMenuItem(itemId) {
-    let {onSelect, selection} = this.props;
-
-    if (!selection.isItemSelected(itemId)) {
-      selection = selection.toggleAllItems(false);
-      selection = selection.toggleItem(itemId, true);
-      onSelect(selection);
-    }
-  }
-
-  render() {
-    const {renderContextMenu} = this.props;
-    return (
-      <Popover content={renderContextMenu} position={'cursor'}>
-        {({open}) => {
-          const openContextMenu = (event, {item, index}) => {
-            open(event, {item, index});
-            this.selectContextMenuItem(item.id);
-          };
-          return (
-            <BasicList
-              {...this.props}
-              openContextMenu={openContextMenu}
-              style={{
-                MozUserSelect: 'none',
-                WebkitUserSelect: 'none',
-                userSelect: 'none'
-              }}
-            />
-          );
-        }}
-      </Popover>
     );
   }
 }
 
 @withLocale
 @withRadiumStarter
-export class BasicList extends React.Component {
+class BasicList extends React.Component {
   static propTypes = {
     columns: PropTypes.array.isRequired,
     columnDefaults: PropTypes.shape({shrink: PropTypes.bool, truncate: PropTypes.bool}),
@@ -75,7 +36,7 @@ export class BasicList extends React.Component {
     orderDirection: PropTypes.string,
     selection: PropTypes.object,
     onSelect: PropTypes.func,
-    openContextMenu: PropTypes.func,
+    onContextMenu: PropTypes.func,
     style: PropTypes.object,
     locale: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
@@ -120,11 +81,11 @@ export class BasicList extends React.Component {
   }
 
   handleContextMenu = (event, {item, index}) => {
-    const {openContextMenu} = this.props;
+    const {onContextMenu} = this.props;
 
-    if (openContextMenu) {
+    if (onContextMenu) {
       event.preventDefault();
-      openContextMenu(event, {item, index});
+      onContextMenu(event, {item, index});
     }
   };
 
@@ -311,6 +272,45 @@ export class BasicList extends React.Component {
           </div>
         )}
       </>
+    );
+  }
+}
+
+class ListWithMenu extends React.Component {
+  // We do like GMail after a right click on a row:
+  // Do nothing if the row item was already selected, otherwise select ONLY the row item.
+  selectContextMenuItem(itemId) {
+    let {onSelect, selection} = this.props;
+
+    if (!selection.isItemSelected(itemId)) {
+      selection = selection.toggleAllItems(false);
+      selection = selection.toggleItem(itemId, true);
+      onSelect(selection);
+    }
+  }
+
+  render() {
+    const {contextMenu} = this.props;
+    return (
+      <Popover content={contextMenu} position={'cursor'}>
+        {({open}) => {
+          const handleContextMenu = (event, {item, index}) => {
+            this.selectContextMenuItem(item.id);
+            open(event, {item, index});
+          };
+          return (
+            <BasicList
+              {...this.props}
+              onContextMenu={handleContextMenu}
+              style={{
+                MozUserSelect: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none'
+              }}
+            />
+          );
+        }}
+      </Popover>
     );
   }
 }
@@ -507,6 +507,7 @@ export class ListRow extends React.Component {
 export class ListCell extends React.Component {
   static propTypes = {
     onClick: PropTypes.func,
+    onContextMenu: PropTypes.func,
     tooltip: PropTypes.string,
     truncate: PropTypes.bool,
     isItemSelected: PropTypes.bool,
