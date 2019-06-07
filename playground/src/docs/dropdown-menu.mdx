@@ -10,7 +10,14 @@ import Root from '../components/root';
 
 # Dropdown menu
 
-The `<Dropdown>` component puts together `<Popover>` and `<Menu>` to provide a convenient way to create floating menus displayed when the user pushes a button.
+The `<Dropdown>` component provides a convenient way to create floating menus triggered when the user pushes a button.
+
+The floating menu can be closed by either:
+
+- Clicking again on the button
+- Clicking outside the menu
+- Pushing the Escape key
+- Calling `close()` from the menu item `onClick` handler
 
 ## Basic
 
@@ -27,13 +34,6 @@ Using a String as the `children` will automatically render a button that contain
   Actions
 </DropdownMenu>
 ```
-
-How to close the menu:
-
-- Click again on the button
-- Click outside the menu
-- Push the Escape key
-- Manually call `close()` from the menu item `onClick` handler
 
 Using the default options: `position="bottom"` and `alignment="left"`
 
