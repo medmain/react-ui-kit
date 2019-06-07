@@ -7,10 +7,9 @@ export class Popover extends React.Component {
   static propTypes = {
     content: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
     alignment: PropTypes.oneOf(['left', 'right']),
-    disabled: PropTypes.bool,
-    label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
     position: PropTypes.oneOf(['bottom', 'top', 'cursor']),
     style: PropTypes.object,
+    contentStyle: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired,
     children: PropTypes.func.isRequired
@@ -18,45 +17,39 @@ export class Popover extends React.Component {
 
   static defaultProps = {
     alignment: 'left',
-    position: 'bottom',
-    disabled: false,
-    style: {}
+    position: 'bottom'
   };
 
   state = {
     isOpen: false,
-    overlayPosition: {}, // where to position the overlay when the Popover position is "cursor"
+    overlayPosition: undefined, // where to position the overlay when the Popover position is "cursor"
     context: undefined // data from the customer, to be passed to the context menu
   };
 
-  targetRef = React.createRef(); // to access the element that triggers the popover (a button for example)
+  triggerRef = React.createRef(); // to access the element that triggers the popover (a button for example)
 
-  popoverRef = React.createRef();
+  contentRef = React.createRef();
 
   componentWillUnmount() {
-    this.cleanup();
+    this.removeEventListeners();
   }
 
-  cleanup = () => {
-    document.body.removeEventListener('click', this.handleBodyClick);
-    document.body.removeEventListener('keydown', this.handleBodyKeyDown);
-  };
-
   handleBodyClick = event => {
+    // TODO: Strop propagation and preventDefault?
     if (this.isOutsideClick(event)) {
       this.close(); // close if the user has clicked outside the popover
     }
   };
 
   isOutsideClick = event => {
-    const targetNode = this.targetRef.current;
-    const popoverNode = this.popoverRef.current;
+    const triggerNode = this.triggerRef.current;
+    const contentNode = this.contentRef.current;
 
-    if (targetNode.contains(event.target)) {
+    if (triggerNode.contains(event.target)) {
       return false;
     }
 
-    if (popoverNode.contains(event.target)) {
+    if (contentNode.contains(event.target)) {
       return false;
     }
 
@@ -65,22 +58,20 @@ export class Popover extends React.Component {
 
   handleBodyKeyDown = e => {
     if (e.keyCode === 27) {
+      // TODO: Strop propagation and preventDefault?
       this.close(); // Escape key
     }
   };
 
   open = (event, context) => {
     const overlayPosition = this.getOverlayPosition(event);
-
     this.setState({isOpen: true, overlayPosition, context});
-
-    document.body.addEventListener('click', this.handleBodyClick);
-    document.body.addEventListener('keydown', this.handleBodyKeyDown);
+    this.addEventListeners();
   };
 
   close = () => {
     this.setState({isOpen: false});
-    this.cleanup();
+    this.removeEventListeners();
   };
 
   toggle = (...params) => {
@@ -91,56 +82,74 @@ export class Popover extends React.Component {
     }
   };
 
+  addEventListeners = () => {
+    document.body.addEventListener('click', this.handleBodyClick);
+    document.body.addEventListener('keydown', this.handleBodyKeyDown);
+  };
+
+  removeEventListeners = () => {
+    document.body.removeEventListener('click', this.handleBodyClick);
+    document.body.removeEventListener('keydown', this.handleBodyKeyDown);
+  };
+
   getOverlayPosition = event => {
+    const {offsetLeft: containerX, offsetTop: containerY} = event.currentTarget;
     const {offsetX, offsetY} = event.nativeEvent;
-    const {offsetLeft, offsetTop} = event.currentTarget;
 
     return {
-      x: offsetLeft + offsetX,
-      y: offsetTop + offsetY
+      x: containerX + offsetX,
+      y: containerY + offsetY
     };
   };
 
   render() {
-    const {content, alignment, position, style, theme: t, styles: s, children} = this.props;
+    const {
+      content,
+      alignment,
+      position,
+      style,
+      contentStyle,
+      theme: t,
+      styles: s,
+      children
+    } = this.props;
     const {isOpen, overlayPosition, context} = this.state;
 
-    const overlayOffset = '4px';
-    let alignmentStyle = {};
-
-    if (alignment === 'right') {
+    let alignmentStyle;
+    if (isOpen) {
       alignmentStyle = {
-        left: 'auto',
-        right: 0
+        paddingTop: '4px',
+        paddingBottom: '4px'
       };
-    }
 
-    if (position === 'top') {
-      alignmentStyle = {
-        ...alignmentStyle,
-        bottom: '100%',
-        paddingBottom: overlayOffset,
-        top: 'auto'
-      };
-    }
+      if (alignment === 'right') {
+        alignmentStyle = {
+          left: 'auto',
+          right: 0
+        };
+      }
 
-    if (position === 'cursor') {
-      alignmentStyle = {
-        ...alignmentStyle,
-        bottom: 'auto',
-        left: overlayPosition.x,
-        top: overlayPosition.y
-      };
+      if (position === 'top') {
+        alignmentStyle = {
+          ...alignmentStyle,
+          bottom: '100%',
+          top: 'auto'
+        };
+      }
+
+      if (position === 'cursor') {
+        alignmentStyle = {
+          ...alignmentStyle,
+          bottom: 'auto',
+          left: overlayPosition.x,
+          top: overlayPosition.y
+        };
+      }
     }
 
     return (
-      <div
-        style={{
-          position: 'relative',
-          display: 'inline-block'
-        }}
-      >
-        <div ref={this.popoverRef}>
+      <div style={{position: 'relative', ...style}}>
+        <div ref={this.triggerRef}>
           {children({isOpen, open: this.open, toggle: this.toggle, close: this.close})}
         </div>
         {isOpen && (
@@ -150,15 +159,14 @@ export class Popover extends React.Component {
               display: 'block',
               left: 0,
               minWidth: '10rem',
-              paddingTop: overlayOffset,
               top: '100%',
-              zIndex: 4000,
+              zIndex: 20000,
               ...alignmentStyle,
-              ...style
+              ...contentStyle
             }}
           >
             <div
-              ref={this.targetRef}
+              ref={this.contentRef}
               style={{
                 ...s.border,
                 ...s.rounded,
