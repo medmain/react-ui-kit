@@ -80,12 +80,12 @@ class BasicList extends React.Component {
     return path;
   }
 
-  handleContextMenu = (event, {item, index}) => {
+  handleContextMenu = (event, item) => {
     const {onContextMenu} = this.props;
 
     if (onContextMenu) {
       event.preventDefault();
-      onContextMenu(event, {item, index});
+      onContextMenu(event, item);
     }
   };
 
@@ -178,7 +178,7 @@ class BasicList extends React.Component {
                     <ListCell
                       key={name}
                       isItemSelected={selection?.isItemSelected(item.id)}
-                      onContextMenu={event => this.handleContextMenu(event, {item, index})}
+                      onContextMenu={event => this.handleContextMenu(event, item)}
                       style={{
                         width: '28px',
                         verticalAlign: 'middle',
@@ -210,7 +210,7 @@ class BasicList extends React.Component {
                               onItemClick(item, path);
                             })
                           }
-                          onContextMenu={event => this.handleContextMenu(event, {item, index})}
+                          onContextMenu={event => this.handleContextMenu(event, item)}
                           tooltip={getCellTooltipLabel({item, tooltip, content, truncate})}
                           truncate={truncate}
                           isItemSelected={selection?.isItemSelected(item.id)}
@@ -291,12 +291,13 @@ class ListWithMenu extends React.Component {
 
   render() {
     const {contextMenu} = this.props;
+
     return (
       <Popover content={contextMenu} position={'cursor'}>
         {({open}) => {
-          const handleContextMenu = (event, {item, index}) => {
+          const handleContextMenu = (event, item) => {
             this.selectContextMenuItem(item.id);
-            open(event, {item, index});
+            open(event);
           };
           return (
             <BasicList

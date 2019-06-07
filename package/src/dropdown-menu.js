@@ -29,9 +29,7 @@ export class DropdownMenu extends React.Component {
   };
 
   render() {
-    const {disabled, position, label, children} = this.props;
-
-    const Icon = position === 'top' ? ChevronUpIcon : ChevronDownIcon;
+    const {disabled, label, children} = this.props;
 
     return (
       <Popover
@@ -42,21 +40,40 @@ export class DropdownMenu extends React.Component {
           );
         }}
       >
-        {({toggle}) => (
-          <Button onClick={toggle} disabled={disabled}>
+        {({open}) => (
+          <DropdownToggleButton onClick={open} disabled={disabled}>
             {label}
-            <Icon
-              size={20}
-              style={{
-                display: 'inline-block',
-                verticalAlign: 'top',
-                marginRight: '-0.25rem',
-                marginLeft: '0.25rem'
-              }}
-            />
-          </Button>
+          </DropdownToggleButton>
         )}
       </Popover>
+    );
+  }
+}
+
+export class DropdownToggleButton extends React.Component {
+  static propTypes = {
+    position: PropTypes.oneOf(['bottom', 'top']),
+    children: PropTypes.node.isRequired
+  };
+
+  render() {
+    const {position, children, ...props} = this.props;
+
+    const Icon = position === 'top' ? ChevronUpIcon : ChevronDownIcon;
+
+    return (
+      <Button {...props}>
+        {children}
+        <Icon
+          size={20}
+          style={{
+            display: 'inline-block',
+            verticalAlign: 'top',
+            marginRight: '-0.25rem',
+            marginLeft: '0.25rem'
+          }}
+        />
+      </Button>
     );
   }
 }

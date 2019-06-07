@@ -8,6 +8,7 @@ import {Popover, Button} from '@medmain/react-ui-kit';
 
 import Root from '../components/root';
 import {VerticalContainer} from '../components/vertical-container';
+import {ModalWithPopover} from '../components/modal-demo';
 
 # Popover
 
@@ -26,43 +27,46 @@ Checking the 3 positions:
 <Playground>
   <Root>
     <div style={{height: 300}}>
-      <Popover
-        content={
-          <div
-            style={{
-              width: 240,
-              height: 240,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column'
-            }}
-          >
-            <div>Popover Content</div>
-          </div>
-        }
-      >
-        {({toggle}) => <Button onClick={toggle}>Trigger Popover at the bottom</Button>}
-      </Popover>{' '}
-      <Popover
-        position={'top'}
-        content={
-          <div
-            style={{
-              width: 240,
-              height: 240,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column'
-            }}
-          >
-            <div>Popover Content</div>
-          </div>
-        }
-      >
-        {({open}) => <Button onClick={open}>Trigger Popover at the top</Button>}
-      </Popover>
+      <div style={{display: 'flex'}}>
+        <Popover
+          content={
+            <div
+              style={{
+                width: 240,
+                height: 240,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column'
+              }}
+            >
+              <div>Popover Content</div>
+            </div>
+          }
+        >
+          {({open}) => <Button onClick={open}>Trigger Popover at the bottom</Button>}
+        </Popover>
+        <div style={{width: 20}}> </div>
+        <Popover
+          position={'top'}
+          content={
+            <div
+              style={{
+                width: 240,
+                height: 240,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column'
+              }}
+            >
+              <div>Popover Content</div>
+            </div>
+          }
+        >
+          {({open}) => <Button onClick={open}>Trigger Popover at the top</Button>}
+        </Popover>
+      </div>
       <br />
       <br />
       <Popover
@@ -82,7 +86,7 @@ Checking the 3 positions:
           </div>
         }
       >
-        {({toggle}) => <Button onClick={toggle}>Trigger Popover at the cursor position</Button>}
+        {({open}) => <Button onClick={open}>Trigger Popover at the cursor position</Button>}
       </Popover>
     </div>
   </Root>
@@ -95,6 +99,7 @@ Checking the 3 positions:
     <div style={{height: 300}}>
       <Popover
         alignment="right"
+        style={{display: 'inline-block'}}
         content={
           <div
             style={{
@@ -110,13 +115,13 @@ Checking the 3 positions:
           </div>
         }
       >
-        {({toggle}) => <Button onClick={toggle}>Content align at the right</Button>}
+        {({open}) => <Button onClick={open}>Content align at the right</Button>}
       </Popover>
     </div>
   </Root>
 </Playground>
 
-## State
+## Showing the state
 
 Accessing the `isOpen` state from the toggle button.
 
@@ -143,10 +148,24 @@ The content of the toggle button will change, depending on the state.
           </div>
         )}
       >
-        {({isOpen, toggle}) => (
-          <Button onClick={toggle}>Trigger Popover (state: {isOpen ? 'open' : 'close'})</Button>
+        {({isOpen, open}) => (
+          <Button onClick={open}>Trigger Popover (state: {isOpen ? 'open' : 'close'})</Button>
         )}
       </Popover>
     </div>
+  </Root>
+</Playground>
+
+## Inside a modal
+
+<Playground>
+  <Root>
+    {({modal}) => {
+      return (
+        <Button onClick={() => modal.dialog({render: ModalWithPopover, height: '600px'})}>
+          Show modal
+        </Button>
+      );
+    }}
   </Root>
 </Playground>

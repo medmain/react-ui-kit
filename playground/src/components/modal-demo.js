@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button} from '@medmain/react-ui-kit';
+import {Button, Popover} from '@medmain/react-ui-kit';
 
 import Root from '../components/root';
 
@@ -39,4 +39,36 @@ export const showDialog = modal => async () => {
     }
   });
   console.info(result);
+};
+
+export const ModalWithPopover = ({close}) => (
+  <div style={{height: 600, display: 'flex', flexDirection: 'column'}}>
+    <p>Hello from the dialog!</p>
+    <div style={{flexGrow: 1}}>
+      <Popover
+        content={
+          <div
+            style={{
+              width: 240,
+              height: 240,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            <div style={{textAlign: 'center'}}>This is the `content` of the Popover component.</div>
+          </div>
+        }
+      >
+        {({open}) => <Button onClick={open}>Show Popover</Button>}
+      </Popover>
+    </div>
+    <Button rsPrimary onClick={close}>
+      Close the modal
+    </Button>
+  </div>
+);
+ModalWithPopover.propTypes = {
+  close: PropTypes.func.isRequired
 };

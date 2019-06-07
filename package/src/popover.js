@@ -26,8 +26,6 @@ export class Popover extends React.Component {
     context: undefined // data from the customer, to be passed to the context menu
   };
 
-  triggerRef = React.createRef(); // to access the element that triggers the popover (a button for example)
-
   contentRef = React.createRef();
 
   componentWillUnmount() {
@@ -35,30 +33,21 @@ export class Popover extends React.Component {
   }
 
   handleBodyClick = event => {
-    // TODO: Strop propagation and preventDefault?
     if (this.isOutsideClick(event)) {
-      this.close(); // close if the user has clicked outside the popover
+      event.stopPropagation();
+      this.close(); // close if the user has clicked outside the popover, ignoring clicks on the "content"
     }
   };
 
   isOutsideClick = event => {
-    const triggerNode = this.triggerRef.current;
     const contentNode = this.contentRef.current;
 
-    if (triggerNode.contains(event.target)) {
-      return false;
-    }
-
-    if (contentNode.contains(event.target)) {
-      return false;
-    }
-
-    return true;
+    return !contentNode.contains(event.target);
   };
 
-  handleBodyKeyDown = e => {
-    if (e.keyCode === 27) {
-      // TODO: Strop propagation and preventDefault?
+  handleBodyKeyDown = event => {
+    if (event.keyCode === 27) {
+      event.stopPropagation();
       this.close(); // Escape key
     }
   };
@@ -124,6 +113,7 @@ export class Popover extends React.Component {
 
       if (alignment === 'right') {
         alignmentStyle = {
+          ...alignmentStyle,
           left: 'auto',
           right: 0
         };
@@ -149,9 +139,7 @@ export class Popover extends React.Component {
 
     return (
       <div style={{position: 'relative', ...style}}>
-        <div ref={this.triggerRef}>
-          {children({isOpen, open: this.open, toggle: this.toggle, close: this.close})}
-        </div>
+        {children({isOpen, open: this.open, toggle: this.toggle, close: this.close})}
         {isOpen && (
           <div
             style={{
