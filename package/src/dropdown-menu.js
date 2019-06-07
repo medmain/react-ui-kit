@@ -17,7 +17,7 @@ export class DropdownMenu extends React.Component {
     style: PropTypes.object,
     theme: PropTypes.object.isRequired,
     styles: PropTypes.object.isRequired,
-    children: PropTypes.node.isRequired
+    children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired
   };
 
   static defaultProps = {

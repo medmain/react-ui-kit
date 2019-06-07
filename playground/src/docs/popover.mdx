@@ -14,11 +14,11 @@ import {ModalWithPopover} from '../components/modal-demo';
 
 The Popover component displays floating content in relation to a target.
 
-The floating content can be closes by clicking outside or pushing the Escape key.
+The floating element can be closed by clicking outside or pushing the Escape key.
 
 ## Basic
 
-Checking the 3 positions:
+Checking the 3 positions of the floating content
 
 - `"bottom"` (default)
 - `"top"`
@@ -162,7 +162,7 @@ The content of the toggle button will change, depending on the state.
   <Root>
     {({modal}) => {
       return (
-        <Button onClick={() => modal.dialog({render: ModalWithPopover, height: '600px'})}>
+        <Button onClick={() => modal.dialog({render: ModalWithPopover, height: '500px'})}>
           Show modal
         </Button>
       );
