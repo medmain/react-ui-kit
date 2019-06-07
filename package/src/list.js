@@ -80,14 +80,15 @@ class BasicList extends React.Component {
     return path;
   }
 
-  handleContextMenu = (event, item) => {
-    const {onContextMenu} = this.props;
+  selectContextMenuItem(itemId) {
+    let {onSelect, selection} = this.props;
 
-    if (onContextMenu) {
-      event.preventDefault();
-      onContextMenu(event, item);
+    if (!selection.isItemSelected(itemId)) {
+      selection = selection.toggleAllItems(false);
+      selection = selection.toggleItem(itemId, true);
+      onSelect(selection);
     }
-  };
+  }
 
   render() {
     const {
@@ -99,6 +100,7 @@ class BasicList extends React.Component {
       orderBy,
       orderDirection,
       selection,
+      onContextMenu,
       style,
       locale: l,
       styles: s
@@ -172,57 +174,66 @@ class BasicList extends React.Component {
 
           {items.length > 0 && (
             <ListBody>
-              {items.map((item, index) => (
-                <ListRow key={index} style={evaluate(bodyRows.style, item, index)}>
-                  {selection && (
-                    <ListCell
-                      key={name}
-                      isItemSelected={selection?.isItemSelected(item.id)}
-                      onContextMenu={event => this.handleContextMenu(event, item)}
-                      style={{
-                        width: '28px',
-                        verticalAlign: 'middle',
-                        padding: '0 0 0 5px'
-                      }}
-                    >
-                      <CheckboxInput
-                        value={selection.isItemSelected(item.id)}
-                        onChange={(checked, {nativeEvent: {shiftKey}}) => {
-                          this.toggleItem(item.id, checked, shiftKey);
+              {items.map((item, index) => {
+                const handleContextMenu =
+                  onContextMenu &&
+                  (event => {
+                    this.selectContextMenuItem(item.id);
+                    onContextMenu(event);
+                  });
+
+                return (
+                  <ListRow key={index} style={evaluate(bodyRows.style, item, index)}>
+                    {selection && (
+                      <ListCell
+                        key={name}
+                        isItemSelected={selection?.isItemSelected(item.id)}
+                        onContextMenu={handleContextMenu}
+                        style={{
+                          width: '28px',
+                          verticalAlign: 'middle',
+                          padding: '0 0 0 5px'
                         }}
-                      />
-                    </ListCell>
-                  )}
-                  {columns.map(
-                    ({
-                      path,
-                      width = columnDefaults.width,
-                      truncate = columnDefaults.truncate,
-                      style: columnStyle = columnDefaults.style,
-                      bodyCell: {tooltip, style: cellStyle, content} = {}
-                    }) => {
-                      return (
-                        <ListCell
-                          key={path}
-                          onClick={
-                            onItemClick &&
-                            (() => {
-                              onItemClick(item, path);
-                            })
-                          }
-                          onContextMenu={event => this.handleContextMenu(event, item)}
-                          tooltip={getCellTooltipLabel({item, tooltip, content, truncate})}
-                          truncate={truncate}
-                          isItemSelected={selection?.isItemSelected(item.id)}
-                          style={{width, ...columnStyle, ...evaluate(cellStyle, item, index)}}
-                        >
-                          {this.renderCellContent({content, item, path})}
-                        </ListCell>
-                      );
-                    }
-                  )}
-                </ListRow>
-              ))}
+                      >
+                        <CheckboxInput
+                          value={selection.isItemSelected(item.id)}
+                          onChange={(checked, {nativeEvent: {shiftKey}}) => {
+                            this.toggleItem(item.id, checked, shiftKey);
+                          }}
+                        />
+                      </ListCell>
+                    )}
+                    {columns.map(
+                      ({
+                        path,
+                        width = columnDefaults.width,
+                        truncate = columnDefaults.truncate,
+                        style: columnStyle = columnDefaults.style,
+                        bodyCell: {tooltip, style: cellStyle, content} = {}
+                      }) => {
+                        return (
+                          <ListCell
+                            key={path}
+                            onClick={
+                              onItemClick &&
+                              (() => {
+                                onItemClick(item, path);
+                              })
+                            }
+                            onContextMenu={handleContextMenu}
+                            tooltip={getCellTooltipLabel({item, tooltip, content, truncate})}
+                            truncate={truncate}
+                            isItemSelected={selection?.isItemSelected(item.id)}
+                            style={{width, ...columnStyle, ...evaluate(cellStyle, item, index)}}
+                          >
+                            {this.renderCellContent({content, item, path})}
+                          </ListCell>
+                        );
+                      }
+                    )}
+                  </ListRow>
+                );
+              })}
             </ListBody>
           )}
 
@@ -279,30 +290,16 @@ class BasicList extends React.Component {
 class ListWithMenu extends React.Component {
   // We do like GMail after a right click on a row:
   // Do nothing if the row item was already selected, otherwise select ONLY the row item.
-  selectContextMenuItem(itemId) {
-    let {onSelect, selection} = this.props;
-
-    if (!selection.isItemSelected(itemId)) {
-      selection = selection.toggleAllItems(false);
-      selection = selection.toggleItem(itemId, true);
-      onSelect(selection);
-    }
-  }
-
   render() {
     const {contextMenu} = this.props;
 
     return (
       <Popover content={contextMenu} position={'cursor'}>
         {({open}) => {
-          const handleContextMenu = (event, item) => {
-            this.selectContextMenuItem(item.id);
-            open(event);
-          };
           return (
             <BasicList
               {...this.props}
-              onContextMenu={handleContextMenu}
+              onContextMenu={open}
               style={{
                 MozUserSelect: 'none',
                 WebkitUserSelect: 'none',
@@ -518,10 +515,18 @@ export class ListCell extends React.Component {
     children: PropTypes.node
   };
 
+  handleContextMenu = event => {
+    const {onContextMenu} = this.props;
+
+    if (onContextMenu) {
+      event.preventDefault();
+      onContextMenu(event);
+    }
+  };
+
   render() {
     let {
       onClick,
-      onContextMenu,
       tooltip,
       isItemSelected,
       truncate,
@@ -565,7 +570,7 @@ export class ListCell extends React.Component {
           return (
             <td
               onClick={onClick}
-              onContextMenu={onContextMenu}
+              onContextMenu={this.handleContextMenu}
               title={tooltip}
               style={{
                 padding: '8px',
