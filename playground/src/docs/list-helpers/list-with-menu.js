@@ -55,8 +55,24 @@ export const ListWithMenu = () => {
     }
     return `${count} item(s) ${mode === 'pick' ? 'picked' : 'omitted'}`;
   };
-  // eslint-disable-next-line react/display-name
-  const withSelection = Component => props => <Component {...props} selection={selection} />;
+
+  const menuItems = [
+    {
+      label: 'Edit',
+      onClick: () => console.log('Edit', selection.toJSON())
+    },
+    {
+      label: 'Clone',
+      onClick: () => console.log('Clone', selection.toJSON())
+    },
+    {
+      type: 'divider'
+    },
+    {
+      label: 'Delete',
+      onClick: () => console.log('Delete', selection.toJSON())
+    }
+  ];
 
   return (
     <>
@@ -67,7 +83,7 @@ export const ListWithMenu = () => {
         selection={selection}
         onSelect={setSelection}
         onItemClick={console.log}
-        contextMenu={withSelection(ContextMenu)}
+        contextMenuItems={menuItems}
       />
     </>
   );

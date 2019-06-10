@@ -4,25 +4,55 @@ route: /menu
 ---
 
 import {Playground} from 'docz';
-import {Menu, MenuItem, MenuDivider, Popover, Button} from '@medmain/react-ui-kit';
+import {MenuRoot, Menu, MenuItem, MenuDivider, Popover, Button} from '@medmain/react-ui-kit';
 
 import Root from '../components/root';
 
 # Menu
 
-## Raw menu
-
-Including a disabled item and a separator `<MenuDivider>`.
+## Basic
 
 <Playground>
   <Root>
-    <Menu>
+    <Menu
+      items={[
+        {
+          label: 'Edit',
+          onClick: () => console.log('Edit')
+        },
+        {
+          label: 'Clone',
+          onClick: () => console.log('Clone')
+        },
+        {
+          label: 'Disabled feature',
+          disabled: true
+        },
+        {
+          type: 'divider'
+        },
+        {
+          label: 'Delete',
+          onClick: () => console.log('Delete')
+        }
+      ]}
+    />
+  </Root>
+</Playground>
+
+## Root Menu
+
+The same menu as before using `<MenuRoot>`, `<MenuItem>` and `<MenuDivider>` low-level components.
+
+<Playground>
+  <Root>
+    <MenuRoot>
       <MenuItem onClick={console.log}>Edit</MenuItem>
       <MenuItem onClick={console.log}>Clone</MenuItem>
       <MenuItem disabled>A disabled feature</MenuItem>
       <MenuDivider />
       <MenuItem onClick={console.log}>Delete</MenuItem>
-    </Menu>
+    </MenuRoot>
   </Root>
 </Playground>
 
@@ -34,34 +64,25 @@ You have to call `close()` from onClick event handler by yourself, if you want t
   <Root>
     <Popover
       content={({close}) => (
-        <Menu>
-          <MenuItem
-            onClick={() => {
-              console.log('Edit me');
-              close();
-            }}
-          >
-            Edit
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              console.log('Clone me');
-              close();
-            }}
-          >
-            Clone
-          </MenuItem>
-          <MenuItem disabled>Disabled feature</MenuItem>
-          <MenuDivider />
-          <MenuItem
-            onClick={() => {
-              console.log('Edit me');
-              close();
-            }}
-          >
-            Delete
-          </MenuItem>
-        </Menu>
+        <Menu
+          items={[
+            {
+              label: 'Edit',
+              onClick: () => console.log('Edit')
+            },
+            {
+              label: 'Clone',
+              onClick: () => console.log('Clone')
+            },
+            {
+              type: 'divider'
+            },
+            {
+              label: 'Delete',
+              onClick: () => console.log('Delete')
+            }
+          ]}
+        />
       )}
     >
       {({open}) => <Button onClick={open}>Show menu</Button>}
