@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRadiumStarter} from 'radium-starter';
-import compact from 'lodash/compact';
 
 import {Button} from './button';
 import {ChevronDownIcon, ChevronUpIcon} from './icons';
 import {Popover} from './popover';
-import {Menu, MenuItem, MenuDivider} from './menu';
+import {Menu} from './menu';
 
 @withRadiumStarter
 export class DropdownMenu extends React.Component {
@@ -33,19 +32,21 @@ export class DropdownMenu extends React.Component {
   render() {
     const {items, position, disabled, children} = this.props;
 
-    const content = normalizeItems(items);
+    const content =
+      typeof items === 'function' ? items : ({close}) => <Menu items={items} onClick={close} />;
+
+    const trigger =
+      typeof children === 'function' ?
+        children :
+        ({open}) => (
+          <DropdownToggleButton onClick={open} position={position} disabled={disabled}>
+            {children}
+          </DropdownToggleButton>
+        );
 
     return (
       <Popover {...this.props} content={content}>
-        {({open}) =>
-          typeof children === 'function' ? (
-            children({open})
-          ) : (
-            <DropdownToggleButton onClick={open} position={position} disabled={disabled}>
-              {children}
-            </DropdownToggleButton>
-          )
-        }
+        {trigger}
       </Popover>
     );
   }
@@ -78,38 +79,4 @@ export class DropdownToggleButton extends React.Component {
       </Button>
     );
   }
-}
-
-// === Helper functions ===
-
-function normalizeItems(items) {
-  if (typeof items === 'function') {
-    return items;
-  }
-
-  const DropdownMenu = ({close}) => (
-    <Menu>
-      {compact(items).map(({type = 'menu-item', label, onClick, ...other}, index) => {
-        if (type === 'divider') {
-          return <MenuDivider key={index} />;
-        }
-
-        const handleClick = event => {
-          close();
-          return onClick(event);
-        };
-
-        return (
-          <MenuItem key={index} onClick={handleClick} {...other}>
-            {label}
-          </MenuItem>
-        );
-      })}
-    </Menu>
-  );
-  DropdownMenu.propTypes = {
-    close: PropTypes.func.isRequired
-  };
-
-  return DropdownMenu;
 }

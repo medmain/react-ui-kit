@@ -9,14 +9,15 @@ import {withLocale} from './locale-context';
 import {ChevronUpIcon} from './icons/chevron-up';
 import {ChevronDownIcon} from './icons/chevron-down';
 import {Popover} from './popover';
+import {Menu} from './menu';
 
 export class List extends React.Component {
   render() {
-    const {contextMenu, style} = this.props;
+    const {contextMenuItems, style} = this.props;
 
     return (
       <div style={{overflow: 'auto', ...style}}>
-        {contextMenu ? <ListWithMenu {...this.props} /> : <BasicList {...this.props} />}
+        {contextMenuItems ? <ListWithMenu {...this.props} /> : <BasicList {...this.props} />}
       </div>
     );
   }
@@ -291,10 +292,15 @@ class ListWithMenu extends React.Component {
   // We do like GMail after a right click on a row:
   // Do nothing if the row item was already selected, otherwise select ONLY the row item.
   render() {
-    const {contextMenu} = this.props;
+    const {contextMenuItems} = this.props;
+
+    const content =
+      typeof contextMenuItems === 'function' ?
+        contextMenuItems :
+        ({close}) => <Menu items={contextMenuItems} onClick={close} />;
 
     return (
-      <Popover content={contextMenu} position={'cursor'}>
+      <Popover content={content} position={'cursor'}>
         {({open}) => {
           return (
             <BasicList

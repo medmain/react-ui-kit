@@ -1,8 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRadiumStarter} from 'radium-starter';
+import compact from 'lodash/compact';
 
 export class Menu extends React.Component {
+  static propTypes = {
+    items: PropTypes.array.isRequired,
+    onClick: PropTypes.func
+  };
+
+  render() {
+    const {items, onClick: menuOnClick} = this.props;
+
+    return (
+      <MenuRoot>
+        {compact(items).map(({type = 'menu-item', label, onClick, ...other}, index) => {
+          if (type === 'divider') {
+            return <MenuDivider key={index} />;
+          }
+
+          const handleClick = event => {
+            if (menuOnClick) {
+              menuOnClick(event);
+            }
+            return onClick(event);
+          };
+
+          return (
+            <MenuItem key={index} onClick={handleClick} {...other}>
+              {label}
+            </MenuItem>
+          );
+        })}
+      </MenuRoot>
+    );
+  }
+}
+
+// === Low level components ===
+
+export class MenuRoot extends React.Component {
   static propTypes = {
     children: PropTypes.node.isRequired
   };
