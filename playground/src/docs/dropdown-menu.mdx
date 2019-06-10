@@ -25,11 +25,10 @@ Using a String as the `children` will automatically render a button that contain
 
 ```jsx
 <DropdownMenu
-  content={({close}) => (
-    <Menu>
-      <MenuItem onClick={() => close()}>Edit</MenuItem>
-    </Menu>
-  )}
+  items={[
+    {label: 'Edit', onClick: () => console.log('Edit')},
+    {label: 'Clone', onClick: () => console.log('Clone')}
+  ]}
 >
   Actions
 </DropdownMenu>
@@ -45,12 +44,14 @@ Using the default options: `position="bottom"` and `alignment="left"`
       </Col>
       <Col>
         <DropdownMenu
-          content={({close}) => (
-            <Menu>
-              <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
-              <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
-            </Menu>
-          )}
+          items={[
+            {label: 'Edit', onClick: () => console.log('Edit')},
+            {label: 'Clone', disabled: true, onClick: () => console.log('Clone')},
+            {type: 'divider'},
+            undefined, // checking that falsy values are filtered
+            false, // should be filtered too!
+            {label: 'Delete', onClick: () => console.log('Delete')},
+          ]}
         >
           Actions
         </DropdownMenu>
@@ -58,17 +59,18 @@ Using the default options: `position="bottom"` and `alignment="left"`
       <Col>
         <DropdownMenu
           disabled
-          content={({close}) => (
-            <Menu>
-              <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
-              <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
-            </Menu>
-          )}
+          items={[
+            {label: 'Edit', onClick: () => console.log('Edit')},
+            {label: 'Clone', onClick: () => console.log('Clone')},
+            {type: 'divider'},
+            {label: 'Delete', onClick: () => console.log('Delete')}
+          ]}
         >
           Actions
         </DropdownMenu>
       </Col>
     </Row>
+
   </Root>
 </Playground>
 
@@ -84,12 +86,12 @@ Updating the options: `position="top"` and `alignment="right"`
         <DropdownMenu
           position="top"
           alignment="right"
-          content={({close}) => (
-            <Menu>
-              <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
-              <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
-            </Menu>
-          )}
+          items={[
+            {label: 'Edit', onClick: () => console.log('Edit')},
+            {label: 'Clone', onClick: () => console.log('Clone')},
+            {type: 'divider'},
+            {label: 'Delete', onClick: () => console.log('Delete')}
+          ]}
         >
           Actions
         </DropdownMenu>
@@ -101,15 +103,19 @@ Updating the options: `position="top"` and `alignment="right"`
   </Root>
 </Playground>
 
-## Customize the button
+## Advanced
 
-To customize the button used to trigger the menu, use a function instead of a String as the `children` of `DropdownMenu`.
+It's possible to customize both menu items and the button used to trigger the menu.
+
+- To customize the button, use a function instead of a String for the `children`.
+- To customize the menu items, use a function instead of an array for `items` props.
 
 ```jsx
 <DropdownMenu
-  content={({close}) => (
+  items={({close}) => (
     <Menu>
-      <MenuItem>Edit</MenuItem>
+      <MenuItem onClick={() => console.log('Replace')}>Replace</MenuItem>
+      <MenuItem onClick={() => console.log('Delete')}>Delete</MenuItem>
     </Menu>
   )}
 >
@@ -126,7 +132,7 @@ To customize the button used to trigger the menu, use a function instead of a St
   <Root>
     <div>
       <DropdownMenu
-        content={({close}) => (
+        items={({close}) => (
           <Menu>
             <MenuItem onClick={() => console.log('Settings')}>Settings</MenuItem>
             <MenuItem onClick={() => console.log('Billing')}>Billing</MenuItem>
