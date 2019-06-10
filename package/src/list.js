@@ -570,7 +570,7 @@ export class ListCell extends React.Component {
           }
 
           if (type === 'BODY' && isItemSelected) {
-            style.backgroundColor = '#c2dbff';
+            style.backgroundColor = t.selectionColor;
           }
 
           return (

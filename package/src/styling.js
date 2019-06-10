@@ -27,6 +27,7 @@ export function baseTheme() {
 
     // Custom colors
     labelColor: t => t.altTextColor,
+    selectionColor: '#c2dbff',
     grayBackgroundColor: '#f5f8fb', // Pale blue gray,
     grayIconColor: '#888',
     annotationBorderColor: '#01ff70' // Source: https://clrs.cc/
