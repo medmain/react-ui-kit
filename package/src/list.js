@@ -564,7 +564,8 @@ export class ListCell extends React.Component {
               backgroundColor: t.selectionColor,
               MozUserSelect: 'none',
               WebkitUserSelect: 'none',
-              userSelect: 'none'
+              userSelect: 'none',
+              ...style
             };
           }
 
