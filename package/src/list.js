@@ -302,17 +302,7 @@ class ListWithMenu extends React.Component {
     return (
       <Popover content={content} position={'cursor'}>
         {({open}) => {
-          return (
-            <BasicList
-              {...this.props}
-              onContextMenu={open}
-              style={{
-                MozUserSelect: 'none',
-                WebkitUserSelect: 'none',
-                userSelect: 'none'
-              }}
-            />
-          );
+          return <BasicList {...this.props} onContextMenu={open} />;
         }}
       </Popover>
     );
@@ -570,7 +560,12 @@ export class ListCell extends React.Component {
           }
 
           if (type === 'BODY' && isItemSelected) {
-            style.backgroundColor = t.selectionColor;
+            style = {
+              backgroundColor: t.selectionColor,
+              MozUserSelect: 'none',
+              WebkitUserSelect: 'none',
+              userSelect: 'none'
+            };
           }
 
           return (
