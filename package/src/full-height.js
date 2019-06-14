@@ -40,15 +40,3 @@ export class FullHeight extends React.Component {
     );
   }
 }
-
-// function isIOSDevice() {
-//   if (typeof navigator !== 'object') {
-//     return false;
-//   }
-//   const userAgent = navigator.userAgent;
-//   if (typeof userAgent !== 'string') {
-//     return false;
-//   }
-
-//   return ['iPad', 'iPhone'].some(device => userAgent.includes(device));
-// }
