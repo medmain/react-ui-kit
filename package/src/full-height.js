@@ -17,23 +17,19 @@ export class FullHeight extends React.Component {
   render() {
     const {growable, style, children} = this.props;
 
-    // Use IE11 fix: https://codepen.io/chriswrightdesign/pen/emQNGZ/
     return (
       <WindowSize>
         {({height}) => (
-          <div style={{display: 'flex'}}>
-            <div
-              style={{
-                flexGrow: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%',
-                [growable ? 'minHeight' : 'height']: height,
-                ...style
-              }}
-            >
-              {children}
-            </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+              [growable ? 'minHeight' : 'height']: height,
+              ...style
+            }}
+          >
+            {children}
           </div>
         )}
       </WindowSize>
