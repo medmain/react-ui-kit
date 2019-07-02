@@ -1,0 +1,114 @@
+---
+route: /toaster
+name: Toaster
+---
+
+import {Playground} from 'docz';
+import {ToastContainer, Toast, Button} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+import {VerticalContainer} from '../components/vertical-container';
+import {showSimpleToast, showAppUpdateToast} from '../components/toaster-demo';
+
+# Toaster
+
+## Toast component
+
+Default placement: at the top
+
+<Playground>
+  <Root>
+    <VerticalContainer height={400}>
+      <ToastContainer>
+        <Toast close={console.log}>First message: it worked!</Toast>
+        <Toast close={console.log} title="Success">
+          Second message: it worked!
+        </Toast>
+        <Toast
+          title={'App update'}
+          primaryButton={{title: 'Not now', value: false}}
+          secondaryButton={{title: 'Update', value: true}}
+          close={console.log}
+        >
+          An update is available, click on the "Update" button to reload the page.
+        </Toast>
+      </ToastContainer>
+    </VerticalContainer>
+  </Root>
+</Playground>
+
+At the bottom
+
+<Playground>
+  <Root>
+    <VerticalContainer height={400}>
+      <ToastContainer placement="bottom">
+        <Toast close={console.log}>It worked</Toast>
+        <Toast close={console.log} title="Success">
+          Second message: it worked!
+        </Toast>
+      </ToastContainer>
+    </VerticalContainer>
+  </Root>
+</Playground>
+
+## Imperative API
+
+The API is vaguely inspired by:
+
+- The browser native [notification API](https://developer.mozilla.org/en-US/docs/Web/API/notification)
+- [_node-notifier_ package](https://www.npmjs.com/package/node-notifier)
+
+```js
+const toaster = new Toaster({position: 'TOP'});
+await toaster.notify(message, options);
+```
+
+The `notify` method returns a Promise that resolves with:
+
+- either `undefined` if the toast closes automatically after the timeout
+- or the `value` assigned to the button clicked by the user.
+
+### Available options
+
+- `title`
+- `buttons`
+- `closeAfter`: 5000 by defaut (5 seconds), the toast stays on the screen if it's `0`.
+
+### Examples
+
+The simplest example, passing only a string to `notify` method
+
+<Playground>
+  <Root>
+    {({toaster}) => (
+      <VerticalContainer height={300}>
+        <Button onClick={() => toaster.notify('Success!')}>Show message</Button>
+      </VerticalContainer>
+    )}
+  </Root>
+</Playground>
+
+Toast with custom content, using the `close` callback
+
+<Playground>
+  <Root>
+    {({toaster}) => (
+      <VerticalContainer height={300}>
+        <Button onClick={() => showSimpleToast(toaster)}>Show message</Button>
+      </VerticalContainer>
+    )}
+  </Root>
+</Playground>
+
+Toast with 2 buttons and `requireInteraction` option: it remains active until the user clicks or dismisses it.
+
+<Playground>
+  <Root>
+    {({toaster}) => (
+      <VerticalContainer height={300}>
+        <Button onClick={() => showAppUpdateToast(toaster)}>Show message</Button>
+      </VerticalContainer>
+    )}
+  </Root>
+</Playground>
