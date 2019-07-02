@@ -20,4 +20,5 @@ export * from './rs-input';
 export * from './select';
 export * from './spinner';
 export * from './tabs';
+export * from './toaster';
 export * from './typography';
