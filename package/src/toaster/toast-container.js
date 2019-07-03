@@ -16,7 +16,7 @@ export class ToastContainer extends React.Component {
 
     const style = {
       position: 'absolute',
-      zIndex: 10000, // should be above the modals
+      zIndex: 30000, // the toasts should be on top of anything else
       right: 0,
       display: 'flex'
     };
