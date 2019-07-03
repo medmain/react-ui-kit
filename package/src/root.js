@@ -54,6 +54,7 @@ const Wrapper = props => {
             </RadiumStarter>
             {/* Modal element must be mounted inside <Fullscreen> */}
             {app.getModal().createElement()}
+            {app.getToaster().createElement()}
           </Fullscreen>
         </LocaleProvider>
       </AppProvider>
