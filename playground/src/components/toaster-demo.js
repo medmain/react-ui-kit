@@ -7,6 +7,9 @@ export async function showSimpleToast(toaster) {
     ({close}) => (
       <div>
         Don't think twice, it's alright! <Button onClick={() => close('OK')}>Close</Button>
+        <br />
+        This is an example of long content, that will be displayed on several lines because the
+        width of the "toast" is limited.
       </div>
     ),
     {

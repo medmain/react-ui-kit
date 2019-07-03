@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, withRadiumStarter} from 'radium-starter';
-import compact from 'lodash/compact';
 
 @withRadiumStarter
 export class Toast extends React.Component {
@@ -52,19 +51,17 @@ export class Toast extends React.Component {
   };
 
   render() {
-    const {title, primaryButton, secondaryButton, close, style, styles: s, children} = this.props;
+    const {title, primaryButton, secondaryButton, style, styles: s, children} = this.props;
 
     const toastStyle = {
-      backgroundColor: '#174eb6', // TODO use the theme
-      color: 'rgba(255, 255, 255, 0.85)',
+      backgroundColor: 'white',
       padding: '1rem',
       margin: '.5rem',
-      minWidth: '400px',
-      boxShadow: 'rgba(0, 0, 0, 0.16) 0px 4px 16px',
+      minWidth: '300px',
+      maxWidth: '450px',
+      boxShadow: 'rgba(0, 0, 0, 0.5) 0px 4px 16px',
       ...s.rounded
     };
-
-    const buttons = compact([primaryButton, secondaryButton]);
 
     return (
       <div
@@ -72,28 +69,33 @@ export class Toast extends React.Component {
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        {title && <div style={{fontSize: '1.2rem', color: 'white'}}>{title}</div>}
+        {title && <div style={{fontSize: '1.2rem', marginBottom: '.5rem'}}>{title}</div>}
         {children}
-        {buttons.length > 0 && (
-          <div style={{display: 'flex', marginTop: '1rem'}}>
-            {buttons.map(({title, value}, index) => {
-              const isLast = index === buttons.length - 1;
-              return (
-                <Button
-                  key={index}
-                  onClick={() => close(value)}
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    marginRight: !isLast ? '1rem' : undefined
-                  }}
-                >
-                  {title}
-                </Button>
-              );
-            })}
+        {(primaryButton || secondaryButton) && (
+          <div style={{display: 'flex', marginLeft: '-1rem'}}>
+            {secondaryButton && this.renderButton({...secondaryButton})}
+            {primaryButton && this.renderButton({...primaryButton, isPrimary: true})}
           </div>
         )}
+      </div>
+    );
+  }
+
+  renderButton({title, value, isPrimary}) {
+    const {close} = this.props;
+
+    return (
+      <div style={{width: '100%', padding: '1rem 0 0 1rem'}}>
+        <Button
+          onClick={() => close(value)}
+          rsPrimary={isPrimary}
+          style={{
+            display: 'block',
+            width: '100%'
+          }}
+        >
+          {title}
+        </Button>
       </div>
     );
   }
