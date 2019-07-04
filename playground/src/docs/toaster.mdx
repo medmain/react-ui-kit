@@ -21,13 +21,13 @@ Default placement: at the top
     <VerticalContainer height={400}>
       <ToastContainer>
         <Toast close={console.log}>First message: it worked!</Toast>
-        <Toast close={console.log} title="Success">
+        <Toast close={console.log} title="Success" secondaryButton={{title: 'OK', value: true}}>
           Second message: it worked!
         </Toast>
         <Toast
           title={'App update'}
-          primaryButton={{title: 'Not now', value: false}}
-          secondaryButton={{title: 'Update', value: true}}
+          primaryButton={{title: 'Update', value: true}}
+          secondaryButton={{title: 'Not now', value: false}}
           close={console.log}
         >
           An update is available, click on the "Update" button to reload the page.
@@ -42,7 +42,7 @@ At the bottom
 <Playground>
   <Root>
     <VerticalContainer height={400}>
-      <ToastContainer placement="bottom">
+      <ToastContainer position="bottom">
         <Toast close={console.log}>It worked</Toast>
         <Toast close={console.log} title="Success">
           Second message: it worked!

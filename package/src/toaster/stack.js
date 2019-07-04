@@ -14,10 +14,11 @@ export class Stack extends React.Component {
       <ToastContainer position={position}>
         {stack.map(({id, options}) => {
           const {message: ToastContent, ...otherOptions} = options;
+          const close = toaster.close(id);
 
           return (
-            <Toast key={`toast-${id}`} {...otherOptions} close={toaster.close(id)}>
-              {ToastContent && <ToastContent close={toaster.close(id)} />}
+            <Toast key={`toast-${id}`} {...otherOptions} close={close}>
+              {ToastContent && <ToastContent close={close} />}
             </Toast>
           );
         })}
