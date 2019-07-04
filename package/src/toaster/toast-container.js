@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export class ToastContainer extends React.Component {
   static propTypes = {
-    position: PropTypes.oneOf(['top', 'hidden']),
+    position: PropTypes.oneOf(['top', 'bottom']),
     children: PropTypes.node
   };
 

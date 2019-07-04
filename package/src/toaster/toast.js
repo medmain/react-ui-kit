@@ -11,9 +11,9 @@ export class Toast extends React.Component {
     secondaryButton: PropTypes.object,
     closeAfter: PropTypes.number,
     style: PropTypes.object.isRequired,
+    children: PropTypes.node,
     theme: PropTypes.object.isRequired,
-    styles: PropTypes.object.isRequired,
-    children: PropTypes.node
+    styles: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -51,7 +51,7 @@ export class Toast extends React.Component {
   };
 
   render() {
-    const {title, primaryButton, secondaryButton, style, styles: s, children} = this.props;
+    const {title, primaryButton, secondaryButton, children, style, styles: s} = this.props;
 
     const toastStyle = {
       backgroundColor: 'white',
