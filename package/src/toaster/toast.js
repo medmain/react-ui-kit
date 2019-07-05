@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, withRadiumStarter} from 'radium-starter';
+import {withRadiumStarter} from 'radium-starter';
+
+import {Button, Col, Row} from '../';
 
 @withRadiumStarter
 export class Toast extends React.Component {
@@ -31,7 +33,7 @@ export class Toast extends React.Component {
   startTimeout = () => {
     const {closeAfter, close} = this.props;
 
-    if (closeAfter) {
+    if (closeAfter && !this.autoCloseTimeout) {
       this.autoCloseTimeout = setTimeout(() => close(undefined), closeAfter);
     }
   };
@@ -39,6 +41,7 @@ export class Toast extends React.Component {
   clearTimeout = () => {
     if (this.autoCloseTimeout) {
       clearTimeout(this.autoCloseTimeout);
+      this.autoCloseTimeout = undefined;
     }
   };
 
@@ -51,14 +54,22 @@ export class Toast extends React.Component {
   };
 
   render() {
-    const {title, primaryButton, secondaryButton, children, style, styles: s} = this.props;
+    const {
+      title,
+      primaryButton,
+      secondaryButton,
+      children,
+      style,
+      styles: s,
+      theme: t
+    } = this.props;
 
     const toastStyle = {
-      backgroundColor: 'white',
-      padding: '1rem',
       margin: '.5rem',
+      padding: '1rem',
       minWidth: '300px',
       maxWidth: '450px',
+      backgroundColor: t.backgroundColor,
       boxShadow: 'rgba(0, 0, 0, 0.5) 0px 4px 16px',
       ...s.rounded
     };
@@ -69,13 +80,13 @@ export class Toast extends React.Component {
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        {title && <div style={{fontSize: '1.2rem', marginBottom: '.5rem'}}>{title}</div>}
+        {title && <div style={{fontSize: t.largeFontSize, marginBottom: '.5rem'}}>{title}</div>}
         {children}
         {(primaryButton || secondaryButton) && (
-          <div style={{display: 'flex', marginLeft: '-1rem'}}>
+          <Row style={{marginTop: '1rem'}}>
             {secondaryButton && this.renderButton({...secondaryButton})}
             {primaryButton && this.renderButton({...primaryButton, isPrimary: true})}
-          </div>
+          </Row>
         )}
       </div>
     );
@@ -85,7 +96,7 @@ export class Toast extends React.Component {
     const {close} = this.props;
 
     return (
-      <div style={{width: '100%', padding: '1rem 0 0 1rem'}}>
+      <Col style={{flexGrow: 1}}>
         <Button
           onClick={() => close(value)}
           rsPrimary={isPrimary}
@@ -96,7 +107,7 @@ export class Toast extends React.Component {
         >
           {title}
         </Button>
-      </div>
+      </Col>
     );
   }
 }

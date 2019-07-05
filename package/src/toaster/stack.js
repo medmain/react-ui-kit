@@ -12,9 +12,8 @@ export class Stack extends React.Component {
 
     return (
       <ToastContainer position={position}>
-        {stack.map(({id, options}) => {
+        {stack.map(({id, options, close}) => {
           const {message: ToastContent, ...otherOptions} = options;
-          const close = toaster.close(id);
 
           return (
             <Toast key={`toast-${id}`} {...otherOptions} close={close}>
