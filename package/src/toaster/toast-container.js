@@ -18,7 +18,8 @@ export class ToastContainer extends React.Component {
       position: 'absolute',
       zIndex: 30000, // the toasts should be on top of anything else
       right: 0,
-      display: 'flex'
+      display: 'flex',
+      padding: '.5rem'
     };
 
     if (position === 'top') {
