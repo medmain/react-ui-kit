@@ -1,7 +1,7 @@
 {
   "@import": "medmain/npm-package#^0.1.0",
   "name": "@medmain/react-ui-kit",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "React shared components used in Medmain web applications",
   "contributors": [
     "Manuel Vila <hi@mvila.me>",

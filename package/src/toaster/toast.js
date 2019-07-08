@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withRadiumStarter} from 'radium-starter';
 
-import {Button, Col, Row} from '../';
+import {Button} from '../button';
+import {Col, Row} from '../row';
 
 @withRadiumStarter
 export class Toast extends React.Component {
