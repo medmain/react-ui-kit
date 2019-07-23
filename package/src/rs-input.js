@@ -17,9 +17,9 @@ export class RSInput extends React.Component {
     switch (type) {
       case 'checkbox':
       case 'radio':
-        return <ToggleInput {...this.props} />;
+        return <ToggleInput forwardedRef={forwardedRef} type={type} {...props} />;
       default:
-        return <OriginalRSInput {...props} ref={forwardedRef} />;
+        return <OriginalRSInput ref={forwardedRef} type={type} {...props} />;
     }
   }
 }
