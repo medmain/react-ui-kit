@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRadiumStarter, Form as RSForm} from 'radium-starter';
+import omit from 'lodash/omit';
 
 export class Form extends React.Component {
   static propTypes = {
@@ -30,7 +31,7 @@ export class Label extends React.Component {
 
     return (
       <label
-        {...this.props}
+        {...omit(this.props, ['styles', 'theme'])}
         style={{
           display: 'flex',
           alignItems: 'baseline',
@@ -49,7 +50,12 @@ export class LabelHelp extends React.Component {
   render() {
     const {theme: t} = this.props;
 
-    return <small {...this.props} style={{marginLeft: '.6rem', color: t.labelColor}} />;
+    return (
+      <small
+        {...omit(this.props, ['styles', 'theme'])}
+        style={{marginLeft: '.6rem', color: t.labelColor}}
+      />
+    );
   }
 }
 
