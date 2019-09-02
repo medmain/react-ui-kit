@@ -1,7 +1,7 @@
 {
   "@import": "medmain/npm-package#^0.1.0",
   "name": "@medmain/react-ui-kit",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "React shared components used in Medmain web applications",
   "contributors": [
     "Manuel Vila <hi@mvila.me>",
@@ -21,7 +21,7 @@
     "radium-starter": "^0.11.7",
     "react-day-picker": "^7.2.4",
     "react-full-screen": "^0.2.4",
-    "react-md-spinner": "^0.3.0",
+    "react-md-spinner": "^1.0.0",
     "react-modal": "^3.6.1",
     "react-router-dom": "^4.2.2"
   },
