@@ -15,12 +15,10 @@ TimeAgo.propTypes = {
 
 export function formatTimeAgo(date) {
   let formattedDate = formatDistanceToNow(date, {addSuffix: true});
-  formattedDate = removePrefix(formattedDate);
+  formattedDate = formattedDate
+    .replace('less than a minute ago', 'just now') // for 0 ... 30 secs distance
+    .replace(/about |almost |less than |over /, ''); // remove `about` and `almost` prefixes
   return formattedDate;
-}
-
-function removePrefix(formattedDate) {
-  return formattedDate.replace(/about |almost /, ''); // remove `about` and `almost` prefixes
 }
 
 export const DateTime = ({date, mask, ...otherProps}) => {
