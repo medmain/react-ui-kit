@@ -30,6 +30,6 @@ DateTime.propTypes = {
   date: PropTypes.object.isRequired
 };
 
-export function formatDateTime(date, {mask = `MMMM dd, yyyy 'at' HH:MM`} = {}) {
+export function formatDateTime(date, {mask = `MMM dd, yyyy 'at' HH:mm`} = {}) {
   return format(date, mask);
 }
