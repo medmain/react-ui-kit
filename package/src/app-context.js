@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 
-const {Provider, Consumer} = React.createContext({});
+const AppContext = React.createContext({});
 
 export const AppProvider = ({app, children}) => {
-  return <Provider value={app}>{children}</Provider>;
+  return <AppContext.Provider value={app}>{children}</AppContext.Provider>;
 };
 AppProvider.propTypes = {
   app: PropTypes.object.isRequired,
@@ -15,7 +15,14 @@ AppProvider.propTypes = {
 HOC to inject `app` props to the wrapped component
 */
 export const withApp = Wrapped => {
-  const Component = props => <Consumer>{app => <Wrapped {...props} app={app} />}</Consumer>;
+  const Component = props => (
+    <AppContext.Consumer>{app => <Wrapped {...props} app={app} />}</AppContext.Consumer>
+  );
   Component.displayName = `${Wrapped.displayName || Wrapped.name || 'Component'}WithApp`;
   return Component;
 };
+
+/*
+Hook version
+*/
+export const useApp = () => useContext(AppContext);
