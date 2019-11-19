@@ -1,0 +1,41 @@
+---
+name: Alert
+route: /alert
+---
+
+import {Playground} from 'docz';
+import {Alert} from '@medmain/react-ui-kit';
+
+import Root from '../components/root';
+
+# Alert
+
+## Info type (default)
+
+<Playground>
+  <Root>
+    <Alert type="info">This is important information</Alert>
+    <Alert type="info" title="New!">
+      This is important information
+    </Alert>
+    <Alert type="info" title={<>Title with <b>JSX</b></>}>
+      This is important information
+    </Alert>
+  </Root>
+</Playground>
+
+## Success type
+
+<Playground>
+  <Root>
+    <Alert type="success">It worked!</Alert>
+  </Root>
+</Playground>
+
+## Error type
+
+<Playground>
+  <Root>
+    <Alert type="error">Unable to save!</Alert>
+  </Root>
+</Playground>

@@ -1,3 +1,4 @@
+export * from './alert';
 export * from './app-context';
 export * from './button';
 export * from './date-input';
