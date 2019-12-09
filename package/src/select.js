@@ -9,11 +9,11 @@ import {RSInput} from './rs-input';
 @withForwardedRef
 export class Select extends React.Component {
   static propTypes = {
-    type: PropTypes.string, // 'auto' (default), 'select' or 'radio'
+    type: PropTypes.oneOf(['auto', 'select', 'radio', 'checkbox']), // 'auto' (default), 'select' or 'radio'
     forwardedRef: PropTypes.object,
     options: PropTypes.array.isRequired,
     hasEmptyOption: PropTypes.bool,
-    value: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     onChange: PropTypes.func.isRequired,
     required: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -27,7 +27,7 @@ export class Select extends React.Component {
 
   shouldComponentUpdate(nextProps, _nextState) {
     return (
-      nextProps.value !== this.props.value ||
+      !isEqual(nextProps.value, this.props.value) ||
       nextProps.onChange !== this.props.onChange ||
       nextProps.required !== this.props.required ||
       nextProps.disabled !== this.props.disabled ||
@@ -40,20 +40,27 @@ export class Select extends React.Component {
   };
 
   render() {
-    let {type, forwardedRef, options, hasEmptyOption, style, ...props} = this.props;
+    let {type, forwardedRef, options, value, hasEmptyOption, style, ...otherProps} = this.props;
 
     if (type === 'auto') {
-      type = options.length < 5 ? 'radio' : 'select';
+      const multiValueDefaultType = 'checkbox';
+      const singleValueDefaultType = options.length < 5 ? 'radio' : 'select';
+      type = Array.isArray(value) ? multiValueDefaultType : singleValueDefaultType;
     }
 
     if (type === 'radio') {
       return <RadioSelect ref={forwardedRef} {...this.props} />;
     }
 
+    if (type === 'checkbox') {
+      return <CheckboxSelect ref={forwardedRef} {...this.props} />;
+    }
+
     return (
       <RSSelect
         ref={forwardedRef}
-        {...props}
+        value={value}
+        {...otherProps}
         onChange={this.handleChange}
         style={{display: 'block', width: '100%', ...style}}
       >
@@ -82,10 +89,11 @@ export class RadioSelect extends React.Component {
   };
 
   static defaultProps = {
+    type: 'radio',
     layout: 'vertical'
   };
 
-  name = String(Math.round(Math.random() * 1000000000));
+  name = getRandomId();
 
   shouldComponentUpdate(nextProps, _nextState) {
     return (
@@ -97,7 +105,8 @@ export class RadioSelect extends React.Component {
   }
 
   handleChange = event => {
-    this.props.onChange(event.target.value);
+    const {value} = event.target;
+    this.props.onChange(value);
   };
 
   render() {
@@ -140,4 +149,66 @@ export class RadioSelect extends React.Component {
 
     return rendering;
   }
+}
+@withForwardedRef
+export class CheckboxSelect extends React.Component {
+  static propTypes = {
+    options: PropTypes.array.isRequired,
+    value: PropTypes.array.isRequired,
+    forwardedRef: PropTypes.object,
+    onChange: PropTypes.func.isRequired,
+    required: PropTypes.bool
+  };
+
+  name = getRandomId();
+
+  shouldComponentUpdate(nextProps, _nextState) {
+    return (
+      nextProps.value !== this.props.value ||
+      nextProps.onChange !== this.props.onChange ||
+      nextProps.required !== this.props.required ||
+      !isEqual(nextProps.options, this.props.options)
+    );
+  }
+
+  handleChange = event => {
+    const {value: inputValues} = this.props;
+    const inputNode = event.target;
+    const {value, checked} = inputNode;
+
+    const updatedInputValues = checked
+      ? [...inputValues, value]
+      : inputValues.filter(val => val !== value);
+    this.props.onChange(updatedInputValues);
+  };
+
+  render() {
+    const {options, value, forwardedRef, required} = this.props;
+
+    return options.map((option, index) => {
+      const id = this.name + '-' + option.value;
+
+      return (
+        <div key={id} style={{display: 'flex', alignItems: 'center'}}>
+          <RSInput
+            ref={index === 0 ? forwardedRef : undefined} // to be able to set focus on the 1st radio button
+            type="checkbox"
+            id={id}
+            name={this.name}
+            value={option.value}
+            checked={value.includes(option.value)}
+            onChange={this.handleChange}
+            required={required}
+          />
+          <label htmlFor={id} style={{paddingLeft: '0'}}>
+            {option.label}
+          </label>
+        </div>
+      );
+    });
+  }
+}
+
+function getRandomId() {
+  return String(Math.round(Math.random() * 1000000000));
 }

@@ -140,3 +140,25 @@ Setting `type="radio"` will render a group of radio buttons.
     </FormContainer>
   </Root>
 </Playground>
+
+### Select type checkbox (for multiple values)
+
+<Playground>
+  <Root>
+    <FormContainer initialValues={{team: ['3']}}>
+      {({values: {team}, onChange}) => {
+        const ref = React.createRef();
+        return (
+          <Select
+            type="checkbox"
+            ref={ref}
+            value={team}
+            options={items.map(({id, team}) => ({value: id, label: team}))}
+            onChange={onChange('team')}
+            layout="vertical"
+          />
+        );
+      }}
+    </FormContainer>
+  </Root>
+</Playground>
