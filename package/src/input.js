@@ -405,9 +405,11 @@ export class MultiInput extends React.Component {
   handleChange = (index, newValue) => {
     const {onChange} = this.props;
 
-    const updatedValues = this.getRenderedValues().map((currentValue, i) => {
-      return index === i ? newValue : currentValue;
-    });
+    const updatedValues = this.getRenderedValues()
+      .map((currentValue, i) => {
+        return index === i ? newValue : currentValue;
+      })
+      .filter(value => value !== undefined);
 
     return onChange(updatedValues);
   };
@@ -416,7 +418,7 @@ export class MultiInput extends React.Component {
     const {values} = this.props;
 
     const lastValue = values[values.length - 1];
-    const hasExtraEmptyInput = values.length && isEmpty(lastValue);
+    const hasExtraEmptyInput = values.length && lastValue === undefined;
 
     return hasExtraEmptyInput ? values : [...values, undefined];
   };
