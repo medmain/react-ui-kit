@@ -15,5 +15,6 @@ export * from './download';
 export * from './file';
 export * from './fullscreen-enter';
 export * from './fullscreen-exit';
+export * from './refresh';
 export * from './remove';
 export * from './windows';

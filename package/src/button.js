@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withRadiumStarter, Button as RSButton} from 'radium-starter';
 
-import {ArrowLeftIcon, CloseIcon} from './icons';
+import {ArrowLeftIcon, CloseIcon, RefreshIcon} from './icons';
 
 export class Button extends React.Component {
   static propTypes = {
@@ -79,6 +79,24 @@ export class RoundCloseButton extends React.Component {
     return (
       <RoundButton {...this.props} style={{color: t.altTextColor, ...style}}>
         <CloseIcon size={24} />
+      </RoundButton>
+    );
+  }
+}
+
+@withRadiumStarter
+export class RoundRefreshButton extends React.Component {
+  static propTypes = {
+    style: PropTypes.object,
+    theme: PropTypes.object.isRequired,
+    styles: PropTypes.object.isRequired
+  };
+
+  render() {
+    const {style, theme: t} = this.props;
+    return (
+      <RoundButton {...this.props} style={{color: t.altTextColor, ...style}}>
+        <RefreshIcon size={24} />
       </RoundButton>
     );
   }
