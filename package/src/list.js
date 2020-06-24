@@ -218,7 +218,7 @@ class BasicList extends React.Component {
                             onClick={
                               onItemClick &&
                               (() => {
-                                onItemClick(item, path);
+                                onItemClick(item, path, index);
                               })
                             }
                             onContextMenu={handleContextMenu}
@@ -295,9 +295,9 @@ class ListWithMenu extends React.Component {
     const {contextMenuItems} = this.props;
 
     const content =
-      typeof contextMenuItems === 'function' ?
-        contextMenuItems :
-        ({close}) => <Menu items={contextMenuItems} onClick={close} />;
+      typeof contextMenuItems === 'function'
+        ? contextMenuItems
+        : ({close}) => <Menu items={contextMenuItems} onClick={close} />;
 
     return (
       <Popover content={content} position={'cursor'}>
